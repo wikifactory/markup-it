@@ -1,12 +1,15 @@
 var INLINES = require('../').INLINES;
 var BLOCKS = require('../').BLOCKS;
 
-var rBlocks = require('kramed/lib/rules/block');
+var rBlock = require('kramed/lib/rules/block');
+var rInline = require('kramed/lib/rules/inline');
 
+// Split a text into lines
 function splitLines(text) {
-    return text.match(/[^\r\n]+/g);
+    return text.split(/\r?\n/);
 }
 
+// Generator for HEADING_X rules
 function headingRule(level) {
     var prefix = Array(level + 1).join('#');
 
@@ -25,7 +28,6 @@ function headingRule(level) {
         }
     }
 }
-
 
 module.exports = {
     blocks: [
@@ -62,7 +64,7 @@ module.exports = {
         // ---- HR ----
         {
             type: BLOCKS.HR,
-            regexp: rBlocks.hr,
+            regexp: rBlock.hr,
             toText: '---'
         },
 
@@ -78,7 +80,7 @@ module.exports = {
         // ---- BLOCKQUOTE ----
         {
             type: BLOCKS.BLOCKQUOTE,
-            regexp: rBlocks.blockquote,
+            regexp: rBlock.blockquote,
             props: function(match) {
                 return {
                     text: match[1].replace(/^ *> ?/gm, '').trim()
@@ -106,7 +108,7 @@ module.exports = {
         // ---- BOLD ----
         {
             type: INLINES.BOLD,
-            regexp: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
+            regexp: rInline.strong,
             props: function(match) {
                 return {
                     text: match[2]
@@ -118,7 +120,7 @@ module.exports = {
         // ---- ITALIC ----
         {
             type: INLINES.ITALIC,
-            regexp: /^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
+            regexp: rInline.em,
             props: function(match) {
                 return {
                     text: match[1]
@@ -127,12 +129,18 @@ module.exports = {
             toText: '_%s_'
         },
 
+        // ---- STRIKETHROUGH ----
+        {
+            type: INLINES.STRIKETHROUGH,
+            regexp: rInline.gfm.del,
+            toText: '~~%s~~'
+        },
+
         // ---- TEXT ----
         {
             type: INLINES.TEXT,
             regexp: /^[\s\S]+?(?=[\\<!\[_*`$]| {2,}\n|$)/,
             toText: '%s'
         }
-
     ]
 };

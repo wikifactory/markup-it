@@ -19,6 +19,7 @@ var EXAMPLE_SOURCE = (
 var INLINE_STYLES = [
     { label: 'Bold', style: DraftText.INLINES.BOLD },
     { label: 'Italic', style: DraftText.INLINES.ITALIC },
+    { label: '~', style: DraftText.INLINES.STRIKETHROUGH },
     { label: 'Code', style: DraftText.INLINES.CODE }
 ];
 
