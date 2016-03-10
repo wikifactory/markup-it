@@ -1,6 +1,10 @@
 @import (inline) '../node_modules/reset-css/reset.css';
 @import (inline) '../node_modules/draft-js/dist/Draft.css';
 
+
+@markdown-block-margin: 16px;
+
+
 * {
     box-sizing: border-box;
 }
@@ -52,40 +56,40 @@ body, html, #target {
     }
 
     .MarkdownEditor-block {
-        margin-bottom: 15px;
+        margin-bottom: @markdown-block-margin;
     }
 
-    .MarkdownEditor-heading_1 {
+    .MarkdownEditor-header-one {
         font-size: 3em;
         font-weight: bold;
     }
 
-    .MarkdownEditor-heading_2 {
+    .MarkdownEditor-header-two {
         font-size: 2.4em;
         font-weight: bold;
     }
 
-    .MarkdownEditor-heading_3 {
+    .MarkdownEditor-header-three {
         font-size: 2em;
         font-weight: bold;
     }
 
-    .MarkdownEditor-heading_4 {
+    .MarkdownEditor-header-four {
         font-size: 1.4em;
         font-weight: bold;
     }
 
-    .MarkdownEditor-heading_5 {
+    .MarkdownEditor-header-five {
         font-size: 1em;
         font-weight: bold;
     }
 
-    .MarkdownEditor-heading_6 {
+    .MarkdownEditor-header-six {
         font-size: 0.8em;
         font-weight: bold;
     }
 
-    .MarkdownEditor-code {
+    .MarkdownEditor-code-block {
         background-color: rgba(0, 0, 0, 0.05);
         font-family: "Inconsolata", "Menlo", "Consolas", monospace;
         padding: 5px 10px;
@@ -97,8 +101,11 @@ body, html, #target {
         color: #666;
         font-family: 'Hoefler Text', 'Georgia', serif;
         font-style: italic;
-        margin: 16px 0;
         padding: 10px 20px;
+
+        & + .MarkdownEditor-blockquote {
+            margin-top: -@markdown-block-margin;
+        }
     }
 }
 

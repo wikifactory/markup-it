@@ -1,6 +1,6 @@
 # draft-text
 
-> Utility to work with markdown string
+> Pipeline for using text input (for example Markdoan) with Draft-js
 
 ### Installation
 

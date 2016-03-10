@@ -33,6 +33,9 @@ module.exports = {
             type: BLOCKS.CODE,
             regexp: /^((?: {4}|\t)[^\n]+\n*)+/,
 
+            // Disable inline style for code blocks
+            inline: false,
+
             // Add indentation to content
             toText: function(text) {
                 var lines = splitLines(text);
@@ -78,7 +81,7 @@ module.exports = {
             regexp: rBlocks.blockquote,
             props: function(match) {
                 return {
-                    text: match[1].replace(/^ *> ?/gm, '')
+                    text: match[1].replace(/^ *> ?/gm, '').trim()
                 };
             },
             toText: '> %s\n\n'

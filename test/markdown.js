@@ -13,17 +13,17 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello World');
-                blocks[0].type.should.equal('unstyled');
+                blocks[0].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
             });
 
             it('should parse multiple paragraph', function() {
                 var blocks = syntax.toRawContent('Hello World\n\nHello 2').blocks;
 
                 blocks.should.have.lengthOf(2);
-                blocks[0].type.should.equal('unstyled');
+                blocks[0].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
 
-                blocks[1].type.should.equal('unstyled');
+                blocks[1].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
                 blocks[1].text.should.equal('Hello 2');
             });
         });
@@ -34,7 +34,7 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello');
-                blocks[0].type.should.equal('heading_1');
+                blocks[0].type.should.equal(DraftText.BLOCKS.HEADING_1);
             });
 
             it('should parse header 2', function() {
@@ -42,7 +42,7 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello');
-                blocks[0].type.should.equal('heading_2');
+                blocks[0].type.should.equal(DraftText.BLOCKS.HEADING_2);
             });
 
             it('should parse header 3', function() {
@@ -50,7 +50,7 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello');
-                blocks[0].type.should.equal('heading_3');
+                blocks[0].type.should.equal(DraftText.BLOCKS.HEADING_3);
             });
         });
 
@@ -60,7 +60,7 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello');
-                blocks[0].type.should.equal('blockquote');
+                blocks[0].type.should.equal(DraftText.BLOCKS.BLOCKQUOTE);
             });
         });
 
@@ -70,7 +70,7 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello');
-                blocks[0].type.should.equal('code');
+                blocks[0].type.should.equal(DraftText.BLOCKS.CODE);
             });
 
             it('should parse multi lines code blocks', function() {
@@ -78,7 +78,7 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello\nWorld');
-                blocks[0].type.should.equal('code');
+                blocks[0].type.should.equal(DraftText.BLOCKS.CODE);
             });
         });
 
@@ -87,10 +87,10 @@ describe('Markdown', function() {
                 var blocks = syntax.toRawContent('# Hello\n\nWorld').blocks;
 
                 blocks.should.have.lengthOf(2);
-                blocks[0].type.should.equal('heading_1');
+                blocks[0].type.should.equal(DraftText.BLOCKS.HEADING_1);
                 blocks[0].text.should.equal('Hello');
 
-                blocks[1].type.should.equal('unstyled');
+                blocks[1].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
                 blocks[1].text.should.equal('World');
             });
         });
@@ -99,7 +99,7 @@ describe('Markdown', function() {
             it('should parse bold', function() {
                 var blocks = syntax.toRawContent('Hello **World**').blocks;
 
-                blocks[0].type.should.equal('unstyled');
+                blocks[0].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
                 blocks[0].characterList[0].should.deepEqual(['unstyled']);
                 blocks[0].characterList[6].should.deepEqual(['bold']);
@@ -108,7 +108,7 @@ describe('Markdown', function() {
             it('should parse italic', function() {
                 var blocks = syntax.toRawContent('Hello _World_').blocks;
 
-                blocks[0].type.should.equal('unstyled');
+                blocks[0].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
                 blocks[0].characterList[0].should.deepEqual(['unstyled']);
                 blocks[0].characterList[6].should.deepEqual(['italic']);
