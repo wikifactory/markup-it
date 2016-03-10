@@ -95,7 +95,7 @@ describe('Markdown', function() {
             });
         });
 
-        describe('Inline', function() {
+        describe('Inline Styles', function() {
             it('should parse bold', function() {
                 var blocks = syntax.toRawContent('Hello **World**').blocks;
 
@@ -128,6 +128,16 @@ describe('Markdown', function() {
                 blocks[0].inlineStyleRanges[0].offset.should.equal(6);
                 blocks[0].inlineStyleRanges[0].length.should.equal(5);
             });
+        });
+    });
+
+    describe.only('Links', function() {
+        it('should parse link', function() {
+            var content = syntax.toRawContent('[Hello World](page.md)');
+            console.log(JSON.stringify(content, null, 4));
+
+            content.blocks[0].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
+            content.blocks[0].text.should.equal('Hello World');
         });
     });
 

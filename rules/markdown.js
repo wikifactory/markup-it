@@ -28,7 +28,7 @@ function headingRule(level) {
         }
     }
 }
-console.log(rInline.gfm.del)
+
 module.exports = {
     blocks: [
         {
@@ -53,21 +53,15 @@ module.exports = {
                 var lines = splitLines(inner);
                 var text = lines.map(function(line) {
                     return line.replace(/^( {4}|\t)/, '');
-                }).join('\n')
+                })
+                .join('\n')
+                .replace(/\s+$/g, '');
 
                 return {
                     text: text
                 };
             }
         },
-
-        // ---- HR ----
-        {
-            type: BLOCKS.HR,
-            regexp: rBlock.hr,
-            toText: '---'
-        },
-
 
         // ---- HEADING ----
         headingRule(6),
@@ -105,6 +99,41 @@ module.exports = {
         }
     ],
     inlines: [
+        // ---- HR ----
+        // Parsed as inline entities instead of blocks
+        {
+            type: BLOCKS.HR,
+            regexp: rBlock.hr,
+            props: function(match) {
+                return {
+                    mutability: 'IMMUTABLE',
+                    text: ' ',
+                    data: {}
+                };
+            },
+            toText: '---'
+        },
+
+        // ---- LINK ----
+        {
+            type: INLINES.LINK,
+            regexp: rInline.link,
+            props: function(match) {
+                return {
+                    mutability: 'MUTABLE',
+                    text: match[1],
+                    data: {
+                        href: match[2]
+                    }
+                };
+            },
+            toText: function(text, entity) {
+                console.log('toText', text, entity);
+                return '[' + text + '](' + entity.data.href + ')';
+            }
+        },
+
+
         // ---- BOLD ----
         {
             type: INLINES.BOLD,
