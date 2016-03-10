@@ -117,6 +117,17 @@ describe('Markdown', function() {
                 blocks[0].inlineStyleRanges[0].offset.should.equal(6);
                 blocks[0].inlineStyleRanges[0].length.should.equal(5);
             });
+
+            it('should parse strikethrought', function() {
+                var blocks = syntax.toRawContent('Hello ~~World~~').blocks;
+
+                blocks[0].type.should.equal(DraftText.BLOCKS.PARAGRAPH);
+                blocks[0].text.should.equal('Hello World');
+                blocks[0].inlineStyleRanges.should.have.lengthOf(1);
+                blocks[0].inlineStyleRanges[0].style.should.deepEqual('STRIKETHROUGH');
+                blocks[0].inlineStyleRanges[0].offset.should.equal(6);
+                blocks[0].inlineStyleRanges[0].length.should.equal(5);
+            });
         });
     });
 

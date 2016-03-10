@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "export TESTING=true; mocha --reporter spec --bail",
-    "build-example": "browserify -t [ babelify --presets [ es2015 react ] ] ./example/example.js > ./example/dist.js; lessc ./example/example.less ./example/dist.css"
+    "example-build": "browserify -t [ babelify --presets [ es2015 react ] ] ./example/example.js > ./example/dist.js; lessc ./example/example.less ./example/dist.css",
+    "example-deploy": "npm run example-build; gh-pages -d ./example"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,7 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "draft-js": "^0.2.2",
+    "gh-pages": "^0.11.0",
     "less": "^2.6.1",
     "mocha": "^2.4.5",
     "react": "^0.14.7",

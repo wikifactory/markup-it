@@ -10,7 +10,7 @@ var EXAMPLE_SOURCE = (
     '## Heading 2\n' +
     '### Heading 3\n' +
     '#### Heading 4\n' +
-    'This is a **very** simple _example_ of draft + markdown.\n\n' +
+    'This is a **very** simple _example_ of draft + draft-text using ~~Asciidoc~~ Markdown.\n\n' +
     '> Blockquote and code blocks are supported\n\n' +
     '\tvar a = 42;\n' +
     '\tconsole.log(a);\n\n'

@@ -28,7 +28,7 @@ function headingRule(level) {
         }
     }
 }
-
+console.log(rInline.gfm.del)
 module.exports = {
     blocks: [
         {
@@ -133,13 +133,18 @@ module.exports = {
         {
             type: INLINES.STRIKETHROUGH,
             regexp: rInline.gfm.del,
+            props: function(match) {
+                return {
+                    text: match[1]
+                };
+            },
             toText: '~~%s~~'
         },
 
         // ---- TEXT ----
         {
             type: INLINES.TEXT,
-            regexp: /^[\s\S]+?(?=[\\<!\[_*`$]| {2,}\n|$)/,
+            regexp: rInline.gfm.text,
             toText: '%s'
         }
     ]
