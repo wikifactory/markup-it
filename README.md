@@ -1,6 +1,6 @@
 # draft-text
 
-> Pipeline for using text input (for example Markdoan) with Draft-js
+> Pipeline for using text input (for example Markdown) with Draft-js
 
 ### Installation
 

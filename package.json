@@ -1,7 +1,7 @@
 {
   "name": "draft-text",
   "version": "0.0.0",
-  "description": "Pipeline for using text input (for example Markdoan) with Draft-js",
+  "description": "Pipeline for using text input (for example Markdown) with Draft-js",
   "main": "lib/index.js",
   "scripts": {
     "test": "export TESTING=true; mocha --reporter spec --bail",
