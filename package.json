@@ -1,0 +1,33 @@
+{
+  "name": "draft-syntax",
+  "version": "0.0.0",
+  "description": "Input/Output draft-js state to markdown",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "export TESTING=true; mocha --reporter spec --bail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GitbookIO/draft-syntaxes.git"
+  },
+  "keywords": [
+    "draft-js",
+    "markdown",
+    "react"
+  ],
+  "author": "Samy Pesse <samy@gitbook.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/GitbookIO/draft-syntax/issues"
+  },
+  "homepage": "https://github.com/GitbookIO/draft-syntax#readme",
+  "devDependencies": {
+    "mocha": "^2.4.5",
+    "should": "^8.2.2",
+    "draft-js": "^0.2.2"
+  },
+  "dependencies": {
+    "is": "^3.1.0",
+    "lodash.find": "^4.2.0"
+  }
+}
