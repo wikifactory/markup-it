@@ -1,0 +1,104 @@
+@import (inline) '../node_modules/reset-css/reset.css';
+@import (inline) '../node_modules/draft-js/dist/Draft.css';
+
+* {
+    box-sizing: border-box;
+}
+
+body, html, #target {
+    width: 100%;
+    height: 100%;
+}
+
+.Example {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0px auto;
+    padding: 40px 0px;
+}
+
+.ExamplePreview, .ExampleEditor {
+    width: 48%;
+    display: inline-block;
+    margin: 0px 1%;
+    vertical-align: top;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.MarkdownEditor {
+    font-size: 16px;
+
+    .MarkdownEditor-Toolbar {
+        margin-bottom: 20px;
+
+        .MarkdownEditor-controls {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 14px;
+            margin-bottom: 5px;
+            user-select: none;
+        }
+
+        .MarkdownEditor-styleButton {
+            color: #999;
+            cursor: pointer;
+            margin-right: 16px;
+            padding: 2px 0;
+        }
+
+        .MarkdownEditor-activeButton {
+            color: #5890ff;
+        }
+    }
+
+    .MarkdownEditor-block {
+        margin-bottom: 15px;
+    }
+
+    .MarkdownEditor-heading_1 {
+        font-size: 3em;
+        font-weight: bold;
+    }
+
+    .MarkdownEditor-heading_2 {
+        font-size: 2.4em;
+        font-weight: bold;
+    }
+
+    .MarkdownEditor-heading_3 {
+        font-size: 2em;
+        font-weight: bold;
+    }
+
+    .MarkdownEditor-heading_4 {
+        font-size: 1.4em;
+        font-weight: bold;
+    }
+
+    .MarkdownEditor-heading_5 {
+        font-size: 1em;
+        font-weight: bold;
+    }
+
+    .MarkdownEditor-heading_6 {
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    .MarkdownEditor-code {
+        background-color: rgba(0, 0, 0, 0.05);
+        font-family: "Inconsolata", "Menlo", "Consolas", monospace;
+        padding: 5px 10px;
+        line-height: 1.5em;
+    }
+
+    .MarkdownEditor-blockquote {
+        border-left: 5px solid #eee;
+        color: #666;
+        font-family: 'Hoefler Text', 'Georgia', serif;
+        font-style: italic;
+        margin: 16px 0;
+        padding: 10px 20px;
+    }
+}
+

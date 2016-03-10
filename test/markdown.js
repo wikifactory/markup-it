@@ -1,10 +1,10 @@
 var should = require('should');
 
-var Syntax = require('../').Syntax;
+var DraftText = require('../');
 var markdown = require('../rules/markdown');
 
 describe('Markdown', function() {
-    var syntax = new Syntax(markdown);
+    var syntax = new DraftText(markdown);
 
     describe('Text to ContentState', function() {
         describe('Paragraphs', function() {
@@ -13,17 +13,17 @@ describe('Markdown', function() {
 
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello World');
-                blocks[0].type.should.equal('paragraph');
+                blocks[0].type.should.equal('unstyled');
             });
 
             it('should parse multiple paragraph', function() {
                 var blocks = syntax.toRawContent('Hello World\n\nHello 2').blocks;
 
                 blocks.should.have.lengthOf(2);
-                blocks[0].type.should.equal('paragraph');
+                blocks[0].type.should.equal('unstyled');
                 blocks[0].text.should.equal('Hello World');
 
-                blocks[1].type.should.equal('paragraph');
+                blocks[1].type.should.equal('unstyled');
                 blocks[1].text.should.equal('Hello 2');
             });
         });
@@ -54,6 +54,16 @@ describe('Markdown', function() {
             });
         });
 
+        describe('Blockquotes', function() {
+            it('should parse single line blockquote', function() {
+                var blocks = syntax.toRawContent('> Hello').blocks;
+
+                blocks.should.have.lengthOf(1);
+                blocks[0].text.should.equal('Hello');
+                blocks[0].type.should.equal('blockquote');
+            });
+        });
+
         describe('Code Blocks', function() {
             it('should parse single line code blocks', function() {
                 var blocks = syntax.toRawContent('    Hello').blocks;
@@ -80,7 +90,7 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal('heading_1');
                 blocks[0].text.should.equal('Hello');
 
-                blocks[1].type.should.equal('paragraph');
+                blocks[1].type.should.equal('unstyled');
                 blocks[1].text.should.equal('World');
             });
         });
@@ -89,18 +99,18 @@ describe('Markdown', function() {
             it('should parse bold', function() {
                 var blocks = syntax.toRawContent('Hello **World**').blocks;
 
-                blocks[0].type.should.equal('paragraph');
+                blocks[0].type.should.equal('unstyled');
                 blocks[0].text.should.equal('Hello World');
-                blocks[0].characterList[0].should.deepEqual(['text']);
+                blocks[0].characterList[0].should.deepEqual(['unstyled']);
                 blocks[0].characterList[6].should.deepEqual(['bold']);
             });
 
             it('should parse italic', function() {
                 var blocks = syntax.toRawContent('Hello _World_').blocks;
 
-                blocks[0].type.should.equal('paragraph');
+                blocks[0].type.should.equal('unstyled');
                 blocks[0].text.should.equal('Hello World');
-                blocks[0].characterList[0].should.deepEqual(['text']);
+                blocks[0].characterList[0].should.deepEqual(['unstyled']);
                 blocks[0].characterList[6].should.deepEqual(['italic']);
             });
         });

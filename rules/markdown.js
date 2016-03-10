@@ -1,6 +1,8 @@
 var INLINES = require('../').INLINES;
 var BLOCKS = require('../').BLOCKS;
 
+var rBlocks = require('kramed/lib/rules/block');
+
 function splitLines(text) {
     return text.match(/[^\r\n]+/g);
 }
@@ -57,7 +59,7 @@ module.exports = {
         // ---- HR ----
         {
             type: BLOCKS.HR,
-            regexp: /^( *[-*_]){3,} *(?:\n|$)/,
+            regexp: rBlocks.hr,
             toText: '---'
         },
 
@@ -69,6 +71,18 @@ module.exports = {
         headingRule(3),
         headingRule(2),
         headingRule(1),
+
+        // ---- BLOCKQUOTE ----
+        {
+            type: BLOCKS.BLOCKQUOTE,
+            regexp: rBlocks.blockquote,
+            props: function(match) {
+                return {
+                    text: match[1].replace(/^ *> ?/gm, '')
+                };
+            },
+            toText: '> %s\n\n'
+        },
 
 
         // ---- PARAGRAPH ----

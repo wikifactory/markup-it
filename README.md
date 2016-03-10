@@ -1,11 +1,11 @@
-# draft-syntax
+# draft-text
 
 > Utility to work with markdown string
 
 ### Installation
 
 ```
-$ npm i draft-syntax --save
+$ npm i draft-text --save
 ```
 
 ### Usage
@@ -13,24 +13,25 @@ $ npm i draft-syntax --save
 Initialize a syntax:
 
 ```js
-var Syntax = require('draft-syntax').Syntax;
-var markdown = require('draft-syntaxes/rules/markdown');
+var DraftText = require('draft-text');
+var markdown = require('draft-text/rules/markdown');
 
-var syntax = new Syntax(markdown);
+var draftText = new DraftText(markdown);
 ```
 
 Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js:
 
 ```js
-var rawContent = syntax.toRawContent('# Hello World\n\nThis is **bold**.');
-var content = draft.convertFromRaw(rawContent);
+var rawContent = draftText.toRawContent('# Hello World\n\nThis is **bold**.');
+var blocks = draft.convertFromRaw(rawContent);
+var content = draft.ContentState.createFromBlockArray(blocks);
 ```
 
 Output markdown from a ContentState:
 
 ```js
 var rawContent = draft.convertToRaw(content);
-var text = syntax.toText(rawContent);
+var text = draftText.toText(rawContent);
 ```
 
 ### Write custom rules

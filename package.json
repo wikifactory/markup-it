@@ -4,7 +4,8 @@
   "description": "Input/Output draft-js state to markdown",
   "main": "lib/index.js",
   "scripts": {
-    "test": "export TESTING=true; mocha --reporter spec --bail"
+    "test": "export TESTING=true; mocha --reporter spec --bail",
+    "build-example": "browserify -t reactify ./example/example.js > ./example/dist.js; lessc ./example/example.less ./example/dist.css"
   },
   "repository": {
     "type": "git",
@@ -22,12 +23,19 @@
   },
   "homepage": "https://github.com/GitbookIO/draft-syntax#readme",
   "devDependencies": {
+    "browserify": "^13.0.0",
+    "draft-js": "^0.2.2",
+    "less": "^2.6.1",
     "mocha": "^2.4.5",
-    "should": "^8.2.2",
-    "draft-js": "^0.2.2"
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "reactify": "^1.1.1",
+    "reset-css": "^2.0.2011012603",
+    "should": "^8.2.2"
   },
   "dependencies": {
     "is": "^3.1.0",
+    "kramed": "^0.5.5",
     "lodash.find": "^4.2.0"
   }
 }
