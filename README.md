@@ -2,6 +2,9 @@
 
 > Pipeline for using text input (for example Markdown) with Draft-js
 
+[![Build Status](https://travis-ci.org/GitbookIO/draft-text.png?branch=master)](https://travis-ci.org/GitbookIO/draft-text)
+[![NPM version](https://badge.fury.io/js/draft-text.svg)](http://badge.fury.io/js/draft-text)
+
 ### Installation
 
 ```
