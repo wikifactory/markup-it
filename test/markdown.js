@@ -66,6 +66,22 @@ describe('Markdown', function() {
                 blocks[3].text.should.equal('Hello 4');
                 blocks[3].type.should.equal(DraftMarkup.BLOCKS.HEADING_4);
             });
+
+            it('should parse lheading 1', function() {
+                var blocks = markup.toRawContent('Hello\n======').blocks;
+
+                blocks.should.have.lengthOf(1);
+                blocks[0].text.should.equal('Hello');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_1);
+            });
+
+            it('should parse lheading 1', function() {
+                var blocks = markup.toRawContent('Hello\n-------').blocks;
+
+                blocks.should.have.lengthOf(1);
+                blocks[0].text.should.equal('Hello');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_2);
+            });
         });
 
         describe('Blockquotes', function() {

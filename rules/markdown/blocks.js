@@ -1,29 +1,11 @@
 var rBlock = require('kramed/lib/rules/block');
 var BLOCKS = require('../../').BLOCKS;
 
+var heading = require('./heading');
+
 // Split a text into lines
 function splitLines(text) {
     return text.split(/\r?\n/);
-}
-
-// Generator for HEADING_X rules
-function headingRule(level) {
-    var prefix = Array(level + 1).join('#');
-
-    return {
-        type: BLOCKS['HEADING_' + level],
-        regexp: new RegExp('^ *(#{' + level + '}) *([^\n]+?) *#* *(?:\n|$)'),
-
-        props: function(match) {
-            return {
-                text: match[2]
-            };
-        },
-
-        toText: function (text, block) {
-            return prefix + ' ' + text + '\n\n';
-        }
-    }
 }
 
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
@@ -143,12 +125,15 @@ module.exports = [
     },
 
     // ---- HEADING ----
-    headingRule(6),
-    headingRule(5),
-    headingRule(4),
-    headingRule(3),
-    headingRule(2),
-    headingRule(1),
+    heading.rule(6),
+    heading.rule(5),
+    heading.rule(4),
+    heading.rule(3),
+    heading.rule(2),
+    heading.rule(1),
+
+    heading.lrule(2),
+    heading.lrule(1),
 
     // ---- HR ----
     {
