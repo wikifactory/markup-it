@@ -112,6 +112,7 @@ module.exports = [
                             offset: 0,
                             length: resultText.length,
                             entity: {
+                                type: BLOCKS.CODE,
                                 data: {
                                     syntax: resultSyntax
                                 }
