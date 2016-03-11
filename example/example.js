@@ -9,6 +9,7 @@ var EXAMPLE_SOURCE = (
     '### Heading 3\n' +
     '#### Heading 4\n' +
     'This is a **very** simple _example_ of `draft` + `draft-text` using ~~Asciidoc~~ Markdown.\n\n' +
+    'Escape syntax is kept \\*escaped\\*.\n\n' +
     '> Blockquote, HR and code blocks are supported\n\n' +
     'But it supports [links](https://google.fr) and images:\n\n' +
     '![My Image](https://facebook.github.io/react/img/logo.svg)\n\n' +

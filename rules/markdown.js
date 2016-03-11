@@ -134,6 +134,13 @@ module.exports = {
         }
     ],
     inlines: [
+        // ---- ESCAPED ----
+        {
+            type: INLINES.TEXT,
+            regexp: rInline.escape,
+            toText: '%s'
+        },
+
         // ---- HR ----
         // Parsed as inline entities instead of blocks
         {
