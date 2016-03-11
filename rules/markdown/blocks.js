@@ -1,13 +1,10 @@
 var rBlock = require('kramed/lib/rules/block');
 var BLOCKS = require('../../').BLOCKS;
 
+var utils = require('./utils');
 var heading = require('./heading');
 var list = require('./list');
 
-// Split a text into lines
-function splitLines(text) {
-    return text.split(/\r?\n/);
-}
 
 module.exports = [
     // ---- CODE BLOCKS ----
@@ -19,7 +16,7 @@ module.exports = [
 
         // Add indentation to content
         toText: function(text, entity) {
-            var lines = splitLines(text);
+            var lines = utils.splitLines(text);
 
             return lines.map(function(line) {
                 if (!line.trim()) return '';
@@ -37,7 +34,7 @@ module.exports = [
             match = rBlock.code.exec(text);
             if (match) {
                 inner = match[0];
-                lines = splitLines(inner);
+                lines = utils.splitLines(inner);
                 inner = lines.map(function(line) {
                     return line.replace(/^( {4}|\t)/, '');
                 })

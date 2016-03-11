@@ -1,6 +1,8 @@
 var rInline = require('kramed/lib/rules/inline');
 var INLINES = require('../../').INLINES;
 
+var utils = require('./utils');
+
 module.exports = [
     // ---- ESCAPED ----
     {
@@ -102,6 +104,13 @@ module.exports = [
     {
         type: INLINES.TEXT,
         regexp: rInline.gfm.text,
-        toText: '%s'
+        props: function(match) {
+            return {
+                text: utils.unescape(match[0])
+            };
+        },
+        toText: function(text) {
+            return utils.escape(text)
+        }
     }
 ];
