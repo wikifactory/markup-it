@@ -37,13 +37,24 @@ var rawContent = draft.convertToRaw(content);
 var text = draftMarkup.toText(rawContent);
 ```
 
+### Markup Utilities
+
+`draft-markup` provides utility methods to modify the markup:
+
+```js
+var draft = require('draft-js');
+var markupUtils = require('draft-markup').Utils(draft);
+
+
+```
+
 ### Write custom rules
 
-This module ships with the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing one.
+This module ships with the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.
 
-A set of rules is an object with two properties: `inlines` and `blocks`; both are list of rules.
+A set of rules is an object with two properties: `inlines` and `blocks`; both are `Array<Rule>`.
 
-A rule is a basic object with properties:
+A rule is a JS object with properties:
 
 ```js
 {

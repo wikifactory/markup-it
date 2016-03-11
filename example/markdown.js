@@ -6,23 +6,23 @@ var DraftMarkup = require('../');
 var markdown = require('../rules/markdown');
 
 var INLINE_STYLES = [
-    { label: 'Bold', style: DraftText.INLINES.BOLD },
-    { label: 'Italic', style: DraftText.INLINES.ITALIC },
-    { label: '~', style: DraftText.INLINES.STRIKETHROUGH },
-    { label: 'Code', style: DraftText.INLINES.CODE }
+    { label: 'Bold', style: DraftMarkup.INLINES.BOLD },
+    { label: 'Italic', style: DraftMarkup.INLINES.ITALIC },
+    { label: '~', style: DraftMarkup.INLINES.STRIKETHROUGH },
+    { label: 'Code', style: DraftMarkup.INLINES.CODE }
 ];
 
 var BLOCK_TYPES = [
-    { label: 'H1', style: DraftText.BLOCKS.HEADING_1 },
-    { label: 'H2', style: DraftText.BLOCKS.HEADING_2 },
-    { label: 'H3', style: DraftText.BLOCKS.HEADING_3 },
-    { label: 'H4', style: DraftText.BLOCKS.HEADING_4 },
-    { label: 'H5', style: DraftText.BLOCKS.HEADING_5 },
-    { label: 'H6', style: DraftText.BLOCKS.HEADING_6 },
-    { label: 'Blockquote', style: DraftText.BLOCKS.BLOCKQUOTE },
-    { label: 'UL', style: DraftText.BLOCKS.UL },
-    { label: 'OL', style: DraftText.BLOCKS.OL },
-    { label: 'Code Block', style: DraftText.BLOCKS.CODE },
+    { label: 'H1', style: DraftMarkup.BLOCKS.HEADING_1 },
+    { label: 'H2', style: DraftMarkup.BLOCKS.HEADING_2 },
+    { label: 'H3', style: DraftMarkup.BLOCKS.HEADING_3 },
+    { label: 'H4', style: DraftMarkup.BLOCKS.HEADING_4 },
+    { label: 'H5', style: DraftMarkup.BLOCKS.HEADING_5 },
+    { label: 'H6', style: DraftMarkup.BLOCKS.HEADING_6 },
+    { label: 'Blockquote', style: DraftMarkup.BLOCKS.BLOCKQUOTE },
+    { label: 'UL', style: DraftMarkup.BLOCKS.UL },
+    { label: 'OL', style: DraftMarkup.BLOCKS.OL },
+    { label: 'Code Block', style: DraftMarkup.BLOCKS.CODE },
 ];
 
 

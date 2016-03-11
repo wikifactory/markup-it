@@ -189,6 +189,18 @@ module.exports = {
             }
         },
 
+        // ---- CODE ----
+        {
+            type: INLINES.CODE,
+            regexp: rInline.code,
+            props: function(match) {
+                return {
+                    text: match[2]
+                };
+            },
+            toText: '`%s`'
+        },
+
 
         // ---- BOLD ----
         {
