@@ -1,7 +1,11 @@
 var should = require('should');
+var fs = require('fs');
+var path = require('path');
 
 var DraftMarkup = require('../');
 var markdown = require('../rules/markdown');
+
+var FIXTURES = path.resolve(__dirname, 'fixtures');
 
 describe('Markdown', function() {
     var markup = new DraftMarkup(markdown);
@@ -296,6 +300,32 @@ describe('Markdown', function() {
             });
         });
     });
+
+    /*
+        Test on a list of markdown files that:
+            toMarkdown(fromMarkdown(X)) == toMarkdown(fromMarkdown(toMarkdown(fromMarkdown(X))))
+     */
+    describe('Fixtures', function() {
+        function testFile(filename) {
+            var content = fs.readFileSync(path.resolve(FIXTURES, filename), 'utf8');
+
+            var content = markup.toRawContent(content);
+            var markdownOutput = markup.toText(content);
+
+            var content2 = markup.toRawContent(markdownOutput);
+            var markdownOutput2 = markup.toText(content2);
+
+            markdownOutput2.should.equal(markdownOutput);
+        }
+
+        var files = fs.readdirSync(FIXTURES);
+        files.forEach(function(file) {
+            it(file, function() {
+                testFile(file);
+            });
+        });
+    })
+
 });
 
 
