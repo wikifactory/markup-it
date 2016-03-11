@@ -3,6 +3,8 @@ var ReactDOM = require('react-dom');
 var draft = require('draft-js');
 
 var DraftMarkup = require('../');
+var markupUtils = DraftMarkup.Utils(draft);
+
 var markdown = require('../rules/markdown');
 
 var INLINE_STYLES = [
@@ -36,15 +38,40 @@ var draftMarkup = new DraftMarkup(markdown);
 
 // Entities and custom blocks
 var Link = React.createClass({
+    onClick: function() {
+        var entityKey = this.props.entityKey;
+        var data = draft.Entity.get(entityKey).getData();
+
+        var href = prompt('Edit link HREF (empty to remove)', data.href);
+        draft.Entity.replaceData(entityKey, { href: href });
+    },
+
     render: function() {
         var data = draft.Entity.get(this.props.entityKey).getData();
-        return <a href={data.href} className="MarkdownEditor-link">{this.props.children}</a>;
+        return <a href={data.href} onClick={this.onClick} className="MarkdownEditor-link">{this.props.children}</a>;
     }
 });
 var Image = React.createClass({
-    render: function() {
+    getInitialState: function() {
         var data = draft.Entity.get(this.props.entityKey).getData();
-        return <img className="MarkdownEditor-img" src={data.src} />;
+
+        return {
+            src: data.src
+        };
+    },
+
+    onClick: function() {
+        var entityKey = this.props.entityKey;
+        var src = prompt('Edit Image SRC (empty to remove)', this.state.src);
+
+        draft.Entity.replaceData(entityKey, { src: src });
+        this.setState({
+            src: src
+        });
+    },
+
+    render: function() {
+        return <img className="MarkdownEditor-img" onClick={this.onClick} src={this.state.src} />;
     }
 });
 var HR = React.createClass({
@@ -144,7 +171,7 @@ var MarkdownEditor = React.createClass({
             },
             {
                 strategy: findEntity('link'),
-                component: Link,
+                component: Link
             },
             {
                 strategy: findEntity('image'),

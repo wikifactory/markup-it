@@ -11,7 +11,7 @@ var EXAMPLE_SOURCE = (
     'This is a **very** simple _example_ of `draft` + `draft-text` using ~~Asciidoc~~ Markdown.\n\n' +
     'Escape syntax is kept \\*escaped\\*.\n\n' +
     '> Blockquote, HR and code blocks are supported\n\n' +
-    'But it supports [links](https://google.fr) and images:\n\n' +
+    'But it supports [links](https://google.fr) and images. In this example, click on the links/images to edit.\n\n' +
     '![My Image](https://facebook.github.io/react/img/logo.svg)\n\n' +
     '---\n\n' +
     '\tvar a = 42;\n' +
