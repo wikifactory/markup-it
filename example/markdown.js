@@ -34,7 +34,7 @@ function getBlockStyle(block) {
 // Create draft-text instance
 var draftMarkup = new DraftMarkup(markdown);
 
-// Entities
+// Entities and custom blocks
 var Link = React.createClass({
     render: function() {
         var data = draft.Entity.get(this.props.entityKey).getData();
@@ -62,6 +62,14 @@ function findEntity(type) {
     };
 }
 
+function blockRenderer(contentBlock) {
+    var type = contentBlock.getType();
+    if (type === DraftMarkup.BLOCKS.HR) {
+        return {
+            component: HR
+        };
+    }
+}
 
 // Button to toggle style
 var StyleButton = React.createClass({
@@ -167,7 +175,7 @@ var MarkdownEditor = React.createClass({
             editorState: editorState
         });
 
-        if (this.props.onChange) this.props.onChange(text);
+        if (this.props.onChange) this.props.onChange(text, rawContent);
     },
 
     // Toggle styles
@@ -203,12 +211,15 @@ var MarkdownEditor = React.createClass({
                     onToggle={this.toggleInlineStyle}
                 />
             </div>
-            <draft.Editor
-                blockStyleFn={getBlockStyle}
-                editorState={editorState}
-                onChange={this.onChange}
-                spellCheck={true}
-            />
+            <div className="MarkdownEditor-EditArea">
+                <draft.Editor
+                    blockStyleFn={getBlockStyle}
+                    editorState={editorState}
+                    blockRendererFn={blockRenderer}
+                    onChange={this.onChange}
+                    spellCheck={true}
+                />
+            </div>
         </div>;
     }
 });

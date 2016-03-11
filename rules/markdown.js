@@ -30,7 +30,6 @@ function headingRule(level) {
 }
 
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
-console.log(rBlock._item)
 function listRule(type) {
     return {
         type: type,
@@ -102,6 +101,13 @@ module.exports = {
         headingRule(2),
         headingRule(1),
 
+        // ---- HR ----
+        {
+            type: BLOCKS.HR,
+            regexp: rBlock.hr,
+            toText: '---\n\n'
+        },
+
         // ---- BLOCKQUOTE ----
         {
             type: BLOCKS.BLOCKQUOTE,
@@ -139,21 +145,6 @@ module.exports = {
             type: INLINES.TEXT,
             regexp: rInline.escape,
             toText: '%s'
-        },
-
-        // ---- HR ----
-        // Parsed as inline entities instead of blocks
-        {
-            type: BLOCKS.HR,
-            regexp: rBlock.hr,
-            props: function(match) {
-                return {
-                    mutability: 'IMMUTABLE',
-                    text: ' ',
-                    data: {}
-                };
-            },
-            toText: '---'
         },
 
         // ---- IMAGES ----

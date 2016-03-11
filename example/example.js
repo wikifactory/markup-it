@@ -21,22 +21,25 @@ var EXAMPLE_SOURCE = (
 var Example = React.createClass({
     getInitialState: function() {
         return {
-            content: EXAMPLE_SOURCE
+            content: EXAMPLE_SOURCE,
+            rawState: {}
         };
     },
 
-    onEditorChanged: function(content) {
+    onEditorChanged: function(content, rawState) {
         this.setState({
-            content: content
+            content: content,
+            rawState: rawState
         });
     },
 
     render: function() {
         return <div className="Example">
-            <div className="ExampleEditor">
+            <div className="Example-Editor">
                 <MarkdownEditor content={this.state.content} onChange={this.onEditorChanged} />
             </div>
-            <div className="ExamplePreview"><pre>{this.state.content}</pre></div>
+            <div className="Example-Preview"><pre>{this.state.content}</pre></div>
+            <div className="Example-RawState"><pre>{JSON.stringify(this.state.rawState, null, 4)}</pre></div>
         </div>;
     }
 });
