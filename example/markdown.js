@@ -3,8 +3,6 @@ var ReactDOM = require('react-dom');
 var draft = require('draft-js');
 
 var DraftMarkup = require('../');
-var markupUtils = DraftMarkup.Utils(draft);
-
 var markdown = require('../rules/markdown');
 
 var INLINE_STYLES = [
