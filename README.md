@@ -39,7 +39,7 @@ var text = draftMarkup.toText(rawContent);
 
 ### Write custom rules
 
-This module ships with the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.
+This module contains the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.
 
 A set of rules is an object with two properties: `inlines` and `blocks`; both are `Array<Rule>`.
 
@@ -58,8 +58,8 @@ A rule is a JS object with properties:
     },
 
     // Convert a match to text
-    toText: function(text, entity) {
-
+    toText: function(innerText, entity || block, ctx) {
+        // For blocks, "ctx" contains two properties: "next" and "prev"
     }
 }
 ```

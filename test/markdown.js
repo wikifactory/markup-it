@@ -256,6 +256,29 @@ describe('Markdown', function() {
 
             md.should.equal('    Hello\n    World\n\n');
         });
+
+        describe('Lists', function() {
+            it('should render UL', function() {
+                var state = markup.toRawContent('* Hello\n* World');
+                var md = markup.toText(state);
+
+                md.should.equal('* Hello\n* World\n\n');
+            });
+
+            it('should render OL', function() {
+                var state = markup.toRawContent('1. Hello\n2. World');
+                var md = markup.toText(state);
+
+                md.should.equal('1. Hello\n1. World\n\n');
+            });
+
+            it('should render depth items', function() {
+                var state = markup.toRawContent('1. Hello\n  1. World\n  2. Monde\n2. Nice');
+                var md = markup.toText(state);
+
+                md.should.equal('1. Hello\n  1. World\n  1. Monde\n1. Nice\n\n');
+            });
+        });
     });
 });
 
