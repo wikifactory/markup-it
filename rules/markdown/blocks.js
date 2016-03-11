@@ -104,7 +104,6 @@ module.exports = [
 
             if (resultRaw) {
                 return {
-                    mutability: 'MUTABLE',
                     raw: resultRaw,
                     text: resultText,
                     entityRanges: [
@@ -112,6 +111,7 @@ module.exports = [
                             offset: 0,
                             length: resultText.length,
                             entity: {
+                                mutability: 'MUTABLE',
                                 type: BLOCKS.CODE,
                                 data: {
                                     syntax: resultSyntax
