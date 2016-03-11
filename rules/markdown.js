@@ -29,6 +29,37 @@ function headingRule(level) {
     }
 }
 
+// Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
+console.log(rBlock._item)
+function listRule(type) {
+    return {
+        type: type,
+        regexp: rBlock.list,
+        props: function(match) {
+            var bull = match[1];
+            var ordered = bull.length > 1;
+
+            if (ordered && type == BLOCKS.UL_ITEM) return;
+            if (!ordered && type == BLOCKS.OL_ITEM) return;
+
+
+            var item = match[0].match(/^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/);
+            console.log(item);
+
+            var text = item[0];
+
+            // Remove the bullet
+            text = text.replace(/^ *([*+-]|\d+\.) +/, '');
+
+            return {
+                raw: item[0],
+                text: text
+            };
+        },
+        toText: '* %s'
+    };
+}
+
 module.exports = {
     blocks: [
         {
@@ -83,6 +114,10 @@ module.exports = {
             toText: '> %s\n\n'
         },
 
+        // ---- LISTS ----
+        listRule(BLOCKS.UL_ITEM),
+        listRule(BLOCKS.OL_ITEM),
+
 
         // ---- PARAGRAPH ----
         {
@@ -114,7 +149,29 @@ module.exports = {
             toText: '---'
         },
 
-        // ---- LINK ----
+        // ---- IMAGES ----
+        {
+            type: INLINES.IMAGE,
+            regexp: rInline.link,
+            props: function(match) {
+                var isImage = match[0].charAt(0) === '!';
+                if (!isImage) return null;
+
+                return {
+                    mutability: 'IMMUTABLE',
+                    text: match[1],
+                    data: {
+                        title: match[1],
+                        src: match[2]
+                    }
+                };
+            },
+            toText: function(text, entity) {
+                return '![' + text + '](' + entity.data.src + ')';
+            }
+        },
+
+        // ---- LINK / IMAGES----
         {
             type: INLINES.LINK,
             regexp: rInline.link,
@@ -128,7 +185,6 @@ module.exports = {
                 };
             },
             toText: function(text, entity) {
-                console.log('toText', text, entity);
                 return '[' + text + '](' + entity.data.href + ')';
             }
         },

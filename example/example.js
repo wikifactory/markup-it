@@ -10,7 +10,8 @@ var EXAMPLE_SOURCE = (
     '#### Heading 4\n' +
     'This is a **very** simple _example_ of draft + draft-text using ~~Asciidoc~~ Markdown.\n\n' +
     '> Blockquote, HR and code blocks are supported\n\n' +
-    'But [links](https://google.fr) and images also.\n\n' +
+    'But it supports [links](https://google.fr) and images:\n\n' +
+    '![My Image](https://facebook.github.io/react/img/logo.svg)\n\n' +
     '---\n\n' +
     '\tvar a = 42;\n' +
     '\tconsole.log(a);\n\n'

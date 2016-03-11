@@ -1,14 +1,14 @@
-# draft-text
+# draft-markup
 
-> Pipeline for using text input (for example Markdown) with Draft-js
+> Pipeline for using markup input (for example Markdown) with Draft-js
 
-[![Build Status](https://travis-ci.org/GitbookIO/draft-text.png?branch=master)](https://travis-ci.org/GitbookIO/draft-text)
-[![NPM version](https://badge.fury.io/js/draft-text.svg)](http://badge.fury.io/js/draft-text)
+[![Build Status](https://travis-ci.org/GitbookIO/draft-markup.png?branch=master)](https://travis-ci.org/GitbookIO/draft-markup)
+[![NPM version](https://badge.fury.io/js/draft-markup.svg)](http://badge.fury.io/js/draft-markup)
 
 ### Installation
 
 ```
-$ npm i draft-text --save
+$ npm i draft-markup --save
 ```
 
 ### Usage
@@ -16,16 +16,16 @@ $ npm i draft-text --save
 Initialize a syntax:
 
 ```js
-var DraftText = require('draft-text');
-var markdown = require('draft-text/rules/markdown');
+var DraftMarkup = require('draft-markup');
+var markdown = require('draft-markup/rules/markdown');
 
-var draftText = new DraftText(markdown);
+var draftMarkup = new DraftMarkup(markdown);
 ```
 
 Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js:
 
 ```js
-var rawContent = draftText.toRawContent('# Hello World\n\nThis is **bold**.');
+var rawContent = draftMarkup.toRawContent('# Hello World\n\nThis is **bold**.');
 var blocks = draft.convertFromRaw(rawContent);
 var content = draft.ContentState.createFromBlockArray(blocks);
 ```
@@ -34,7 +34,7 @@ Output markdown from a ContentState:
 
 ```js
 var rawContent = draft.convertToRaw(content);
-var text = draftText.toText(rawContent);
+var text = draftMarkup.toText(rawContent);
 ```
 
 ### Write custom rules
@@ -48,13 +48,17 @@ A rule is a basic object with properties:
 ```js
 {
     type: 'heading_1',
+
+    // Extract a match or "null" from the text
     match: function(text) {
         return {
             raw: ...,
             text: ...
         };
     },
-    toText: function(text, props) {
+
+    // Convert a match to text
+    toText: function(text, entity) {
 
     }
 }

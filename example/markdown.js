@@ -2,7 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var draft = require('draft-js');
 
-var DraftText = require('../');
+var DraftMarkup = require('../');
 var markdown = require('../rules/markdown');
 
 var INLINE_STYLES = [
@@ -32,13 +32,19 @@ function getBlockStyle(block) {
 }
 
 // Create draft-text instance
-var draftText = new DraftText(markdown);
+var draftMarkup = new DraftMarkup(markdown);
 
 // Entities
 var Link = React.createClass({
     render: function() {
         var data = draft.Entity.get(this.props.entityKey).getData();
-        return <a href={data.href}>{this.props.children}</a>;
+        return <a href={data.href} className="MarkdownEditor-link">{this.props.children}</a>;
+    }
+});
+var Image = React.createClass({
+    render: function() {
+        var data = draft.Entity.get(this.props.entityKey).getData();
+        return <img className="MarkdownEditor-img" src={data.src} />;
     }
 });
 var HR = React.createClass({
@@ -131,10 +137,14 @@ var MarkdownEditor = React.createClass({
             {
                 strategy: findEntity('link'),
                 component: Link,
+            },
+            {
+                strategy: findEntity('image'),
+                component: Image,
             }
         ]);
 
-        var rawContent = draftText.toRawContent(this.props.content);
+        var rawContent = draftMarkup.toRawContent(this.props.content);
 
         var blocks = draft.convertFromRaw(rawContent);
         var content = draft.ContentState.createFromBlockArray(blocks);
@@ -147,9 +157,11 @@ var MarkdownEditor = React.createClass({
 
     // Draft's editor content changed
     onChange: function(editorState) {
+        console.log('content changed');
+
         var content = editorState.getCurrentContent();
         var rawContent = draft.convertToRaw(content);
-        var text = draftText.toText(rawContent);
+        var text = draftMarkup.toText(rawContent);
 
         this.setState({
             editorState: editorState
