@@ -40,7 +40,6 @@ function listRule(type) {
 
 
             var item = match[0].match(/^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/);
-            console.log(item);
 
             var text = item[0];
 
@@ -160,7 +159,7 @@ module.exports = [
 
     // ---- PARAGRAPH ----
     {
-        regexp: /^\n*((?:[^\n]+\n?))\n*/,
+        regexp: rBlock.paragraph,
         type: BLOCKS.PARAGRAPH,
 
         props: function(match) {
@@ -170,5 +169,11 @@ module.exports = [
         },
 
         toText: '%s\n\n'
+    },
+
+    // ---- IGNORE
+    {
+        regexp: rBlock.newline,
+        type: BLOCKS.IGNORE
     }
 ];

@@ -52,6 +52,20 @@ describe('Markdown', function() {
                 blocks[0].text.should.equal('Hello');
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_3);
             });
+
+            it('should parse multiple headers', function() {
+                var blocks = markup.toRawContent('# Hello\n## Hello 2\n\n### Hello 3\n\n#### Hello 4').blocks;
+
+                blocks.should.have.lengthOf(4);
+                blocks[0].text.should.equal('Hello');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_1);
+                blocks[1].text.should.equal('Hello 2');
+                blocks[1].type.should.equal(DraftMarkup.BLOCKS.HEADING_2);
+                blocks[2].text.should.equal('Hello 3');
+                blocks[2].type.should.equal(DraftMarkup.BLOCKS.HEADING_3);
+                blocks[3].text.should.equal('Hello 4');
+                blocks[3].type.should.equal(DraftMarkup.BLOCKS.HEADING_4);
+            });
         });
 
         describe('Blockquotes', function() {
@@ -220,7 +234,7 @@ describe('Markdown', function() {
             var state = markup.toRawContent('# Hello\n\nWorld\nTest');
             var md = markup.toText(state);
 
-            md.should.equal('# Hello\n\nWorld\n\nTest\n\n');
+            md.should.equal('# Hello\n\nWorld\nTest\n\n');
         });
 
         it('should render code blocks', function() {
