@@ -78,7 +78,7 @@ describe('Markdown', function() {
             });
         });
 
-        /* describe('Unordered List', function() {
+        describe('Unordered List', function() {
             it('should parse single item', function() {
                 var blocks = markup.toRawContent('* Hello').blocks;
 
@@ -90,11 +90,24 @@ describe('Markdown', function() {
             it('should parse multiple item', function() {
                 var blocks = markup.toRawContent('* Hello\n* World').blocks;
 
-                blocks.should.have.lengthOf(1);
+                blocks.should.have.lengthOf(2);
                 blocks[0].text.should.equal('Hello');
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.UL_ITEM);
+                blocks[1].text.should.equal('World');
+                blocks[1].type.should.equal(DraftMarkup.BLOCKS.UL_ITEM);
             });
-        }); */
+
+            it('should parse deep item', function() {
+                var blocks = markup.toRawContent('* Hello\n  * World').blocks;
+
+                blocks.should.have.lengthOf(2);
+                blocks[0].text.should.equal('Hello');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.UL_ITEM);
+                blocks[1].text.should.equal('World');
+                blocks[1].type.should.equal(DraftMarkup.BLOCKS.UL_ITEM);
+                blocks[1].depth.should.equal(1);
+            });
+        });
 
         describe('Code Blocks', function() {
             it('should parse single line code blocks', function() {

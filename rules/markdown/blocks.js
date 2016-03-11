@@ -32,7 +32,7 @@ function listRule(type) {
         type: type,
         regexp: rBlock.list,
         props: function(match) {
-            var bull = match[1];
+            var bull = match[2];
             var ordered = bull.length > 1;
 
             if (ordered && type == BLOCKS.UL_ITEM) return;
@@ -40,15 +40,19 @@ function listRule(type) {
 
 
             var item = match[0].match(/^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/);
-
             var text = item[0];
+            var depth = item[1].length / 2;
 
             // Remove the bullet
             text = text.replace(/^ *([*+-]|\d+\.) +/, '');
 
+            // Trim to remove spaces and new line
+            text = text.trim();
+
             return {
                 raw: item[0],
-                text: text
+                text: text,
+                depth: depth
             };
         },
         toText: '* %s'
