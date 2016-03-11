@@ -15,7 +15,9 @@ var EXAMPLE_SOURCE = (
     '![My Image](https://facebook.github.io/react/img/logo.svg)\n\n' +
     '---\n\n' +
     '\tvar a = 42;\n' +
-    '\tconsole.log(a);\n\n'
+    '\tconsole.log(a);\n\n' +
+    'GitHub Fences are also supported:\n\n' +
+    '```js\nHello World\n```\n'
 );
 
 var Example = React.createClass({
