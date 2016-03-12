@@ -37,6 +37,13 @@ var rawContent = draft.convertToRaw(content);
 var text = draftMarkup.toText(rawContent);
 ```
 
+### Markdown Support
+
+This module uses the rules from [kramed](https://github.com/GitbookIO/kramed) to parse Markdown, it supports the whole syntaxes (headings, paragraphs, lists, tables, footnotes, etc). But:
+
+- Reference links are replaced by (resolved) links
+
+
 ### Write custom rules
 
 This module contains the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.

@@ -12,16 +12,11 @@ module.exports = [
         type: BLOCKS.CODE,
 
         // Disable inline style for code blocks
-        inline: false,
+        parseInline: false,
+        renderInline: true,
 
-        // Add indentation to content
-        toText: function(text, entity) {
-            var lines = utils.splitLines(text);
-
-            return lines.map(function(line) {
-                if (!line.trim()) return '';
-                return '    ' + line;
-            }).join('\n') + '\n\n';
+        toText: function(text) {
+            return text + '\n\n';
         },
 
         // Extract inner of code blocks by removing indentations
@@ -144,25 +139,18 @@ module.exports = [
         type: BLOCKS.DEFINITION,
         regexp: rBlock.def,
         props: function(match) {
-            var text = match[2];
+            var id = match[1];
+            var href = match[2];
+            var title = match[3];
 
-            return {
-                text: text,
-                entityRanges: [
-                    {
-                        offset: 0,
-                        length: text.length,
-                        entity: {
-                            mutability: 'MUTABLE',
-                            type: BLOCKS.DEFINITION,
-                            data: {
-                                id: match[1],
-                                title: match[3]
-                            }
-                        }
-                    }
-                ]
+            this.refs = this.refs || {};
+            this.refs[id] = {
+                href: href,
+                title: title
             };
+
+            // Don't create block, we just index it
+            return null;
         },
         toText: function(text) {
             return text + '\n\n';

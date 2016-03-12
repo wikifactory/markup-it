@@ -51,7 +51,7 @@ module.exports = [
         }
     },
 
-    // ---- LINK / IMAGES----
+    // ---- LINK----
     {
         type: INLINES.LINK,
         regexp: rInline.link,
@@ -66,6 +66,34 @@ module.exports = [
         },
         toText: function(text, entity) {
             return '[' + text + '](' + entity.data.href + ')';
+        }
+    },
+
+    // ---- REF LINKS ----
+    // Doesn't render, but match and resolve reference
+    {
+        type: INLINES.LINK_REF,
+        regexp: rInline.reflink,
+        props: function(match) {
+            return {
+                mutability: 'MUTABLE',
+                text: match[1],
+                data: {
+                    ref: match[2]
+                }
+            };
+        },
+
+        // On post-process, update the link with the url referenced
+        post: function(text, entity) {
+            var refs = (this.refs || {});
+            var refId = entity.data.ref;
+            var ref = refs[refId];
+
+            entity.type = INLINES.LINK;
+            entity.data = ref || { href: refId };
+
+            return entity;
         }
     },
 
@@ -128,11 +156,11 @@ module.exports = [
             };
         },
         toText: function(text) {
-            return utils.escape(text)
+            return utils.escape(text);
         }
     },
 
-    // ---- FOOTNOTE / DEFINITION ----
+    // ---- BLOCK ENTITIES ----
     // Footnotes and defs are parsed as block with an inner entity
     // these rules define the toText of the inner entities
     {
@@ -148,6 +176,25 @@ module.exports = [
         toText: function(text, entity) {
             var title = entity.data.title? ' ' + JSON.stringify(entity.data.title) : '';
             return '[' + entity.data.id + ']: ' + text + title;
+        }
+    },
+
+    // ---- CODE BLOCKS ----
+    {
+        type: BLOCKS.CODE,
+        toText: function(text, entity) {
+            // Use fences if syntax is set
+            if (entity.data.syntax) {
+                return '```' + entity.data.syntax + '\n' + text + '\n```';
+            }
+
+            // Use four spaces otherwise
+            var lines = utils.splitLines(text);
+
+            return lines.map(function(line) {
+                if (!line.trim()) return '';
+                return '    ' + line;
+            }).join('\n');
         }
     }
 
