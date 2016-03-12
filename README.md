@@ -17,7 +17,7 @@ Initialize a syntax:
 
 ```js
 var DraftMarkup = require('draft-markup');
-var markdown = require('draft-markup/rules/markdown');
+var markdown = require('draft-markup/syntaxes/markdown');
 
 var draftMarkup = new DraftMarkup(markdown);
 ```
@@ -64,14 +64,18 @@ var myRule = DraftMarkup.Rule(DraftMarkup.BLOCKS.HEADING_1)
 Create a new syntax inherited from the markdown one:
 
 ```js
-var mySyntax = DraftMarkup.Syntax(markdown)
-    // Add a new rule
-    .add(myRule)
+var mySyntax = DraftMarkup.Syntax(markdown);
 
-    //Remove a rule
-    .del(DraftMarkup.BLOCKS.HEADING_1)
 
-    // Replace a rule
-    .replace(myRule);
+// Add a new rule
+mySyntax.blocks.add(myRule);
+
+//Remove a rule
+mySyntax.blocks.del(DraftMarkup.BLOCKS.HEADING_1);
+
+// Replace a rule
+mySyntax.blocks.replace(myRule);
 ```
+
+A good example of this is the syntax for [gitbook](./syntaxes/gitbook).
 

@@ -3,12 +3,13 @@ var markup = require('../../');
 
 var utils = require('./utils');
 var code = require('./code');
+var text = require('./text');
 
 module.exports = [
     // ---- ESCAPED ----
     markup.Rule(markup.INLINES.TEXT)
         .option('parseInline', false)
-        .regExp(reInline.escape, function(match) {
+        .regExp(text.reEscape, function(match) {
             return {
                 text: utils.unescape(match[0])
             };
@@ -131,7 +132,7 @@ module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.INLINES.TEXT)
         .option('parseInline', false)
-        .regExp(reInline.gfm.text, function(match) {
+        .regExp(text.re, function(match) {
             return {
                 text: utils.unescape(match[0])
             };
@@ -182,5 +183,5 @@ module.exports = [
     markup.Rule(markup.INLINES.TABLE_ROW)
         .toText('| %s\n'),
     markup.Rule(markup.INLINES.TABLE_CELL)
-        .toText('%s |'),
+        .toText('%s |')
 ];

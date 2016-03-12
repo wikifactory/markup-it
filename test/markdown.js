@@ -4,7 +4,7 @@ var path = require('path');
 var kramed = require('kramed');
 
 var DraftMarkup = require('../');
-var markdown = require('../rules/markdown');
+var markdown = require('../syntaxes/markdown');
 
 var FIXTURES = path.resolve(__dirname, 'fixtures');
 
