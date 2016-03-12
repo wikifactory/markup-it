@@ -3,7 +3,7 @@ require('should');
 var DraftMarkup = require('../');
 var gitbook = require('../syntaxes/gitbook');
 
-describe.only('GitBook Markdown', function() {
+describe('GitBook Markdown', function() {
     var markup = new DraftMarkup(gitbook);
 
     describe('Math', function() {
