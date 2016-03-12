@@ -1,22 +1,20 @@
 var rBlock = require('kramed/lib/rules/block');
-var BLOCKS = require('../../').BLOCKS;
+var markup = require('../../');
 
 var reItem = /^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/;
 var reBullet = /^ *([*+-]|\d+\.) +/;
 
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
-    return {
-        type: type,
-        regexp: rBlock.list,
-        props: function(match) {
+    return markup.Rule(type)
+        .regExp(rBlock.list, function(match) {
             var space;
             var rawList = match[0];
             var bull = match[2];
             var ordered = bull.length > 1;
 
-            if (ordered && type == BLOCKS.UL_ITEM) return;
-            if (!ordered && type == BLOCKS.OL_ITEM) return;
+            if (ordered && type == markup.BLOCKS.UL_ITEM) return;
+            if (!ordered && type == markup.BLOCKS.OL_ITEM) return;
 
             // Parse first item
             var item = rawList.match(reItem);
@@ -48,8 +46,6 @@ function listRule(type) {
                 this.listNext = false;
             }
 
-            //console.log(loose)
-
             // Trim to remove spaces and new line
             if (loose) text = text.replace(/\n$/, '');
 
@@ -58,24 +54,24 @@ function listRule(type) {
                 text: text,
                 depth: depth
             };
-        },
-        toText: function(text, block, ctx) {
+        })
+        .toText(function(text, block, ctx) {
             // Determine which bullet to use
             var bullet = '*';
-            if (type == BLOCKS.OL_ITEM) bullet = '1.';
+            if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
 
             // Determine end of line
-            var eol = '\n'; //(ctx.next && (ctx.next.type == BLOCKS.OL_ITEM || ctx.next.type == BLOCKS.UL_ITEM))? '\n' : '\n\n';
+            var eol = '\n';
 
             return (
                 Array(block.depth + 1).join('  ') +
                 bullet + ' ' +
                 text + eol
             );
-        }
-    };
+        });
 }
 
 module.exports = {
-    rule: listRule
+    ul: listRule(markup.BLOCKS.UL_ITEM),
+    ol: listRule(markup.BLOCKS.OL_ITEM)
 };

@@ -38,7 +38,7 @@ describe('Markdown', function() {
                 var blocks = markup.toRawContent('Hello \\*World\\*').blocks;
 
                 blocks.should.have.lengthOf(1);
-                blocks[0].text.should.equal('Hello \\*World\\*');
+                blocks[0].text.should.equal('Hello *World*');
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
             });
         });

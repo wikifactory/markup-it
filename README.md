@@ -43,33 +43,21 @@ This module uses the rules from [kramed](https://github.com/GitbookIO/kramed) to
 
 - Reference links are replaced by (resolved) links
 - Custom ID for headings (`# My Title #{myID}`) are parsed and added as an entity in the `header-x` block.
+- Table are parsed as a block with inner entities for each rows/columns
 
-### Write custom rules
+### Writing custom rules
 
 This module contains the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.
 
-A set of rules is an object with two properties: `inlines` and `blocks`; both are `Array<Rule>`.
-
-A rule is a JS object with properties:
-
 ```js
-{
-    type: 'heading_1',
-
-    // Extract a match or "null" from the text
-    match: function(text) {
+var myRule = DraftMarkup.Rule(DraftMarkup.BLOCKS.HEADING_1)
+    .regExp(/^<h1>(\S+)<\/h1>/, function(match) {
         return {
-            raw: ...,
-            text: ...
+            text: match[1]
         };
-    },
-
-    // Convert a match to text
-    toText: function(innerText, entity || block, ctx) {
-        // For blocks, "ctx" contains two properties: "next" and "prev"
-    }
-}
+    })
+    .toText(function(innerText) {
+        return '<h1>' + innerText+ '</h1>';
+    });
 ```
-
-`match` can be replaced by `regexp` and `props`.
 

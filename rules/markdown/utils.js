@@ -42,4 +42,4 @@ module.exports = {
     splitLines: splitLines,
     escape: escapeMarkdown,
     unescape: unescapeMarkdown
-}
+};

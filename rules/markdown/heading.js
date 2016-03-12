@@ -1,6 +1,5 @@
-var rBlock = require('kramed/lib/rules/block');
-var BLOCKS = require('../../').BLOCKS;
-var INLINES = require('../../').INLINES;
+var reBlock = require('kramed/lib/rules/block');
+var markup = require('../../');
 
 var reId = /({#)(.+)(})/g;
 
@@ -26,58 +25,44 @@ function parseHeadingText(text) {
     return {
         text: text,
         entityRanges: id? [
-            {
-                offset: offset,
-                length: 1,
-                entity: {
-                    mutability: 'IMMUTABLE',
-                    type: INLINES.HEADING_ID,
-                    data: {
+            markup.Range(offset, 1, {
+                entity: markup.Entity(
+                    markup.INLINES.HEADING_ID,
+                    markup.Entity.IMMUTABLE,
+                    {
                         id: id
                     }
-                }
-            }
+                )
+            })
         ] : null
     };
 }
-
 
 // Generator for HEADING_X rules
 function headingRule(level) {
     var prefix = Array(level + 1).join('#');
 
-    return {
-        type: BLOCKS['HEADING_' + level],
-        regexp: rBlock.heading,
-
-        props: function(match) {
+    return markup.Rule(markup.BLOCKS['HEADING_' + level])
+        .regExp(reBlock.heading, function(match) {
             if (match[1].length != level) return null;
-
             return parseHeadingText(match[2]);
-        },
-
-        toText: function (text, block) {
+        })
+        .toText(function (text) {
             return prefix + ' ' + text + '\n\n';
-        }
-    };
+        });
 }
 
 // Generator for HEADING_X rules for line heading
 // Since normal heading are listed first, onText is not required here
 function lheadingRule(level) {
-    return {
-        type: BLOCKS['HEADING_' + level],
-        regexp: rBlock.lheading,
-
-        props: function(match) {
+    return markup.Rule(markup.BLOCKS['HEADING_' + level])
+        .regExp(reBlock.lheading, function(match) {
             var matchLevel = (match[2] === '=')? 1 : 2;
             if (matchLevel != level) return null;
 
             return parseHeadingText(match[1]);
-        }
-    };
+        });
 }
-
 
 module.exports = {
     rule: headingRule,
