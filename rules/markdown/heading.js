@@ -20,7 +20,7 @@ function headingRule(level) {
         toText: function (text, block) {
             return prefix + ' ' + text + '\n\n';
         }
-    }
+    };
 }
 
 // Generator for HEADING_X rules for line heading
@@ -38,11 +38,11 @@ function lheadingRule(level) {
                 text: match[1]
             };
         }
-    }
+    };
 }
 
 
 module.exports = {
     rule: headingRule,
     lrule: lheadingRule
-}
+};

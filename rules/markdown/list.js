@@ -1,6 +1,9 @@
 var rBlock = require('kramed/lib/rules/block');
 var BLOCKS = require('../../').BLOCKS;
 
+var reItem = /^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/;
+var reBullet = /^ *([*+-]|\d+\.) +/;
+
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
     return {
@@ -13,13 +16,13 @@ function listRule(type) {
             if (ordered && type == BLOCKS.UL_ITEM) return;
             if (!ordered && type == BLOCKS.OL_ITEM) return;
 
-            // Prse first item
-            var item = match[0].match(/^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/);
+            // Parse first item
+            var item = match[0].match(reItem);
             var text = item[0];
             var depth = item[1].length / 2;
 
             // Remove the bullet
-            text = text.replace(/^ *([*+-]|\d+\.) +/, '');
+            text = text.replace(reBullet, '');
 
             // Trim to remove spaces and new line
             text = text.trim();
