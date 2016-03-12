@@ -20,8 +20,8 @@ var BLOCK_TYPES = [
     { label: 'H5', style: DraftMarkup.BLOCKS.HEADING_5 },
     { label: 'H6', style: DraftMarkup.BLOCKS.HEADING_6 },
     { label: 'Blockquote', style: DraftMarkup.BLOCKS.BLOCKQUOTE },
-    { label: 'UL', style: DraftMarkup.BLOCKS.UL },
-    { label: 'OL', style: DraftMarkup.BLOCKS.OL },
+    { label: 'UL', style: DraftMarkup.BLOCKS.UL_ITEM },
+    { label: 'OL', style: DraftMarkup.BLOCKS.OL_ITEM },
     { label: 'Code Block', style: DraftMarkup.BLOCKS.CODE },
 ];
 
@@ -75,6 +75,26 @@ var Image = React.createClass({
 var HR = React.createClass({
     render: function() {
         return <hr className="MarkdownEditor-hr"/>;
+    }
+});
+var TableBody = React.createClass({
+    render: function() {
+        return <div className="MarkdownEditor-TableBody">{this.props.children}</div>;
+    }
+});
+var TableHeader = React.createClass({
+    render: function() {
+        return <div className="MarkdownEditor-TableHeader">{this.props.children}</div>;
+    }
+});
+var TableRow = React.createClass({
+    render: function() {
+        return <div className="MarkdownEditor-TableRow">{this.props.children}</div>;
+    }
+});
+var TableCell = React.createClass({
+    render: function() {
+        return <div className="MarkdownEditor-TableCell">{this.props.children}</div>;
     }
 });
 
@@ -164,16 +184,32 @@ var MarkdownEditor = React.createClass({
     getInitialState: function() {
         var decorator = new draft.CompositeDecorator([
             {
-                strategy: findEntity('hr'),
+                strategy: findEntity(DraftMarkup.BLOCKS.HR),
                 component: HR,
             },
             {
-                strategy: findEntity('link'),
+                strategy: findEntity(DraftMarkup.INLINES.LINK),
                 component: Link
             },
             {
-                strategy: findEntity('image'),
+                strategy: findEntity(DraftMarkup.INLINES.IMAGE),
                 component: Image,
+            },
+            {
+                strategy: findEntity(DraftMarkup.INLINES.TABLE_HEADER),
+                component: TableHeader,
+            },
+            {
+                strategy: findEntity(DraftMarkup.INLINES.TABLE_BODY),
+                component: TableBody,
+            },
+            {
+                strategy: findEntity(DraftMarkup.INLINES.TABLE_ROW),
+                component: TableRow,
+            },
+            {
+                strategy: findEntity(DraftMarkup.INLINES.TABLE_CELL),
+                component: TableCell,
             }
         ]);
 
@@ -190,8 +226,6 @@ var MarkdownEditor = React.createClass({
 
     // Draft's editor content changed
     onChange: function(editorState) {
-        console.log('content changed');
-
         var content = editorState.getCurrentContent();
         var rawContent = draft.convertToRaw(content);
         var text = draftMarkup.toText(rawContent);

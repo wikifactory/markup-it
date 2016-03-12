@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "export TESTING=true; mocha --reporter spec --bail",
-    "example-build": "browserify -t [ babelify --presets [ es2015 react ] ] ./example/example.js > ./example/dist.js; lessc ./example/example.less ./example/dist.css",
+    "example-build": "browserify -t [ babelify --presets [ es2015 react ] ] -t [ stringify --extensions [.md] ] ./example/example.js > ./example/dist.js; lessc ./example/example.less ./example/dist.css",
     "example-deploy": "npm run example-build; gh-pages -d ./example"
   },
   "repository": {
@@ -44,6 +44,7 @@
     "immutable-js": "^0.3.1-6",
     "is": "^3.1.0",
     "kramed": "^0.5.5",
-    "lodash.find": "^4.2.0"
+    "lodash.find": "^4.2.0",
+    "stringify": "^5.1.0"
   }
 }
