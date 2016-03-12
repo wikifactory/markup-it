@@ -57,11 +57,11 @@ function Table(header, align, rows) {
     // Push a row and return the string
     function pushRow(base, cells) {
         var rowText = cells.reduce(function(text, cell, i) {
-            return pushEntity(base, text, cell, TableCell(align[i]));
+            return pushEntity(base, text + ' ', cell, TableCell(align[i]));
         }, '');
 
         return pushEntity(
-            base, '', rowText, TableRow()
+            base, '', rowText + '\n', TableRow()
         );
     }
 
@@ -69,7 +69,7 @@ function Table(header, align, rows) {
 
 
     var tableBody = rows.reduce(function(text, cells) {
-        return pushRow(result.length, cells);
+        return pushRow(result.length, cells)  + '\n';
     }, '');
     result = pushEntity(result.length, result, tableBody, TableBody());
 
@@ -138,7 +138,6 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
     // Output table as text
     .toText(function(inner) {
-        console.log(inner)
         return inner;
     });
 
