@@ -150,10 +150,12 @@ module.exports = [
             };
 
             // Don't create block, we just index it
-            return null;
+            return {
+                text: ''
+            };
         },
         toText: function(text) {
-            return text + '\n\n';
+            return '';
         }
     },
 

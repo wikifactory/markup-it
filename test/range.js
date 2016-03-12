@@ -1,38 +1,32 @@
 require('should');
-var ranges = require('../lib/ranges');
+var Range = require('../lib/range');
 
-describe('Ranges', function() {
+describe('Range', function() {
     describe('.areCollapsing', function() {
         it('should return false if not collapsing', function() {
-            ranges.areCollapsing(
-                {
-                    offset: 0,
-                    length: 10
-                },
-                {
-                    offset: 10,
-                    length: 10
-                }
-            ).should.equal(false);
+            Range.areCollapsing({
+                offset: 0,
+                length: 10
+            }, {
+                offset: 10,
+                length: 10
+            }).should.equal(false);
         });
 
-        it('should return true if not collapsing', function() {
-            ranges.areCollapsing(
-                {
-                    offset: 0,
-                    length: 13
-                },
-                {
-                    offset: 10,
-                    length: 10
-                }
-            ).should.equal(true);
+        it('should return true if collapsing', function() {
+            Range.areCollapsing({
+                offset: 0,
+                length: 13
+            }, {
+                offset: 10,
+                length: 10
+            }).should.equal(true);
         });
     });
 
     describe('.linearize', function() {
         it('should not modified linearized ranges', function() {
-            var out = ranges.linearize([
+            var out = Range.linearize([
                 {
                     offset: 0,
                     length: 10,
@@ -49,7 +43,7 @@ describe('Ranges', function() {
         });
 
         it('should linearize ranges', function() {
-            ranges.linearize([
+            Range.linearize([
                 {
                     offset: 0,
                     length: 13,
@@ -82,6 +76,22 @@ describe('Ranges', function() {
                     type: 'ITALIC'
                 }
             ]);
+        });
+
+        it('should not linearized // ranges', function() {
+            var ranges = [
+                {
+                    offset: 0,
+                    length: 10,
+                    type: 'BOLD'
+                },
+                {
+                    offset: 00,
+                    length: 10,
+                    type: 'ITALIC'
+                }
+            ];
+            Range.linearize(ranges).should.deepEqual(ranges);
         });
     });
 

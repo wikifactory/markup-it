@@ -1,5 +1,4 @@
 var rInline = require('kramed/lib/rules/inline');
-var rBlock = require('kramed/lib/rules/block');
 var INLINES = require('../../').INLINES;
 var BLOCKS = require('../../').BLOCKS;
 
@@ -10,6 +9,7 @@ module.exports = [
     {
         type: INLINES.TEXT,
         regexp: rInline.escape,
+        parseInline: false,
         toText: '%s'
     },
 
@@ -60,12 +60,14 @@ module.exports = [
                 mutability: 'MUTABLE',
                 text: match[1],
                 data: {
-                    href: match[2]
+                    href: match[2],
+                    title: match[3]
                 }
             };
         },
         toText: function(text, entity) {
-            return '[' + text + '](' + entity.data.href + ')';
+            var title = entity.data.title? ' "' + entity.data.title + '"' : '';
+            return '[' + text + '](' + entity.data.href + title + ')';
         }
     },
 
@@ -101,6 +103,7 @@ module.exports = [
     {
         type: INLINES.CODE,
         regexp: rInline.code,
+        parseInline: false,
         props: function(match) {
             return {
                 text: match[2]
@@ -150,6 +153,7 @@ module.exports = [
     {
         type: INLINES.TEXT,
         regexp: rInline.gfm.text,
+        parseInline: false,
         props: function(match) {
             return {
                 text: utils.unescape(match[0])
@@ -174,12 +178,13 @@ module.exports = [
         type: BLOCKS.DEFINITION,
         match: function() { return null; },
         toText: function(text, entity) {
-            var title = entity.data.title? ' ' + JSON.stringify(entity.data.title) : '';
+            var title = entity.data.title? (' "' + entity.data.title + '"') : '';
             return '[' + entity.data.id + ']: ' + text + title;
         }
     },
     {
         type: BLOCKS.CODE,
+        parseInline: false,
         toText: function(text, entity) {
             // Use fences if syntax is set
             if (entity.data.syntax) {
@@ -199,6 +204,7 @@ module.exports = [
     // ---- HEADING ID ----
     {
         type: INLINES.HEADING_ID,
+        parseInline: false,
         toText: function(text, entity) {
             if (!entity.data.id) return '';
             return '{#' + entity.data.id + '}';
