@@ -178,8 +178,6 @@ module.exports = [
             return '[' + entity.data.id + ']: ' + text + title;
         }
     },
-
-    // ---- CODE BLOCKS ----
     {
         type: BLOCKS.CODE,
         toText: function(text, entity) {
@@ -196,6 +194,14 @@ module.exports = [
                 return '    ' + line;
             }).join('\n');
         }
-    }
+    },
 
+    // ---- HEADING ID ----
+    {
+        type: INLINES.HEADING_ID,
+        toText: function(text, entity) {
+            if (!entity.data.id) return '';
+            return '{#' + entity.data.id + '}';
+        }
+    }
 ];

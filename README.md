@@ -42,7 +42,7 @@ var text = draftMarkup.toText(rawContent);
 This module uses the rules from [kramed](https://github.com/GitbookIO/kramed) to parse Markdown, it supports the whole syntaxes (headings, paragraphs, lists, tables, footnotes, etc). But:
 
 - Reference links are replaced by (resolved) links
-
+- Custom ID for headings (`# My Title #{myID}`) are parsed and added as an entity in the `header-x` block.
 
 ### Write custom rules
 

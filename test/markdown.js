@@ -1,6 +1,7 @@
-var should = require('should');
+require('should');
 var fs = require('fs');
 var path = require('path');
+var kramed = require('kramed');
 
 var DraftMarkup = require('../');
 var markdown = require('../rules/markdown');
@@ -59,6 +60,14 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_2);
             });
 
+            it('should parse header finishing with #', function() {
+                var blocks = markup.toRawContent('## Hello ##').blocks;
+
+                blocks.should.have.lengthOf(1);
+                blocks[0].text.should.equal('Hello');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_2);
+            });
+
             it('should parse header 3', function() {
                 var blocks = markup.toRawContent('### Hello').blocks;
 
@@ -95,6 +104,15 @@ describe('Markdown', function() {
                 blocks.should.have.lengthOf(1);
                 blocks[0].text.should.equal('Hello');
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_2);
+            });
+
+            it('should parse header id', function() {
+                var blocks = markup.toRawContent('# Hello {#customID}').blocks;
+
+                blocks.should.have.lengthOf(1);
+                blocks[0].text.should.equal('Hello #');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_1);
+                blocks[0].entityRanges.should.have.lengthOf(1);
             });
         });
 
@@ -319,13 +337,16 @@ describe('Markdown', function() {
         function testFile(filename) {
             var content = fs.readFileSync(path.resolve(FIXTURES, filename), 'utf8');
 
-            var content = markup.toRawContent(content);
-            var markdownOutput = markup.toText(content);
+            var rawContent = markup.toRawContent(content);
+            var markdownOutput = markup.toText(rawContent);
 
-            var content2 = markup.toRawContent(markdownOutput);
-            var markdownOutput2 = markup.toText(content2);
+            var rawContent2 = markup.toRawContent(markdownOutput);
+            var markdownOutput2 = markup.toText(rawContent2);
 
+            // Test f(f(x)) = f(x)
             markdownOutput2.should.equal(markdownOutput);
+
+            kramed(markdownOutput).should.equal(kramed(content));
         }
 
         var files = fs.readdirSync(FIXTURES);
@@ -334,8 +355,7 @@ describe('Markdown', function() {
                 testFile(file);
             });
         });
-    })
-
+    });
 });
 
 
