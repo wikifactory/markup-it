@@ -27,7 +27,6 @@ module.exports = [
         // Extract inner of code blocks by removing indentations
         match: function(text) {
             var match, inner, lines;
-
             var resultText, resultRaw, resultSyntax;
 
             // Test code blocks with 4 spaces
@@ -116,17 +115,49 @@ module.exports = [
         type: BLOCKS.FOOTNOTE,
         regexp: rBlock.footnote,
         props: function(match) {
+            var text = match[2];
+
             return {
-                text: match[2],
+                text: text,
                 entityRanges: [
                     {
                         offset: 0,
-                        length: match[0].length,
+                        length: text.length,
                         entity: {
                             mutability: 'MUTABLE',
                             type: BLOCKS.FOOTNOTE,
                             data: {
                                 id: match[1]
+                            }
+                        }
+                    }
+                ]
+            };
+        },
+        toText: function(text) {
+            return text + '\n\n';
+        }
+    },
+
+    // ---- DEFINITION ----
+    {
+        type: BLOCKS.DEFINITION,
+        regexp: rBlock.def,
+        props: function(match) {
+            var text = match[2];
+
+            return {
+                text: text,
+                entityRanges: [
+                    {
+                        offset: 0,
+                        length: text.length,
+                        entity: {
+                            mutability: 'MUTABLE',
+                            type: BLOCKS.DEFINITION,
+                            data: {
+                                id: match[1],
+                                title: match[3]
                             }
                         }
                     }

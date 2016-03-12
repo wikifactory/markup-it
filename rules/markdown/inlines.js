@@ -13,6 +13,22 @@ module.exports = [
         toText: '%s'
     },
 
+    // ---- FOOTNOTE REFS ----
+    {
+        type: INLINES.FOOTNOTE_REF,
+        regexp: rInline.reffn,
+        props: function(match) {
+            return {
+                mutability: 'MUTABLE',
+                text: match[1],
+                data: {}
+            };
+        },
+        toText: function(text) {
+            return '[^' + text + ']';
+        }
+    },
+
     // ---- IMAGES ----
     {
         type: INLINES.IMAGE,
@@ -116,14 +132,22 @@ module.exports = [
         }
     },
 
-    // ---- FOOTNOTE ----
-    // Footnotes are parsed as block with an inner entity
-    // this rule defines the toText of the inner entity
+    // ---- FOOTNOTE / DEFINITION ----
+    // Footnotes and defs are parsed as block with an inner entity
+    // these rules define the toText of the inner entities
     {
         type: BLOCKS.FOOTNOTE,
         match: function() { return null; },
         toText: function(text, entity) {
             return '[^' + entity.data.id + ']: ' + text;
+        }
+    },
+    {
+        type: BLOCKS.DEFINITION,
+        match: function() { return null; },
+        toText: function(text, entity) {
+            var title = entity.data.title? ' ' + JSON.stringify(entity.data.title) : '';
+            return '[' + entity.data.id + ']: ' + text + title;
         }
     }
 
