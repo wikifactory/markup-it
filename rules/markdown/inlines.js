@@ -1,5 +1,7 @@
 var rInline = require('kramed/lib/rules/inline');
+var rBlock = require('kramed/lib/rules/block');
 var INLINES = require('../../').INLINES;
+var BLOCKS = require('../../').BLOCKS;
 
 var utils = require('./utils');
 
@@ -112,5 +114,17 @@ module.exports = [
         toText: function(text) {
             return utils.escape(text)
         }
+    },
+
+    // ---- FOOTNOTE ----
+    // Footnotes are parsed as block with an inner entity
+    // this rule defines the toText of the inner entity
+    {
+        type: BLOCKS.FOOTNOTE,
+        match: function() { return null; },
+        toText: function(text, entity) {
+            return '[^' + entity.data.id + ']: ' + text;
+        }
     }
+
 ];

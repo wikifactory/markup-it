@@ -111,18 +111,43 @@ module.exports = [
     list.rule(BLOCKS.UL_ITEM),
     list.rule(BLOCKS.OL_ITEM),
 
+    // ---- FOOTNOTES ----
+    {
+        type: BLOCKS.FOOTNOTE,
+        regexp: rBlock.footnote,
+        props: function(match) {
+            return {
+                text: match[2],
+                entityRanges: [
+                    {
+                        offset: 0,
+                        length: match[0].length,
+                        entity: {
+                            mutability: 'MUTABLE',
+                            type: BLOCKS.FOOTNOTE,
+                            data: {
+                                id: match[1]
+                            }
+                        }
+                    }
+                ]
+            };
+        },
+        toText: function(text) {
+            return text + '\n\n';
+        }
+    },
+
 
     // ---- PARAGRAPH ----
     {
-        regexp: rBlock.paragraph,
         type: BLOCKS.PARAGRAPH,
-
+        regexp: rBlock.paragraph,
         props: function(match) {
             return {
                 text: match[1].trim()
             };
         },
-
         toText: '%s\n\n'
     },
 
