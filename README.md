@@ -61,3 +61,17 @@ var myRule = DraftMarkup.Rule(DraftMarkup.BLOCKS.HEADING_1)
     });
 ```
 
+Create a new syntax inherited from the markdown one:
+
+```js
+var mySyntax = DraftMarkup.Syntax(markdown)
+    // Add a new rule
+    .add(myRule)
+
+    //Remove a rule
+    .del(DraftMarkup.BLOCKS.HEADING_1)
+
+    // Replace a rule
+    .replace(myRule);
+```
+
