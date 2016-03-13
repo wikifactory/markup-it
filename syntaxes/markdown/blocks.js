@@ -77,7 +77,7 @@ module.exports = [
 
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
-        .regExp(reBlock.paragraph, function(match) {
+        .regExp(reBlock.gfm.paragraph, function(match) {
             return {
                 text: match[1].trim()
             };
