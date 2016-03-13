@@ -41,6 +41,13 @@ describe('Markdown', function() {
                 blocks[0].text.should.equal('Hello *World*');
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
             });
+
+            it('should render as unescaped text', function() {
+                var state = markup.toRawContent('Hello \\*World\\*');
+                var md = markup.toText(state);
+
+                md.should.equal('Hello \\*World\\*\n\n');
+            });
         });
 
         describe('Headings', function() {
