@@ -1,6 +1,6 @@
 # draft-markup
 
-> Pipeline for using markup input (for example Markdown) with Draft-js
+> Pipeline for using markup input (for example Markdown) with [Draft-js](https://facebook.github.io/draft-js/).
 
 [![Build Status](https://travis-ci.org/GitbookIO/draft-markup.png?branch=master)](https://travis-ci.org/GitbookIO/draft-markup)
 [![NPM version](https://badge.fury.io/js/draft-markup.svg)](http://badge.fury.io/js/draft-markup)
@@ -22,7 +22,9 @@ var markdown = require('draft-markup/syntaxes/markdown');
 var draftMarkup = new DraftMarkup(markdown);
 ```
 
-Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js:
+##### Markdown to ContentState
+
+Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js using `toRawContent`:
 
 ```js
 var rawContent = draftMarkup.toRawContent('# Hello World\n\nThis is **bold**.');
@@ -30,7 +32,9 @@ var blocks = draft.convertFromRaw(rawContent);
 var content = draft.ContentState.createFromBlockArray(blocks);
 ```
 
-Output markdown from a ContentState:
+##### ContentState to Markdown
+
+Output markdown from a ContentState using `.toText`:
 
 ```js
 var rawContent = draft.convertToRaw(content);
@@ -45,7 +49,7 @@ This module uses the rules from [kramed](https://github.com/GitbookIO/kramed) to
 - Custom ID for headings (`# My Title #{myID}`) are parsed and added as an entity in the `header-x` block.
 - Table are parsed as a block with inner entities for each rows/columns
 
-### Writing custom rules
+### Custom Rules
 
 This module contains the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.
 
@@ -77,5 +81,5 @@ mySyntax.blocks.del(DraftMarkup.BLOCKS.HEADING_1);
 mySyntax.blocks.replace(myRule);
 ```
 
-A good example of this is the syntax for [gitbook](./syntaxes/gitbook).
+Checkout the [GitBook syntax](https://github.com/GitbookIO/draft-markup/blob/master/syntaxes/gitbook/index.js) as an example of custom rules extending a syntax.
 
