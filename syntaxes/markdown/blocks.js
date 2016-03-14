@@ -48,7 +48,7 @@ module.exports = [
         .regExp(reBlock.footnote, function(match) {
             var text = match[2];
 
-            return markup.EntityBlock(markup.BLOCKS.FOOTNOTE, text, markup.Entity.MUTABLE, {
+            return markup.BlockEntity(markup.BLOCKS.FOOTNOTE, text, markup.Entity.MUTABLE, {
                 id: match[1]
             });
         })

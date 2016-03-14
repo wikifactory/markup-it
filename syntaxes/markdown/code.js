@@ -7,11 +7,11 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     .option('parseInline', false)
 
     // Currently causing problem since entities ar inlined
-    //.option('renderInline', false)
+    .option('renderInline', false)
 
     // Fences
     .regExp(reBlock.gfm.fences, function(match) {
-        return markup.EntityBlock(markup.BLOCKS.CODE, match[3], markup.Entity.MUTABLE, {
+        return markup.BlockEntity(markup.BLOCKS.CODE, match[3], markup.Entity.MUTABLE, {
             syntax: match[2]
         });
     })
@@ -28,7 +28,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         .join('\n')
         .replace(/\s+$/g, '');
 
-        return markup.EntityBlock(markup.BLOCKS.CODE, inner, markup.Entity.MUTABLE, {
+        return markup.BlockEntity(markup.BLOCKS.CODE, inner, markup.Entity.MUTABLE, {
             syntax: null
         });
     })
