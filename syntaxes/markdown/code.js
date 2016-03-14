@@ -7,7 +7,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     .option('parseInline', false)
 
     // Currently causing problem since entities ar inlined
-    .option('renderInline', false)
+    //.option('renderInline', false)
 
     // Fences
     .regExp(reBlock.gfm.fences, function(match) {
@@ -42,7 +42,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
 // Rule for rendering the code block entity
 var blockEntityRule = markup.Rule(markup.BLOCKS.CODE)
     .option('parseInline', false)
-    .option('renderInline', false)
+    //.option('renderInline', false)
 
     .toText(function(text, entity) {
         // Use fences if syntax is set

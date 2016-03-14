@@ -43,6 +43,38 @@ describe('Range', function() {
         });
     });
 
+    describe('sortByLength', function() {
+        it('should sort ranges', function() {
+            Range.sortByLength([
+                {
+                    offset: 4,
+                    length: 5
+                },
+                {
+                    offset: 0,
+                    length: 4
+                },
+                {
+                    offset: 2,
+                    length: 6
+                }
+            ]).should.deepEqual([
+                {
+                    offset: 0,
+                    length: 4
+                },
+                {
+                    offset: 4,
+                    length: 5
+                },
+                {
+                    offset: 2,
+                    length: 6
+                }
+            ]);
+        });
+    });
+
     describe('.areCollapsing', function() {
         it('should return false if not collapsing', function() {
             Range.areCollapsing({
@@ -184,4 +216,113 @@ describe('Range', function() {
         });
     });
 
+    describe('.reduceText', function() {
+        function transform(text, range) {
+            if (range.type == 'IMAGE') return '{' + text + '}';
+            if (range.type == 'LINK') return '[' + text + ']';
+            if (range.type == 'BOLD') return '*' + text + '*';
+            if (range.type == 'ITALIC') return '_' + text + '_';
+            return text;
+        }
+
+
+        it('should replace correctly', function() {
+            var ranges = [
+                {
+                    offset: 0,
+                    length: 2,
+                    type: 'BOLD'
+                },
+                {
+                    offset: 2,
+                    length: 2,
+                    type: 'ITALIC'
+                }
+            ];
+            Range.reduceText('Hello', [ranges], transform).should.equal('*He*_ll_o');
+        });
+
+        it('should handle multiple styles', function() {
+            var ranges = [
+                {
+                    offset: 0,
+                    length: 2,
+                    type: 'BOLD'
+                },
+                {
+                    offset: 0,
+                    length: 2,
+                    type: 'ITALIC'
+                }
+            ];
+            Range.reduceText('Hello', [ranges], transform).should.equal('_*He*_llo');
+        });
+
+        it('should handle overlapsing styles', function() {
+            var ranges = [
+                {
+                    offset: 0,
+                    length: 3,
+                    type: 'BOLD'
+                },
+                {
+                    offset: 0,
+                    length: 4,
+                    type: 'ITALIC'
+                }
+            ];
+            Range.reduceText('Hello', [ranges], transform).should.equal('_*Hel*__l_o');
+        });
+
+        it('should handle styles + entities', function() {
+            var styles = [
+                {
+                    offset: 0,
+                    length: 3,
+                    type: 'BOLD'
+                },
+                {
+                    offset: 0,
+                    length: 4,
+                    type: 'ITALIC'
+                }
+            ];
+            var entities = [
+                {
+                    offset: 0,
+                    length: 5,
+                    type: 'LINK'
+                }
+            ];
+            Range.reduceText('Hello', [styles, entities], transform).should.equal('[_*Hel*__l_o]');
+        });
+
+        it('should handle overlapsing styles + entities', function() {
+            var styles = [
+                {
+                    offset: 0,
+                    length: 3,
+                    type: 'BOLD'
+                },
+                {
+                    offset: 0,
+                    length: 4,
+                    type: 'ITALIC'
+                }
+            ];
+            var entities = [
+                {
+                    offset: 0,
+                    length: 5,
+                    type: 'LINK'
+                },
+                {
+                    offset: 0,
+                    length: 5,
+                    type: 'IMAGE'
+                }
+            ];
+            Range.reduceText('Hello', [styles, entities], transform).should.equal('{[_*Hel*__l_o]}');
+        });
+    });
 });
