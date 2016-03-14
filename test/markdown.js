@@ -401,7 +401,6 @@ describe('Markdown', function() {
             var rawContent = markup.toRawContent(content);
             var markdownOutput = markup.toText(rawContent);
 
-            console.log(markdownOutput, '\n\n--------\n\n', content);
             kramed(markdownOutput).should.equal(kramed(content));
 
             // Test f(f(x)) = f(x)

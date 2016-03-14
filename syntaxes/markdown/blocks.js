@@ -74,9 +74,8 @@ module.exports = [
                 text: ''
             };
         })
-        .toText(function(text, entity) {
-            var title = entity.data.title? (' "' + entity.data.title + '"') : '';
-            return '[' + entity.data.id + ']: ' + text + title;
+        .toText(function() {
+            return '\n\n';
         }),
 
 

@@ -34,8 +34,25 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     })
 
     // Output code blocks
-    .toText(function(text) {
-        return text + '\n\n';
+    .toText(function(text, entity) {
+        // Use fences if syntax is set
+        if (entity.data.syntax) {
+            return (
+                '```'
+                + entity.data.syntax
+                + '\n'
+                + text
+                + '\n```'
+            );
+        }
+
+        // Use four spaces otherwise
+        var lines = utils.splitLines(text);
+
+        return lines.map(function(line) {
+            if (!line.trim()) return '';
+            return '    ' + line;
+        }).join('\n') + '\n\n';
     });
 
 
