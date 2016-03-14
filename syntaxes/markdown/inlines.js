@@ -2,7 +2,6 @@ var reInline = require('kramed/lib/rules/inline');
 var markup = require('../../');
 
 var utils = require('./utils');
-var code = require('./code');
 var text = require('./text');
 
 module.exports = [
@@ -138,15 +137,6 @@ module.exports = [
             };
         })
         .toText(utils.escape),
-
-    // ---- BLOCK ENTITIES ----
-
-    // ---- HEADING ID ----
-    markup.Rule(markup.INLINES.HEADING_ID)
-        .toText(function(text, entity) {
-            if (!entity.data.id) return '';
-            return '{#' + entity.data.id + '}';
-        }),
 
     // ---- TABLE ----
     markup.Rule(markup.INLINES.TABLE_HEADER)

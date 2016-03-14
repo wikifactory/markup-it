@@ -1,4 +1,4 @@
-require('should');
+var should = require('should');
 var fs = require('fs');
 var path = require('path');
 var kramed = require('kramed');
@@ -114,12 +114,17 @@ describe('Markdown', function() {
             });
 
             it('should parse header id', function() {
-                var blocks = markup.toRawContent('# Hello {#customID}').blocks;
+                var content = markup.toRawContent('# Hello {#customID}');
+                content.blocks.should.have.lengthOf(1);
 
-                blocks.should.have.lengthOf(1);
-                blocks[0].text.should.equal('Hello #');
-                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HEADING_1);
-                blocks[0].entityRanges.should.have.lengthOf(1);
+                var block = content.blocks[0];
+                block.text.should.equal('Hello');
+                block.type.should.equal(DraftMarkup.BLOCKS.HEADING_1);
+                should(block.blockEntity).be.a.String();
+
+                var entity = content.entityMap[block.blockEntity];
+                entity.type.should.equal(DraftMarkup.INLINES.HEADING_ID);
+                entity.data.id.should.equal('customID');
             });
         });
 
@@ -396,6 +401,7 @@ describe('Markdown', function() {
             var rawContent = markup.toRawContent(content);
             var markdownOutput = markup.toText(rawContent);
 
+            console.log(markdownOutput, '\n\n--------\n\n', content);
             kramed(markdownOutput).should.equal(kramed(content));
 
             // Test f(f(x)) = f(x)
