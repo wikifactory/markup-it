@@ -39,33 +39,6 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     });
 
 
-// Rule for rendering the code block entity
-var blockEntityRule = markup.Rule(markup.BLOCKS.CODE)
-    .option('parseInline', false)
-    //.option('renderInline', false)
-
-    .toText(function(text, entity) {
-        // Use fences if syntax is set
-        if (entity.data.syntax) {
-            return (
-                '```'
-                + entity.data.syntax
-                + '\n'
-                + text
-                + '\n```'
-            );
-        }
-
-        // Use four spaces otherwise
-        var lines = utils.splitLines(text);
-
-        return lines.map(function(line) {
-            if (!line.trim()) return '';
-            return '    ' + line;
-        }).join('\n');
-    });
-
 module.exports = {
-    block: blockRule,
-    blockEntity: blockEntityRule
+    block: blockRule
 };

@@ -140,19 +140,6 @@ module.exports = [
         .toText(utils.escape),
 
     // ---- BLOCK ENTITIES ----
-    // Footnotes and defs are parsed as block with an inner entity
-    // these rules define the toText of the inner entities
-    markup.Rule(markup.BLOCKS.FOOTNOTE)
-        .toText(function(text, entity) {
-            return '[^' + entity.data.id + ']: ' + text;
-        }),
-    markup.Rule(markup.BLOCKS.DEFINITION)
-        .toText(function(text, entity) {
-            var title = entity.data.title? (' "' + entity.data.title + '"') : '';
-            return '[' + entity.data.id + ']: ' + text + title;
-        }),
-
-    code.blockEntity,
 
     // ---- HEADING ID ----
     markup.Rule(markup.INLINES.HEADING_ID)

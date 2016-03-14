@@ -52,7 +52,9 @@ module.exports = [
                 id: match[1]
             });
         })
-        .toText('%s\n\n'),
+        .toText(function(text, entity) {
+            return '[^' + entity.data.id + ']: ' + text + '\n\n';
+        }),
 
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)
@@ -72,7 +74,10 @@ module.exports = [
                 text: ''
             };
         })
-        .toText(''),
+        .toText(function(text, entity) {
+            var title = entity.data.title? (' "' + entity.data.title + '"') : '';
+            return '[' + entity.data.id + ']: ' + text + title;
+        }),
 
 
     // ---- PARAGRAPH ----
