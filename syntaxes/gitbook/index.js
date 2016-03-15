@@ -8,6 +8,7 @@ var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
 
 
 var inlineMathRule = markup.Rule('math')
+    .option('parseInline', false)
     .regExp(reMathInline, function(match) {
         var text = match[1];
         if (text.trim().length == 0) return;
