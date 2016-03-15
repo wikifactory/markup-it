@@ -28,6 +28,15 @@ module.exports = [
     list.ul,
     list.ol,
 
+    // ---- HTML ----
+    markup.Rule(markup.BLOCKS.HTML)
+        .regExp(reBlock.html, function(match) {
+            return {
+                text: match[0]
+            };
+        })
+        .toText('%s\n\n'),
+
     // ---- HR ----
     markup.Rule(markup.BLOCKS.HR)
         .regExp(reBlock.hr)

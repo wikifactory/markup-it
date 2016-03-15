@@ -42,11 +42,24 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
             });
 
-            it('should render as unescaped text', function() {
-                var state = markup.toRawContent('Hello \\*World\\*');
+            it('should parse inline HTML', function() {
+                var state = markup.toRawContent('This is a paragraph with <span>html</span>');
                 var md = markup.toText(state);
 
+                state.blocks.should.have.lengthOf(1);
+                state.blocks[0].text.should.equal('This is a paragraph with <span>html</span>');
+                state.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
                 md.should.equal('Hello \\*World\\*\n\n');
+            });
+        });
+
+        describe.only('HTML', function() {
+            it('should return unescaped HTML', function() {
+                var blocks = markup.toRawContent('<div>Hello World</div>').blocks;
+
+                blocks.should.have.lengthOf(1);
+                blocks[0].text.should.equal('<div>Hello World</div>');
+                blocks[0].type.should.equal(DraftMarkup.BLOCKS.HTML);
             });
         });
 
@@ -399,6 +412,7 @@ describe('Markdown', function() {
 
             // g(f(x)) = g(x)
             var rawContent = markup.toRawContent(content);
+            console.log(JSON.stringify(rawContent, null, 4))
             var markdownOutput = markup.toText(rawContent);
 
             kramed(markdownOutput).should.equal(kramed(content));

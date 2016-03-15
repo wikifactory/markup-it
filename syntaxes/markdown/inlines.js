@@ -1,4 +1,5 @@
 var reInline = require('kramed/lib/rules/inline');
+var htmlBlocks = require('kramed/lib/lex/html_blocks');
 var markup = require('../../');
 
 var utils = require('./utils');
@@ -127,6 +128,16 @@ module.exports = [
             };
         })
         .toText('~~%s~~'),
+
+    // ---- HTML ----
+    markup.Rule(markup.INLINES.HTML)
+        .option('parseInline', false)
+        .regExp(reInline.html, function(match) {
+            return {
+                text: match[0]
+            };
+        })
+        .toText('%s'),
 
     // ---- TEXT ----
     markup.Rule(markup.INLINES.TEXT)
