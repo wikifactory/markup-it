@@ -25,13 +25,35 @@ function mapAlign(align) {
     });
 }
 
-// SPlit rows into cells
+// Split rows into cells
 function splitRows(rows) {
     return rows = rows.map(function(row) {
         return row
             .replace(/^ *\| *| *\| *$/g, '')
             .split(/ *\| */);
     });
+}
+
+// Render a row as text
+function rowToText(row) {
+    return '|' + row.map(function(cell) {
+        return ' ' + cell + ' |';
+    }).join('');
+}
+
+// Render align to text
+function alignToText(row) {
+    return '|' + row.map(function(align) {
+        if (align == 'right') {
+            return ' ---: |';
+        } else if (align == 'left') {
+            return ' :--- |';
+        } else if (align == 'center') {
+            return ' :---: |';
+        } else  {
+            return ' --- |';
+        }
+    }).join('');
 }
 
 var blockRule = markup.Rule(markup.BLOCKS.TABLE)
@@ -70,8 +92,17 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
     // Output table as text
     .toText(function(inner, entity) {
         var result = '';
+        var align = entity.data.align;
+        var header = entity.data.header;
+        var rows = entity.data.rows;
 
+        console.log(align, header, rows);
 
+        result += rowToText(header) + '\n';
+        result += alignToText(align) + '\n';
+        result += rows.map(function(row) {
+            return rowToText(row);
+        }).join('\n');
 
         return (result + '\n\n');
     });
