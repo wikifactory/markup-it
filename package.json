@@ -1,6 +1,6 @@
 {
   "name": "draft-markup",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Pipeline for using markup input (for example Markdown) with Draft-js",
   "main": "lib/index.js",
   "scripts": {
