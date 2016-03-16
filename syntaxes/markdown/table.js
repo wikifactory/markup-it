@@ -96,8 +96,6 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
         var header = entity.data.header;
         var rows = entity.data.rows;
 
-        console.log(align, header, rows);
-
         result += rowToText(header) + '\n';
         result += alignToText(align) + '\n';
         result += rows.map(function(row) {
