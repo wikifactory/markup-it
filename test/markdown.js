@@ -133,11 +133,7 @@ describe('Markdown', function() {
                 var block = content.blocks[0];
                 block.text.should.equal('Hello');
                 block.type.should.equal(DraftMarkup.BLOCKS.HEADING_1);
-                should(block.blockEntity).be.a.String();
-
-                var entity = content.entityMap[block.blockEntity];
-                entity.type.should.equal(DraftMarkup.INLINES.HEADING_ID);
-                entity.data.id.should.equal('customID');
+                block.data.id.should.equal('customID');
             });
         });
 

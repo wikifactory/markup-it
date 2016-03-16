@@ -20,9 +20,9 @@ function parseHeadingText(text) {
 
     return {
         text: text,
-        blockEntity: markup.Entity(markup.INLINES.HEADING_ID, markup.Entity.IMMUTABLE, {
+        data: {
             id: id
-        })
+        }
     };
 }
 
@@ -35,9 +35,9 @@ function headingRule(level) {
             if (match[1].length != level) return null;
             return parseHeadingText(match[2]);
         })
-        .toText(function (text, entity) {
-            if (entity && entity.data.id) {
-                text += ' {#' + entity.data.id + '}';
+        .toText(function (text, block) {
+            if (block.data.id) {
+                text += ' {#' + block.data.id + '}';
             }
 
             return prefix + ' ' + text + '\n\n';

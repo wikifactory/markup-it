@@ -11,9 +11,12 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
 
     // Fences
     .regExp(reBlock.gfm.fences, function(match) {
-        return markup.BlockEntity(markup.BLOCKS.CODE, match[3], markup.Entity.MUTABLE, {
-            syntax: match[2]
-        });
+        return {
+            text: match[3],
+            data: {
+                syntax: match[2]
+            }
+        };
     })
 
     // 4 spaces / Tab
@@ -28,18 +31,21 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         .join('\n')
         .replace(/\s+$/g, '');
 
-        return markup.BlockEntity(markup.BLOCKS.CODE, inner, markup.Entity.MUTABLE, {
-            syntax: null
-        });
+        return {
+            text: inner,
+            data: {
+                syntax: null
+            }
+        };
     })
 
     // Output code blocks
-    .toText(function(text, entity) {
+    .toText(function(text, block) {
         // Use fences if syntax is set
-        if (entity.data.syntax) {
+        if (block.data.syntax) {
             return (
                 '```'
-                + entity.data.syntax
+                + block.data.syntax
                 + '\n'
                 + text
                 + '\n```'

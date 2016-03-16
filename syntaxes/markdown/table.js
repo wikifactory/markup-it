@@ -3,11 +3,14 @@ var markup = require('../../');
 
 // Create a table entity
 function Table(header, align, rows) {
-    return markup.BlockEntity(markup.BLOCKS.TABLE, ' ', markup.Entity.IMMUTABLE, {
-        header: header,
-        align: align,
-        rows: rows
-    });
+    return {
+        text: ' ',
+        data: {
+            header: header,
+            align: align,
+            rows: rows
+        }
+    };
 }
 
 // Detect alignement per column
@@ -90,11 +93,11 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
     })
 
     // Output table as text
-    .toText(function(inner, entity) {
+    .toText(function(inner, block) {
         var result = '';
-        var align = entity.data.align;
-        var header = entity.data.header;
-        var rows = entity.data.rows;
+        var align = block.data.align;
+        var header = block.data.header;
+        var rows = block.data.rows;
 
         result += rowToText(header) + '\n';
         result += alignToText(align) + '\n';

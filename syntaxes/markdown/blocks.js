@@ -57,12 +57,15 @@ module.exports = [
         .regExp(reBlock.footnote, function(match) {
             var text = match[2];
 
-            return markup.BlockEntity(markup.BLOCKS.FOOTNOTE, text, markup.Entity.MUTABLE, {
-                id: match[1]
-            });
+            return {
+                text: text,
+                data: {
+                    id: match[1]
+                }
+            };
         })
-        .toText(function(text, entity) {
-            return '[^' + entity.data.id + ']: ' + text + '\n\n';
+        .toText(function(text, block) {
+            return '[^' + block.data.id + ']: ' + text + '\n\n';
         }),
 
     // ---- DEFINITION ----

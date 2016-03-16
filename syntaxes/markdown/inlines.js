@@ -147,29 +147,5 @@ module.exports = [
                 text: utils.unescape(match[0])
             };
         })
-        .toText(utils.escape),
-
-    // ---- TABLE ----
-    markup.Rule(markup.INLINES.TABLE_HEADER)
-        .toText(function(text, entity) {
-            var align = entity.data.align;
-
-            return align.reduce(function(align) {
-                if (align == 'right') {
-                    return '---: |';
-                } else if (align == 'left') {
-                    return ':--- |';
-                } else if (align == 'center') {
-                    return ':---: |';
-                } else  {
-                    return '--- |';
-                }
-            }, text + '\n|');
-        }),
-    markup.Rule(markup.INLINES.TABLE_BODY)
-        .toText('%s'),
-    markup.Rule(markup.INLINES.TABLE_ROW)
-        .toText('| %s\n'),
-    markup.Rule(markup.INLINES.TABLE_CELL)
-        .toText('%s |')
+        .toText(utils.escape)
 ];
