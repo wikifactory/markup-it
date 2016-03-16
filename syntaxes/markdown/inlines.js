@@ -1,8 +1,8 @@
 var reInline = require('kramed/lib/rules/inline');
+var htmlBlocks = require('kramed/lib/lex/html_blocks');
 var markup = require('../../');
 
 var utils = require('./utils');
-var code = require('./code');
 var text = require('./text');
 
 module.exports = [
@@ -129,6 +129,16 @@ module.exports = [
         })
         .toText('~~%s~~'),
 
+    // ---- HTML ----
+    markup.Rule(markup.INLINES.HTML)
+        .option('parseInline', false)
+        .regExp(reInline.html, function(match) {
+            return {
+                text: match[0]
+            };
+        })
+        .toText('%s'),
+
     // ---- TEXT ----
     markup.Rule(markup.INLINES.TEXT)
         .option('parseInline', false)
@@ -138,28 +148,6 @@ module.exports = [
             };
         })
         .toText(utils.escape),
-
-    // ---- BLOCK ENTITIES ----
-    // Footnotes and defs are parsed as block with an inner entity
-    // these rules define the toText of the inner entities
-    markup.Rule(markup.BLOCKS.FOOTNOTE)
-        .toText(function(text, entity) {
-            return '[^' + entity.data.id + ']: ' + text;
-        }),
-    markup.Rule(markup.BLOCKS.DEFINITION)
-        .toText(function(text, entity) {
-            var title = entity.data.title? (' "' + entity.data.title + '"') : '';
-            return '[' + entity.data.id + ']: ' + text + title;
-        }),
-
-    code.blockEntity,
-
-    // ---- HEADING ID ----
-    markup.Rule(markup.INLINES.HEADING_ID)
-        .toText(function(text, entity) {
-            if (!entity.data.id) return '';
-            return '{#' + entity.data.id + '}';
-        }),
 
     // ---- TABLE ----
     markup.Rule(markup.INLINES.TABLE_HEADER)

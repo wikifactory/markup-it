@@ -28,6 +28,15 @@ module.exports = [
     list.ul,
     list.ol,
 
+    // ---- HTML ----
+    markup.Rule(markup.BLOCKS.HTML)
+        .regExp(reBlock.html, function(match) {
+            return {
+                text: match[0]
+            };
+        })
+        .toText('%s\n\n'),
+
     // ---- HR ----
     markup.Rule(markup.BLOCKS.HR)
         .regExp(reBlock.hr)
@@ -48,11 +57,13 @@ module.exports = [
         .regExp(reBlock.footnote, function(match) {
             var text = match[2];
 
-            return markup.EntityBlock(markup.BLOCKS.FOOTNOTE, text, markup.Entity.MUTABLE, {
+            return markup.BlockEntity(markup.BLOCKS.FOOTNOTE, text, markup.Entity.MUTABLE, {
                 id: match[1]
             });
         })
-        .toText('%s\n\n'),
+        .toText(function(text, entity) {
+            return '[^' + entity.data.id + ']: ' + text + '\n\n';
+        }),
 
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)
@@ -72,7 +83,9 @@ module.exports = [
                 text: ''
             };
         })
-        .toText(''),
+        .toText(function() {
+            return '\n\n';
+        }),
 
 
     // ---- PARAGRAPH ----

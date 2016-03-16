@@ -55,7 +55,7 @@ function listRule(type) {
                 depth: depth
             };
         })
-        .toText(function(text, block, ctx) {
+        .toText(function(text, entity, ctx) {
             // Determine which bullet to use
             var bullet = '*';
             if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
@@ -64,7 +64,7 @@ function listRule(type) {
             var eol = '\n';
 
             return (
-                Array(block.depth + 1).join('  ') +
+                Array(ctx.depth + 1).join('  ') +
                 bullet + ' ' +
                 text + eol
             );

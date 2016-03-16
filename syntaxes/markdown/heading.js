@@ -5,7 +5,7 @@ var reId = /({#)(.+)(})/g;
 
 // Parse inner text of header to extract ID entity
 function parseHeadingText(text) {
-    var id, offset, match;
+    var id, match;
 
     reId.lastIndex = 0;
     match = reId.exec(text);
@@ -14,27 +14,15 @@ function parseHeadingText(text) {
     if (id) {
         // Remove ID from text
         text = text.replace(match[0], '').trim();
-
-        // Add ID indicator
-        text = text + ' #';
-        offset = text.length - 1;
     } else {
         text = text.trim();
     }
 
     return {
         text: text,
-        entityRanges: id? [
-            markup.Range(offset, 1, {
-                entity: markup.Entity(
-                    markup.INLINES.HEADING_ID,
-                    markup.Entity.IMMUTABLE,
-                    {
-                        id: id
-                    }
-                )
-            })
-        ] : null
+        blockEntity: markup.Entity(markup.INLINES.HEADING_ID, markup.Entity.IMMUTABLE, {
+            id: id
+        })
     };
 }
 
@@ -47,7 +35,11 @@ function headingRule(level) {
             if (match[1].length != level) return null;
             return parseHeadingText(match[2]);
         })
-        .toText(function (text) {
+        .toText(function (text, entity) {
+            if (entity && entity.data.id) {
+                text += ' {#' + entity.data.id + '}';
+            }
+
             return prefix + ' ' + text + '\n\n';
         });
 }
