@@ -95,9 +95,9 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
     // Output table as text
     .toText(function(inner, block) {
         var result = '';
-        var align = block.data.align;
-        var header = block.data.header;
-        var rows = block.data.rows;
+        var align = block.data.align || [];
+        var header = block.data.header || [];
+        var rows = block.data.rows || [];
 
         result += rowToText(header) + '\n';
         result += alignToText(align) + '\n';

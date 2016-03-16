@@ -4,6 +4,11 @@ var markup = require('../../');
 var reItem = /^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/;
 var reBullet = /^ *([*+-]|\d+\.) +/;
 
+// Return true if block is a list
+function isListItem(type) {
+    return (type == markup.BLOCKS.UL_ITEM || type == markup.BLOCKS.OL_ITEM);
+}
+
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
     return markup.Rule(type)
@@ -47,7 +52,7 @@ function listRule(type) {
             }
 
             // Trim to remove spaces and new line
-            if (loose) text = text.replace(/\n$/, '');
+            if (loose) text = text.trim(); //replace(/\n$/, '');
 
             return {
                 raw: item[0],
@@ -60,8 +65,23 @@ function listRule(type) {
             var bullet = '*';
             if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
 
+            var nextBlock = block.next? block.next.type : null;
+            var nextBlockDepth = block.next? block.next.depth : null;
+
             // Determine end of line
             var eol = '\n';
+
+            // We finish list if:
+            //    - Next block is not a list
+            //    - List from a different type with same depth
+            if (!isListItem(nextBlock)
+                || (
+                    (isListItem(nextBlock) && nextBlock != type)
+                    && (block.depth !== (nextBlockDepth - 1))
+                )
+            ) {
+                eol = '\n\n';
+            }
 
             return (
                 Array(block.depth + 1).join('  ') +

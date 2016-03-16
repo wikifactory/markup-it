@@ -181,7 +181,7 @@ describe('Markdown', function() {
                 var blocks = markup.toRawContent('* Hello\n\n  * World').blocks;
 
                 blocks.should.have.lengthOf(2);
-                blocks[0].text.should.equal('Hello\n');
+                blocks[0].text.should.equal('Hello');
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.UL_ITEM);
                 blocks[1].text.should.equal('World');
                 blocks[1].type.should.equal(DraftMarkup.BLOCKS.UL_ITEM);
@@ -372,28 +372,28 @@ describe('Markdown', function() {
                 var state = markup.toRawContent('* Hello\n* World');
                 var md = markup.toText(state);
 
-                md.should.equal('* Hello\n* World\n');
+                md.should.equal('* Hello\n* World\n\n');
             });
 
             it('should render OL', function() {
                 var state = markup.toRawContent('1. Hello\n2. World');
                 var md = markup.toText(state);
 
-                md.should.equal('1. Hello\n1. World\n');
+                md.should.equal('1. Hello\n1. World\n\n');
             });
 
             it('should render depth items', function() {
                 var state = markup.toRawContent('1. Hello\n  1. World\n  2. Monde\n2. Nice');
                 var md = markup.toText(state);
 
-                md.should.equal('1. Hello\n  1. World\n  1. Monde\n1. Nice\n');
+                md.should.equal('1. Hello\n  1. World\n  1. Monde\n1. Nice\n\n');
             });
 
             it('should render UL + paragraphs', function() {
                 var state = markup.toRawContent('1. Hello\n2. World\n\nHello World');
                 var md = markup.toText(state);
 
-                md.should.equal('1. Hello\n1. World\n\n\nHello World\n\n');
+                md.should.equal('1. Hello\n1. World\n\n\n\nHello World\n\n');
             });
         });
     });
@@ -408,16 +408,12 @@ describe('Markdown', function() {
 
             // g(f(x)) = g(x)
             var rawContent = markup.toRawContent(content);
-            //console.log(JSON.stringify(rawContent, null, 4))
             var markdownOutput = markup.toText(rawContent);
-            console.log(markdownOutput);
-
             kramed(markdownOutput).should.equal(kramed(content));
 
             // Test f(f(x)) = f(x)
             var rawContent2 = markup.toRawContent(markdownOutput);
             var markdownOutput2 = markup.toText(rawContent2);
-
             markdownOutput2.should.equal(markdownOutput);
         }
 
