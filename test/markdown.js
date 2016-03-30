@@ -1,4 +1,4 @@
-var should = require('should');
+require('should');
 var fs = require('fs');
 var path = require('path');
 var kramed = require('kramed');
@@ -243,7 +243,7 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
                 blocks[0].inlineStyleRanges.should.have.lengthOf(1);
-                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.INLINES.BOLD);
+                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.STYLES.BOLD);
                 blocks[0].inlineStyleRanges[0].offset.should.equal(6);
                 blocks[0].inlineStyleRanges[0].length.should.equal(5);
             });
@@ -254,7 +254,7 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
                 blocks[0].inlineStyleRanges.should.have.lengthOf(1);
-                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.INLINES.ITALIC);
+                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.STYLES.ITALIC);
                 blocks[0].inlineStyleRanges[0].offset.should.equal(6);
                 blocks[0].inlineStyleRanges[0].length.should.equal(5);
             });
@@ -265,7 +265,7 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
                 blocks[0].inlineStyleRanges.should.have.lengthOf(1);
-                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.INLINES.STRIKETHROUGH);
+                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.STYLES.STRIKETHROUGH);
                 blocks[0].inlineStyleRanges[0].offset.should.equal(6);
                 blocks[0].inlineStyleRanges[0].length.should.equal(5);
             });
@@ -276,7 +276,7 @@ describe('Markdown', function() {
                 blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
                 blocks[0].text.should.equal('Hello World');
                 blocks[0].inlineStyleRanges.should.have.lengthOf(1);
-                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.INLINES.CODE);
+                blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.STYLES.CODE);
                 blocks[0].inlineStyleRanges[0].offset.should.equal(6);
                 blocks[0].inlineStyleRanges[0].length.should.equal(5);
             });
@@ -290,10 +290,10 @@ describe('Markdown', function() {
             blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
             blocks[0].text.should.equal('Hello World');
             blocks[0].inlineStyleRanges.should.have.lengthOf(2);
-            blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.INLINES.ITALIC);
+            blocks[0].inlineStyleRanges[0].style.should.deepEqual(DraftMarkup.STYLES.ITALIC);
             blocks[0].inlineStyleRanges[0].offset.should.equal(6);
             blocks[0].inlineStyleRanges[0].length.should.equal(5);
-            blocks[0].inlineStyleRanges[1].style.should.deepEqual(DraftMarkup.INLINES.BOLD);
+            blocks[0].inlineStyleRanges[1].style.should.deepEqual(DraftMarkup.STYLES.BOLD);
             blocks[0].inlineStyleRanges[1].offset.should.equal(6);
             blocks[0].inlineStyleRanges[1].length.should.equal(5);
         });
@@ -310,13 +310,13 @@ describe('Markdown', function() {
             var key = content.blocks[0].entityRanges[0].key;
             var entity = content.entityMap[key];
 
-            entity.type.should.equal(DraftMarkup.INLINES.LINK);
+            entity.type.should.equal(DraftMarkup.ENTITIES.LINK);
             entity.data.href.should.equal('page.md');
         });
     });
 
     describe('Images', function() {
-        it('should parse link', function() {
+        it('should parse image', function() {
             var content = markup.toRawContent('![Hello World](test.png)');
 
             content.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
@@ -326,8 +326,45 @@ describe('Markdown', function() {
             var key = content.blocks[0].entityRanges[0].key;
             var entity = content.entityMap[key];
 
-            entity.type.should.equal(DraftMarkup.INLINES.IMAGE);
+            entity.type.should.equal(DraftMarkup.ENTITIES.IMAGE);
             entity.data.src.should.equal('test.png');
+        });
+    });
+
+    describe('Images + Links', function() {
+        it('should parse image/link', function() {
+            var content = markup.toRawContent('[![Hello World](test.png)](hello.com)');
+
+            content.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
+            content.blocks[0].text.should.equal('Hello World');
+            content.blocks[0].entityRanges.should.have.lengthOf(1);
+
+            var key = content.blocks[0].entityRanges[0].key;
+            var entity = content.entityMap[key];
+
+            entity.type.should.equal(DraftMarkup.ENTITIES.LINK_IMAGE);
+            entity.data.src.should.equal('test.png');
+            entity.data.href.should.equal('hello.com');
+        });
+
+        it('should parse image/link', function() {
+            var content = markup.toRawContent('[Hello ![World](test.png)](hello.com)');
+
+            content.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
+            content.blocks[0].text.should.equal('Hello World');
+            content.blocks[0].entityRanges.should.have.lengthOf(2);
+
+            var linkKey = content.blocks[0].entityRanges[0].key;
+            var imageKey = content.blocks[0].entityRanges[1].key;
+            var link = content.entityMap[linkKey];
+            var image = content.entityMap[imageKey];
+
+            link.type.should.equal(DraftMarkup.ENTITIES.LINK);
+            link.data.href.should.equal('hello.com');
+
+            image.type.should.equal(DraftMarkup.ENTITIES.LINK_IMAGE);
+            image.data.src.should.equal('test.png');
+            image.data.href.should.equal('hello.com');
         });
     });
 

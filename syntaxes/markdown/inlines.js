@@ -7,7 +7,7 @@ var text = require('./text');
 
 module.exports = [
     // ---- ESCAPED ----
-    markup.Rule(markup.INLINES.TEXT)
+    markup.Rule(markup.STYLES.TEXT)
         .option('parseInline', false)
         .regExp(text.reEscape, function(match) {
             return {
@@ -17,7 +17,7 @@ module.exports = [
         .toText(utils.escape),
 
     // ---- FOOTNOTE REFS ----
-    markup.Rule(markup.INLINES.FOOTNOTE_REF)
+    markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(match) {
             return {
                 mutability: 'MUTABLE',
@@ -30,14 +30,14 @@ module.exports = [
         }),
 
     // ---- IMAGES ----
-    markup.Rule(markup.INLINES.IMAGE)
+    markup.Rule(markup.ENTITIES.IMAGE)
         .regExp(reInline.link, function(match) {
             var isImage = match[0].charAt(0) === '!';
             if (!isImage) return null;
 
             return {
                 mutability: 'IMMUTABLE',
-                text: match[1],
+                text: ' ',
                 data: {
                     title: match[1],
                     src: match[2]
@@ -45,11 +45,11 @@ module.exports = [
             };
         })
         .toText(function(text, entity) {
-            return '![' + text + '](' + entity.data.src + ')';
+            return '![' + entity.data.title + '](' + entity.data.src + ')';
         }),
 
-    // ---- LINK----
-    markup.Rule(markup.INLINES.LINK)
+    // ---- LINK ----
+    markup.Rule(markup.ENTITIES.LINK)
         .regExp(reInline.link, function(match) {
             return {
                 mutability: 'MUTABLE',
@@ -67,7 +67,7 @@ module.exports = [
 
     // ---- REF LINKS ----
     // Doesn't render, but match and resolve reference
-    markup.Rule(markup.INLINES.LINK_REF)
+    markup.Rule(markup.ENTITIES.LINK_REF)
         .regExp(reInline.reflink, function(match) {
             return {
                 mutability: 'MUTABLE',
@@ -82,7 +82,7 @@ module.exports = [
             var refId = entity.data.ref;
             var ref = refs[refId];
 
-            entity.type = markup.INLINES.LINK;
+            entity.type = markup.ENTITIES.LINK;
             entity.data = ref || { href: refId };
 
             return entity;
@@ -93,7 +93,7 @@ module.exports = [
         }),
 
     // ---- CODE ----
-    markup.Rule(markup.INLINES.CODE)
+    markup.Rule(markup.STYLES.CODE)
         .option('parseInline', false)
         .regExp(reInline.code, function(match) {
             return {
@@ -103,7 +103,7 @@ module.exports = [
         .toText('`%s`'),
 
     // ---- BOLD ----
-    markup.Rule(markup.INLINES.BOLD)
+    markup.Rule(markup.STYLES.BOLD)
         .regExp(reInline.strong, function(match) {
             return {
                 text: match[2]
@@ -112,7 +112,7 @@ module.exports = [
         .toText('**%s**'),
 
     // ---- ITALIC ----
-    markup.Rule(markup.INLINES.ITALIC)
+    markup.Rule(markup.STYLES.ITALIC)
         .regExp(reInline.em, function(match) {
             return {
                 text: match[1]
@@ -121,7 +121,7 @@ module.exports = [
         .toText('_%s_'),
 
     // ---- STRIKETHROUGH ----
-    markup.Rule(markup.INLINES.STRIKETHROUGH)
+    markup.Rule(markup.STYLES.STRIKETHROUGH)
         .regExp(reInline.gfm.del, function(match) {
             return {
                 text: match[1]
@@ -130,7 +130,7 @@ module.exports = [
         .toText('~~%s~~'),
 
     // ---- HTML ----
-    markup.Rule(markup.INLINES.HTML)
+    markup.Rule(markup.STYLES.HTML)
         .option('parseInline', false)
         .regExp(reInline.html, function(match) {
             return {
@@ -140,7 +140,7 @@ module.exports = [
         .toText('%s'),
 
     // ---- TEXT ----
-    markup.Rule(markup.INLINES.TEXT)
+    markup.Rule(markup.STYLES.TEXT)
         .option('parseInline', false)
         .regExp(text.re, function(match) {
             return {

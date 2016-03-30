@@ -8,7 +8,7 @@ Simple syntax with only bold support
 
 var syntax = DraftMarkup.Syntax({
     inlines: [
-        DraftMarkup.Rule(DraftMarkup.INLINES.BOLD)
+        DraftMarkup.Rule(DraftMarkup.STYLES.BOLD)
             .regExp(/^\*([\s\S]+?)\*/, function(match) {
                 return {
                     text: match[1]
@@ -50,7 +50,7 @@ describe('Custom Syntax', function() {
                             {
                                 offset: 6,
                                 length: 5,
-                                style: DraftMarkup.INLINES.BOLD
+                                style: DraftMarkup.STYLES.BOLD
                             }
                         ]
                     }
