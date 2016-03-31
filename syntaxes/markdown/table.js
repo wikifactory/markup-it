@@ -2,13 +2,27 @@ var reBlock = require('kramed/lib/rules/block');
 var markup = require('../../');
 
 // Create a table entity
-function Table(header, align, rows) {
+function Table(header, aligns, rows) {
+    var that = this;
+
+    function cell(text, i) {
+        var parser = that.createParsingSession();
+
+        parser.process(text);
+
+        return {
+            align: aligns[i],
+            content: parser.toRawContent()
+        };
+    }
+
     return {
         text: ' ',
         data: {
-            header: header,
-            align: align,
-            rows: rows
+            header: header.map(cell),
+            rows: rows.map(function(cells) {
+                return cells.map(cell);
+            })
         }
     };
 }
@@ -73,7 +87,7 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
         // Split each row into cells
         rows = splitRows(rows);
 
-        return Table(header, align, rows);
+        return Table.call(this, header, align, rows);
     })
 
     // normal table
@@ -88,7 +102,7 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
         // Split each row into cells
         rows = splitRows(rows);
 
-        return Table(header, align, rows);
+        return Table.call(this, header, align, rows);
 
     })
 
