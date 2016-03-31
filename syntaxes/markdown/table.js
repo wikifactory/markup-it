@@ -2,23 +2,21 @@ var reBlock = require('kramed/lib/rules/block');
 var markup = require('../../');
 
 // Create a table entity
-function Table(header, aligns, rows) {
+function Table(header, align, rows) {
     var that = this;
 
+    // Parse a cell and returns the content as data
     function cell(text, i) {
         var parser = that.createParsingSession();
-
         parser.process(text);
 
-        return {
-            align: aligns[i],
-            content: parser.toRawContent()
-        };
+        return parser.toRawContent();
     }
 
     return {
         text: ' ',
         data: {
+            align: align,
             header: header.map(cell),
             rows: rows.map(function(cells) {
                 return cells.map(cell);
@@ -51,10 +49,20 @@ function splitRows(rows) {
     });
 }
 
+// Render a cell as text
+function cellToText(cell) {
+    var output = this.createOutputSession();
+    output.processInline(cell);
+
+    return output.toText();
+}
+
 // Render a row as text
 function rowToText(row) {
+    var that = this;
+
     return '|' + row.map(function(cell) {
-        return ' ' + cell + ' |';
+        return ' ' + cellToText.call(that, cell) + ' |';
     }).join('');
 }
 
@@ -108,15 +116,16 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
     // Output table as text
     .toText(function(inner, block) {
+        var that = this;
         var result = '';
         var align = block.data.align || [];
         var header = block.data.header || [];
         var rows = block.data.rows || [];
 
-        result += rowToText(header) + '\n';
+        result += rowToText.call(this, header) + '\n';
         result += alignToText(align) + '\n';
         result += rows.map(function(row) {
-            return rowToText(row);
+            return rowToText.call(that, row);
         }).join('\n');
 
         return (result + '\n\n');
