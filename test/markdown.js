@@ -320,7 +320,7 @@ describe('Markdown', function() {
             var content = markup.toRawContent('![Hello World](test.png)');
 
             content.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
-            content.blocks[0].text.should.equal('Hello World');
+            content.blocks[0].text.should.equal(' ');
             content.blocks[0].entityRanges.should.have.lengthOf(1);
 
             var key = content.blocks[0].entityRanges[0].key;
@@ -336,7 +336,7 @@ describe('Markdown', function() {
             var content = markup.toRawContent('[![Hello World](test.png)](hello.com)');
 
             content.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
-            content.blocks[0].text.should.equal('Hello World');
+            content.blocks[0].text.should.equal(' ');
             content.blocks[0].entityRanges.should.have.lengthOf(1);
 
             var key = content.blocks[0].entityRanges[0].key;
@@ -351,7 +351,7 @@ describe('Markdown', function() {
             var content = markup.toRawContent('[Hello ![World](test.png)](hello.com)');
 
             content.blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
-            content.blocks[0].text.should.equal('Hello World');
+            content.blocks[0].text.should.equal('Hello  ');
             content.blocks[0].entityRanges.should.have.lengthOf(2);
 
             var linkKey = content.blocks[0].entityRanges[0].key;
