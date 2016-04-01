@@ -48,7 +48,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
                 + block.data.syntax
                 + '\n'
                 + text
-                + '\n```'
+                + '\n```\n\n'
             );
         }
 
