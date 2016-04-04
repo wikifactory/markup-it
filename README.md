@@ -70,7 +70,6 @@ Create a new syntax inherited from the markdown one:
 ```js
 var mySyntax = DraftMarkup.Syntax(markdown);
 
-
 // Add a new rule
 mySyntax.blocks.add(myRule);
 
