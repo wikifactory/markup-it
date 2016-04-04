@@ -1,4 +1,9 @@
+var entities = require('html-entities');
+
 var escapeStringRegexp = require('escape-string-regexp');
+
+var htmlEntities = new entities.AllHtmlEntities();
+var xmlEntities = new entities.XmlEntities();
 
 // Replacements for Markdown escaping
 var replacements = [
@@ -11,7 +16,8 @@ var replacements = [
     [ ']', '\\]' ],
     [ '<', '&lt;' ],
     [ '>', '&gt;' ],
-    [ '_', '\\_' ]
+    [ '_', '\\_' ],
+    [ '|', '\\|' ]
 ];
 
 // Split a text into lines
@@ -25,17 +31,23 @@ function re(str) {
 }
 
 // Escape markdown syntax
+// We escape only basic XML entities
 function escapeMarkdown(str) {
-    return replacements.reduce(function(text, repl) {
+    str = replacements.reduce(function(text, repl) {
         return text.replace(re(repl[0]), repl[1]);
     }, str);
+
+    return xmlEntities.encode(str);
 }
 
 // Unescape markdown syntax
+// We unescape all entities (HTML + XML)
 function unescapeMarkdown(str) {
-    return replacements.reduce(function(text, repl) {
+    str = replacements.reduce(function(text, repl) {
         return text.replace(re(repl[1]), repl[0]);
     }, str);
+
+    return htmlEntities.decode(str);
 }
 
 function replace(regex, opt) {

@@ -1,5 +1,4 @@
 var reInline = require('kramed/lib/rules/inline');
-var htmlBlocks = require('kramed/lib/lex/html_blocks');
 var markup = require('../../');
 
 var utils = require('./utils');

@@ -1,4 +1,5 @@
 var reBlock = require('kramed/lib/rules/block');
+var reTable = require('kramed/lib/rules/table');
 var markup = require('../../');
 
 // Create a table entity
@@ -10,7 +11,10 @@ function Table(header, align, rows) {
         var parser = that.createParsingSession();
         parser.process(text);
 
-        return parser.toRawContent();
+        return {
+            key: null,
+            content: parser.toRawContent()
+        };
     }
 
     return {
@@ -28,11 +32,11 @@ function Table(header, align, rows) {
 // Detect alignement per column
 function mapAlign(align) {
     return align.map(function(s) {
-        if (/^ *-+: *$/.test(s)) {
+        if (reTable.alignRight.test(s)) {
             return 'right';
-        } else if (/^ *:-+: *$/.test(s)) {
+        } else if (reTable.alignCenter.test(s)) {
             return 'center';
-        } else if (/^ *:-+ *$/.test(s)) {
+        } else if (reTable.alignLeft.test(s)) {
             return 'left';
         } else {
             return null;
@@ -52,7 +56,7 @@ function splitRows(rows) {
 // Render a cell as text
 function cellToText(cell) {
     var output = this.createOutputSession();
-    output.processInline(cell);
+    output.processInline(cell.content);
 
     return output.toText();
 }
@@ -85,9 +89,18 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
     // table no leading pipe (gfm)
     .regExp(reBlock.tables.nptable, function(match) {
-        var header = match[1].replace(/^ *| *\| *$/g, '').split(/ *\| */);
-        var align = match[2].replace(/^ *|\| *$/g, '').split(/ *\| */);
-        var rows = match[3].replace(/\n$/, '').split('\n');
+        var header = match[1]
+            .replace(/\\\|/g, '&#124;')
+            .replace(reTable.trailingPipe, '')
+            .split(reTable.cell);
+        var align = match[2]
+            .replace(/\\\|/g, '&#124;')
+            .replace(reTable.trailingPipeAlign, '')
+            .split(reTable.cell);
+        var rows = match[3]
+            .replace(/\\\|/g, '&#124;')
+            .replace(/\n$/, '')
+            .split('\n');
 
         // Align for columns
         align = mapAlign(align);
@@ -100,9 +113,19 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
     // normal table
     .regExp(reBlock.tables.table, function(match) {
-        var header =  match[1].replace(/^ *| *\| *$/g, '').split(/ *\| */);
-        var align = match[2].replace(/^ *|\| *$/g, '').split(/ *\| */);
-        var rows = match[3].replace(/(?: *\| *)?\n$/, '').split('\n').slice(0);
+        var header =  match[1]
+            .replace(/\\\|/g, '&#124;')
+            .replace(reTable.trailingPipe, '')
+            .split(reTable.cell);
+        var align = match[2]
+            .replace(/\\\|/g, '&#124;')
+            .replace(reTable.trailingPipeAlign, '')
+            .split(reTable.cell);
+        var rows = match[3]
+            .replace(/\\\|/g, '&#124;')
+            .replace(reTable.trailingPipeCell, '')
+            .replace(/\n$/, '')
+            .split('\n');
 
         // Align for columns
         align = mapAlign(align);
