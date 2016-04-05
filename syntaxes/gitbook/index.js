@@ -13,7 +13,6 @@ var inlineMathRule = markup.Rule('math')
         if (text.trim().length == 0) return;
 
         return {
-            mutability: markup.Entity.MUTABLE,
             text: text,
             data: {}
         };
@@ -41,7 +40,6 @@ var tplExpr = markup.Rule('template')
         else if (type == '{') type = 'var';
 
         return {
-            mutability: markup.Entity.MUTABLE,
             text: text,
             data: {
                 type: type

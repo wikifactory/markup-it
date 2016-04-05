@@ -1,15 +1,9 @@
 var markup = require('../../');
+var HTMLRule = require('./rule');
 
 function headingRule(n) {
     var type = markup.BLOCKS['HEADING_' + n];
-
-    return markup.Rule(type)
-        .toText(function(text, token) {
-            var attrs = '';
-            if (token.data.id) attrs = ' id="' + token.data.id + '"';
-
-            return '<h' + n + attrs + '>' + text + '</h' + n + '>\n\n';
-        });
+    return HTMLRule(type, 'h'+n);
 }
 
 module.exports = [
@@ -20,14 +14,19 @@ module.exports = [
     headingRule(5),
     headingRule(6),
 
-    markup.Rule(markup.BLOCKS.HR)
-        .toText('<hr />\n\n'),
+    HTMLRule(markup.BLOCKS.HR, 'hr'),
+    HTMLRule(markup.BLOCKS.PARAGRAPH, 'p'),
+    HTMLRule(markup.BLOCKS.BLOCKQUOTE, 'blockquote'),
+    HTMLRule(markup.BLOCKS.FOOTNOTE, 'div', function(data) {
+        return {
+            'id': 'footnote-' + data.id,
+            'class': 'footnote'
+        };
+    }),
+
 
     markup.Rule(markup.BLOCKS.HTML)
         .toText('%s\n\n'),
-
-    markup.Rule(markup.BLOCKS.PARAGRAPH)
-        .toText('<p>%s</p>\n\n'),
 
     markup.Rule(markup.BLOCKS.CODE)
         .toText(function(text, token) {

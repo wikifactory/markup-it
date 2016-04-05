@@ -26,9 +26,11 @@
     "should": "^8.2.2"
   },
   "dependencies": {
+    "cheerio": "^0.20.0",
     "escape-string-regexp": "^1.0.5",
     "extend": "^3.0.0",
     "html-entities": "^1.2.0",
+    "htmlparser2": "^3.9.0",
     "immutable": "^3.7.6",
     "is": "^3.1.0",
     "kramed": "^0.5.5",

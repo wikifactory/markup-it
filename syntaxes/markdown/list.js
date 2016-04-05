@@ -68,7 +68,7 @@ function listRule(type) {
             if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
 
             var nextBlock = block.next? block.next.type : null;
-            var nextBlockDepth = block.next? block.next.depth : null;
+            var nextBlockDepth = block.next? block.next.data.depth : null;
 
             // Determine end of line
             var eol = '\n';

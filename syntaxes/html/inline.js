@@ -1,6 +1,8 @@
 var markup = require('../../');
 var utils = require('./utils');
 
+var HTMLRule = require('./rule');
+
 module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
@@ -8,32 +10,29 @@ module.exports = [
         .toText(utils.escape),
 
     // ---- CODE ----
-    markup.Rule(markup.STYLES.CODE)
-        .setOption('parseInline', false)
-        .toText('<code>%s</code>'),
+    HTMLRule(markup.STYLES.CODE, 'code')
+        .setOption('parseInline', false),
 
     // ---- BOLD ----
-    markup.Rule(markup.STYLES.BOLD)
-        .toText('<b>%s</b>'),
+    HTMLRule(markup.STYLES.BOLD, 'b'),
 
     // ---- ITALIC ----
-    markup.Rule(markup.STYLES.ITALIC)
-        .toText('<i>%s</i>'),
+    HTMLRule(markup.STYLES.ITALIC, 'i'),
 
     // ---- STRIKETHROUGH ----
-    markup.Rule(markup.STYLES.STRIKETHROUGH)
-        .toText('<strike>%s</strike>'),
+    HTMLRule(markup.STYLES.STRIKETHROUGH, 'strike'),
 
     // ---- IMAGES ----
-    markup.Rule(markup.ENTITIES.IMAGE)
-        .toText(function(text, token) {
-            return '<img src="' + token.data.src +'" title="' + token.data.title + '" />';
-        }),
+    HTMLRule(markup.ENTITIES.IMAGE, 'img'),
 
     // ---- LINK ----
-    markup.Rule(markup.ENTITIES.LINK)
-        .toText(function(text, token) {
-            return '<a href="' + token.data.href +'" title="' + (token.data.title || '') + '">' + text + '</a>';
-        })
+    HTMLRule(markup.ENTITIES.LINK, 'a'),
 
+    // ---- FOOTNOTE ----
+    HTMLRule(markup.ENTITIES.FOOTNOTE_REF, 'a', function(data, token) {
+        return {
+            'href': '#footnote-' + token.text,
+            'class': 'footnote-ref'
+        };
+    })
 ];
