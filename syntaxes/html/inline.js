@@ -29,10 +29,8 @@ module.exports = [
     HTMLRule(markup.ENTITIES.LINK, 'a'),
 
     // ---- FOOTNOTE ----
-    HTMLRule(markup.ENTITIES.FOOTNOTE_REF, 'a', function(data, token) {
-        return {
-            'href': '#footnote-' + token.text,
-            'class': 'footnote-ref'
-        };
-    })
+    markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
+        .toText(function(refname, token) {
+            return '<sup><a href="#fn_' + refname + '" id="reffn_' + refname + '">' + refname + '</a></sup>';
+        })
 ];
