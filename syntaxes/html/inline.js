@@ -22,6 +22,18 @@ module.exports = [
 
     // ---- STRIKETHROUGH ----
     markup.Rule(markup.STYLES.STRIKETHROUGH)
-        .toText('<strike>%s</strike>')
+        .toText('<strike>%s</strike>'),
+
+    // ---- IMAGES ----
+    markup.Rule(markup.ENTITIES.IMAGE)
+        .toText(function(text, token) {
+            return '<img src="' + token.data.src +'" title="' + token.data.title + '" />';
+        }),
+
+    // ---- LINK ----
+    markup.Rule(markup.ENTITIES.LINK)
+        .toText(function(text, token) {
+            return '<a href="' + token.data.href +'" title="' + (token.data.title || '') + '">' + text + '</a>';
+        })
 
 ];
