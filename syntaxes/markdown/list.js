@@ -52,12 +52,14 @@ function listRule(type) {
             }
 
             // Trim to remove spaces and new line
-            if (loose) text = text.trim(); //replace(/\n$/, '');
+            if (loose) text = text.trim();
 
             return {
                 raw: item[0],
                 text: text,
-                depth: depth
+                data: {
+                    depth: depth
+                }
             };
         })
         .toText(function(text, block) {
@@ -77,7 +79,7 @@ function listRule(type) {
             if (!isListItem(nextBlock)
                 || (
                     (isListItem(nextBlock) && nextBlock != type)
-                    && (block.depth !== (nextBlockDepth - 1))
+                    && (block.data.depth !== (nextBlockDepth - 1))
                 )
             ) {
                 eol = '\n\n';

@@ -1,6 +1,5 @@
 var markup = require('../../');
-var markdownRules = require('../markdown');
-var syntax = markup.Syntax(markdownRules);
+var markdown = require('../markdown');
 
 var reMathInline = /^\$\$([^$\n]+)\$\$/;
 var reMathBlock = /^\$\$\n([^$]+)\n\$\$/;
@@ -50,9 +49,17 @@ var tplExpr = markup.Rule('template')
         };
     });
 
-// Add rules
-syntax.inline.unshift(inlineMathRule);
-syntax.inline.unshift(tplExpr);
-syntax.blocks.unshift(blockMathRule);
+var inlineRules = markdown.getInlineRules();
+inlineRules = inlineRules
+    .unshift(inlineMathRule)
+    .unshift(tplExpr);
 
-module.exports = syntax;
+var blockRules = markdown.getBlockRules();
+blockRules = blockRules
+    .unshift(blockMathRule);
+
+
+module.exports = markup.Syntax({
+    inline: inlineRules,
+    blocks: blockRules
+});
