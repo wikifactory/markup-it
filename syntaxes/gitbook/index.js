@@ -59,7 +59,7 @@ blockRules = blockRules
     .unshift(blockMathRule);
 
 
-module.exports = markup.Syntax({
+module.exports = markup.Syntax('gitbook+markdown', {
     inline: inlineRules,
     blocks: blockRules
 });
