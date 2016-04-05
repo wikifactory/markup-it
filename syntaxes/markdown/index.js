@@ -2,7 +2,7 @@ var markup = require('../../');
 
 module.exports = markup.Syntax({
     // List of rules for parsing blocks
-    inlines: require('./inlines'),
+    inline: require('./inlines'),
 
     // List of rules for parsing inline styles/entities
     blocks: require('./blocks')

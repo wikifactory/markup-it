@@ -8,7 +8,7 @@ var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
 
 
 var inlineMathRule = markup.Rule('math')
-    .option('parseInline', false)
+    .setOption('parseInline', false)
     .regExp(reMathInline, function(match) {
         var text = match[1];
         if (text.trim().length == 0) return;
@@ -21,7 +21,7 @@ var inlineMathRule = markup.Rule('math')
     });
 
 var blockMathRule = markup.Rule('math-block')
-    .option('parseInline', false)
+    .setOption('parseInline', false)
     .regExp(reMathBlock, function(match) {
         var text = match[1];
         if (text.trim().length == 0) return;
@@ -32,7 +32,7 @@ var blockMathRule = markup.Rule('math-block')
     });
 
 var tplExpr = markup.Rule('template')
-    .option('parseInline', false)
+    .setOption('parseInline', false)
     .regExp(reTpl, function(match) {
         var type = match[0];
         var text = match[2];
@@ -51,8 +51,8 @@ var tplExpr = markup.Rule('template')
     });
 
 // Add rules
-syntax.inlines.unshift(inlineMathRule);
-syntax.inlines.unshift(tplExpr);
+syntax.inline.unshift(inlineMathRule);
+syntax.inline.unshift(tplExpr);
 syntax.blocks.unshift(blockMathRule);
 
 module.exports = syntax;

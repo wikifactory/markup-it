@@ -7,7 +7,7 @@ var text = require('./text');
 module.exports = [
     // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
-        .option('parseInline', false)
+        .setOption('parseInline', false)
         .regExp(text.reEscape, function(match) {
             return {
                 text: utils.unescape(match[0])
@@ -93,7 +93,7 @@ module.exports = [
 
     // ---- CODE ----
     markup.Rule(markup.STYLES.CODE)
-        .option('parseInline', false)
+        .setOption('parseInline', false)
         .regExp(reInline.code, function(match) {
             return {
                 text: match[2]
@@ -130,7 +130,7 @@ module.exports = [
 
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
-        .option('parseInline', false)
+        .setOption('parseInline', false)
         .regExp(reInline.html, function(match) {
             return {
                 text: match[0]
@@ -140,7 +140,7 @@ module.exports = [
 
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
-        .option('parseInline', false)
+        .setOption('parseInline', false)
         .regExp(text.re, function(match) {
             return {
                 text: utils.unescape(match[0])
