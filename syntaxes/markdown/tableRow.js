@@ -50,17 +50,20 @@ var rowSyntax = markup.Syntax('markdown+row', {
 function parseRow(text, ctx) {
     var groups = [];
     var accu = [];
-    var tokens = markup.parseInline(rowSyntax, text, ctx);
+    var content = markup.parseInline(rowSyntax, text, ctx);
+    var tokens = content.getTokens();
 
     function pushCell() {
         if (accu.length > 0) {
             groups.push({
-                content: accu
+                content: markup.Content.createFromTokens(
+                    content.getSyntax(),
+                    accu
+                )
             });
         }
         accu = [];
     }
-
 
     tokens.forEach(function(token) {
         if (token.getType() == CELL_SEPARATOR) {
@@ -72,9 +75,7 @@ function parseRow(text, ctx) {
 
     pushCell();
 
-    console.log(text);
-    console.log(groups);
-    return [];
+    return groups;
 }
 
 module.exports = {

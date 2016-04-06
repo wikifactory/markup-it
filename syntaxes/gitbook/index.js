@@ -5,7 +5,6 @@ var reMathInline = /^\$\$([^$\n]+)\$\$/;
 var reMathBlock = /^\$\$\n([^$]+)\n\$\$/;
 var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
 
-
 var inlineMathRule = markup.Rule('math')
     .setOption('parseInline', false)
     .regExp(reMathInline, function(match) {
