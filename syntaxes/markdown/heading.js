@@ -1,14 +1,12 @@
-var reBlock = require('kramed/lib/rules/block');
+var reHeading = require('./re/heading');
 var markup = require('../../');
-
-var reId = /({#)(.+)(})/g;
 
 // Parse inner text of header to extract ID entity
 function parseHeadingText(text) {
     var id, match;
 
-    reId.lastIndex = 0;
-    match = reId.exec(text);
+    reHeading.id.lastIndex = 0;
+    match = reHeading.id.exec(text);
     id = match? match[2] : null;
 
     if (id) {
@@ -31,7 +29,7 @@ function headingRule(level) {
     var prefix = Array(level + 1).join('#');
 
     return markup.Rule(markup.BLOCKS['HEADING_' + level])
-        .regExp(reBlock.heading, function(match) {
+        .regExp(reHeading.normal, function(match) {
             if (match[1].length != level) return null;
             return parseHeadingText(match[2]);
         })
@@ -48,7 +46,7 @@ function headingRule(level) {
 // Since normal heading are listed first, onText is not required here
 function lheadingRule(level) {
     return markup.Rule(markup.BLOCKS['HEADING_' + level])
-        .regExp(reBlock.lheading, function(match) {
+        .regExp(reHeading.line, function(match) {
             var matchLevel = (match[2] === '=')? 1 : 2;
             if (matchLevel != level) return null;
 

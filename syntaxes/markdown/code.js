@@ -1,4 +1,4 @@
-var reBlock = require('kramed/lib/rules/block');
+var reBlock = require('./re/block');
 var markup = require('../../');
 var utils = require('./utils');
 
@@ -10,7 +10,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     .setOption('renderInline', false)
 
     // Fences
-    .regExp(reBlock.gfm.fences, function(match) {
+    .regExp(reBlock.fences, function(match) {
         return {
             text: match[3],
             data: {

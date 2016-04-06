@@ -2,6 +2,11 @@ var reBlock = require('kramed/lib/rules/block');
 var reTable = require('kramed/lib/rules/table');
 var markup = require('../../');
 
+
+
+
+
+
 // Create a table entity
 function Table(header, align, rows) {
     var that = this;

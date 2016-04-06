@@ -1,14 +1,13 @@
-var reInline = require('kramed/lib/rules/inline');
+var reInline = require('./re/inline');
 var markup = require('../../');
 
 var utils = require('./utils');
-var text = require('./text');
 
 module.exports = [
     // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
         .setOption('parseInline', false)
-        .regExp(text.reEscape, function(match) {
+        .regExp(reInline.escape, function(match) {
             return {
                 text: utils.unescape(match[0])
             };
@@ -121,7 +120,7 @@ module.exports = [
 
     // ---- STRIKETHROUGH ----
     markup.Rule(markup.STYLES.STRIKETHROUGH)
-        .regExp(reInline.gfm.del, function(match) {
+        .regExp(reInline.del, function(match) {
             return {
                 text: match[1]
             };
@@ -141,7 +140,7 @@ module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
         .setOption('parseInline', false)
-        .regExp(text.re, function(match) {
+        .regExp(reInline.text, function(match) {
             return {
                 text: utils.unescape(match[0])
             };
