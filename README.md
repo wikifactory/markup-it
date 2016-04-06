@@ -1,9 +1,7 @@
-# markup-it
+# markup-it [![Build Status](https://travis-ci.org/GitbookIO/markup-it.png?branch=master)](https://travis-ci.org/GitbookIO/markup-it) [![NPM version](https://badge.fury.io/js/markup-it.svg)](http://badge.fury.io/js/markup-it)
 
-> Pipeline for working with markup input (for example Markdown).
+`markup-it` is a JavaScript library to parse and modify markuped content (for example Markdown) using an intermediate format backed by an immutable model.
 
-[![Build Status](https://travis-ci.org/GitbookIO/draft-markup.png?branch=master)](https://travis-ci.org/GitbookIO/draft-markup)
-[![NPM version](https://badge.fury.io/js/draft-markup.svg)](http://badge.fury.io/js/draft-markup)
 
 ### Installation
 
@@ -24,13 +22,13 @@ var markdown = new MarkupIt(markdownSyntax);
 var html = new MarkupIt(htmlSyntax);
 ```
 
-##### Parse a text
+#### Parse a text
 
 ```js
 var content = markdown.toContent('Hello **World**');
 ```
 
-##### Render content to text
+#### Render content to HTML/Markdown
 
 ```js
 // Render back to markdown:
@@ -40,11 +38,11 @@ var textMd = markdown.toText(content);
 var textHtml = html.toText(content);
 ```
 
-##### Usage with Draft.js
+#### Usage with Draft.js
 
-`markup-it` can integrates with [Draft-js](https://facebook.github.io/draft-js/).
+`markup-it` can integrates with [Draft-js](https://facebook.github.io/draft-js/) for rich text editing.
 
-Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js using `DraftUtils.encode`:
+Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for `draft-js` using `DraftUtils.encode`:
 
 ```js
 var rawContent = MarkupIt.DraftUtils.encode(content);
@@ -62,15 +60,7 @@ var content = MarkupIt.DraftUtils.decode(rawContent);
 var text = markdown.toText(content);
 ```
 
-### Markdown Support
-
-This module uses the rules from [kramed](https://github.com/GitbookIO/kramed) to parse Markdown, it supports the whole syntaxes (headings, paragraphs, lists, tables, footnotes, etc). But:
-
-- Reference links are replaced by (resolved) links
-- Custom ID for headings (`# My Title #{myID}`) are parsed and added as an entity in the `header-x` block.
-- Table are parsed as a block with inner entities for each rows/columns
-
-### Custom Rules
+#### Custom Syntax
 
 This module contains the [markdown syntax](./syntaxes/markdown), but you can write your custom syntax or extend the existing ones.
 
