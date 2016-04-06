@@ -1,4 +1,4 @@
-var markup = require('../../');
+var MarkupIt = require('../../');
 
 var reTable = require('./re/table');
 var inlineRules = require('./inline');
@@ -11,7 +11,7 @@ var CELL_SEPARATOR = 'cell';
 */
 var rowRules = inlineRules
     .unshift(
-        markup.Rule(CELL_SEPARATOR)
+        MarkupIt.Rule(CELL_SEPARATOR)
             .setOption('parseInline', false)
             .regExp(reTable.cellSeparation, function(match) {
                 return {
@@ -20,7 +20,7 @@ var rowRules = inlineRules
             })
     )
     .replace(
-        markup.Rule(markup.STYLES.TEXT)
+        MarkupIt.Rule(MarkupIt.STYLES.TEXT)
             .setOption('parseInline', false)
             .regExp(reTable.cellInlineEscape, function(match) {
                 return {
@@ -35,7 +35,7 @@ var rowRules = inlineRules
             .toText(utils.escape)
     );
 
-var rowSyntax = markup.Syntax('markdown+row', {
+var rowSyntax = MarkupIt.Syntax('markdown+row', {
     inline: rowRules
 });
 
@@ -50,18 +50,20 @@ var rowSyntax = markup.Syntax('markdown+row', {
 function parseRow(text, ctx) {
     var groups = [];
     var accu = [];
-    var content = markup.parseInline(rowSyntax, text, ctx);
+    var content = MarkupIt.parseInline(rowSyntax, text, ctx);
     var tokens = content.getTokens();
 
     function pushCell() {
-        if (accu.length > 0) {
-            groups.push({
-                content: markup.Content.createFromTokens(
-                    content.getSyntax(),
-                    accu
-                )
-            });
-        }
+        if (accu.length == 0) return;
+
+        var cellContent = MarkupIt.Content.createFromTokens(
+            content.getSyntax(),
+            accu
+        );
+
+        groups.push({
+            content: MarkupIt.JSONUtils.encode(cellContent)
+        });
         accu = [];
     }
 
@@ -78,6 +80,32 @@ function parseRow(text, ctx) {
     return groups;
 }
 
+/*
+    Render a cell
+
+    @param {Cell} cell
+    @param {Object} ctx
+    @return {String}
+*/
+function renderCell(cell, ctx) {
+    var content = MarkupIt.JSONUtils.decode(cell.content);
+    return MarkupIt.render(rowSyntax, content, ctx);
+}
+
+/*
+    Render a row
+
+    @param {Array<Cell>} row
+    @param {Object} ctx
+    @return {String}
+*/
+function renderRow(row, ctx) {
+    return '|' + row.map(function(cell) {
+        return ' ' + renderCell(cell, ctx) + ' |';
+    }).join('');
+}
+
 module.exports = {
-    parse: parseRow
+    parse: parseRow,
+    render: renderRow
 };

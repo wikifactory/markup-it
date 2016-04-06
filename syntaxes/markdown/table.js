@@ -42,15 +42,6 @@ function cellToText(cell) {
     return output.toText();
 }
 
-// Render a row as text
-function rowToText(row) {
-    var that = this;
-
-    return '|' + row.map(function(cell) {
-        return ' ' + cellToText.call(that, cell) + ' |';
-    }).join('');
-}
-
 // Render align to text
 function alignToText(row) {
     return '|' + row.map(function(align) {
@@ -104,16 +95,16 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
     // Output table as text
     .toText(function(inner, block) {
-        var that = this;
+        var ctx = this;
         var result = '';
         var align = block.data.align || [];
         var header = block.data.header || [];
         var rows = block.data.rows || [];
 
-        result += rowToText.call(this, header) + '\n';
+        result += tableRow.render(header, ctx) + '\n';
         result += alignToText(align) + '\n';
         result += rows.map(function(row) {
-            return rowToText.call(that, row);
+            return tableRow.render(row, ctx);
         }).join('\n');
 
         return (result + '\n\n');
