@@ -65,7 +65,7 @@ var text = markdown.toText(content);
 This module contains the [markdown syntax](./syntaxes/markdown), but you can write your custom syntax or extend the existing ones.
 
 ```js
-var myRule = DraftMarkup.Rule(DraftMarkup.BLOCKS.HEADING_1)
+var myRule = MarkupIt.Rule(DraftMarkup.BLOCKS.HEADING_1)
     .regExp(/^<h1>(\S+)<\/h1>/, function(match) {
         return {
             text: match[1]
