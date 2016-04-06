@@ -1,6 +1,6 @@
-# draft-markup
+# markup-it
 
-> Pipeline for using markup input (for example Markdown) with [Draft-js](https://facebook.github.io/draft-js/).
+> Pipeline for working with markup input (for example Markdown).
 
 [![Build Status](https://travis-ci.org/GitbookIO/draft-markup.png?branch=master)](https://travis-ci.org/GitbookIO/draft-markup)
 [![NPM version](https://badge.fury.io/js/draft-markup.svg)](http://badge.fury.io/js/draft-markup)
@@ -8,7 +8,7 @@
 ### Installation
 
 ```
-$ npm i draft-markup --save
+$ npm i markup-it --save
 ```
 
 ### Usage
@@ -16,29 +16,50 @@ $ npm i draft-markup --save
 Initialize a syntax:
 
 ```js
-var DraftMarkup = require('draft-markup');
-var markdown = require('draft-markup/syntaxes/markdown');
+var MarkupIt = require('markup-it');
+var markdownSyntax = require('markup-it/syntaxes/markdown');
+var htmlSyntax = require('markup-it/syntaxes/html');
 
-var draftMarkup = new DraftMarkup(markdown);
+var markdown = new MarkupIt(markdownSyntax);
+var html = new MarkupIt(htmlSyntax);
 ```
 
-##### Markdown to ContentState
-
-Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js using `toRawContent`:
+##### Parse a text
 
 ```js
-var rawContent = draftMarkup.toRawContent('# Hello World\n\nThis is **bold**.');
+var content = markdown.toContent('Hello **World**');
+```
+
+##### Render content to text
+
+```js
+// Render back to markdown:
+var textMd = markdown.toText(content);
+
+// Render to HTML
+var textHtml = html.toText(content);
+```
+
+##### Usage with Draft.js
+
+`markup-it` can integrates with [Draft-js](https://facebook.github.io/draft-js/).
+
+Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for draft-js using `DraftUtils.encode`:
+
+```js
+var rawContent = MarkupIt.DraftUtils.encode(content);
+
 var blocks = draft.convertFromRaw(rawContent);
 var content = draft.ContentState.createFromBlockArray(blocks);
 ```
 
-##### ContentState to Markdown
-
-Output markdown from a ContentState using `.toText`:
+And output markdown from a ContentState using `DraftUtils.decode`:
 
 ```js
 var rawContent = draft.convertToRaw(content);
-var text = draftMarkup.toText(rawContent);
+var content = MarkupIt.DraftUtils.decode(rawContent);
+
+var text = markdown.toText(content);
 ```
 
 ### Markdown Support
@@ -51,7 +72,7 @@ This module uses the rules from [kramed](https://github.com/GitbookIO/kramed) to
 
 ### Custom Rules
 
-This module contains the [markdown syntax](./rules/markdown.js), but you can write your custom set of rules or extend the existing ones.
+This module contains the [markdown syntax](./syntaxes/markdown), but you can write your custom syntax or extend the existing ones.
 
 ```js
 var myRule = DraftMarkup.Rule(DraftMarkup.BLOCKS.HEADING_1)
@@ -68,16 +89,7 @@ var myRule = DraftMarkup.Rule(DraftMarkup.BLOCKS.HEADING_1)
 Create a new syntax inherited from the markdown one:
 
 ```js
-var mySyntax = DraftMarkup.Syntax(markdown);
-
-// Add a new rule
-mySyntax.blocks.add(myRule);
-
-//Remove a rule
-mySyntax.blocks.del(DraftMarkup.BLOCKS.HEADING_1);
-
-// Replace a rule
-mySyntax.blocks.replace(myRule);
+var mySyntax = markdownSyntax.addBlockRules(myRule);
 ```
 
 Checkout the [GitBook syntax](https://github.com/GitbookIO/draft-markup/blob/master/syntaxes/gitbook/index.js) as an example of custom rules extending a syntax.
