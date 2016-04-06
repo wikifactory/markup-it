@@ -1,22 +1,17 @@
 var MarkupIt = require('../');
 
-/*
-    Simple syntax with only bold support
-*/
-var syntax = MarkupIt.Syntax('mysyntax', {
-    inline: [
-        MarkupIt.Rule(MarkupIt.STYLES.BOLD)
-            .regExp(/^\*([\s\S]+?)\*/, function(match) {
-                return {
-                    text: match[1]
-                };
-            })
-            .toText('*%s*')
-    ]
-});
-
-
-describe.only('Custom Syntax', function() {
+describe('Custom Syntax', function() {
+    var syntax = MarkupIt.Syntax('mysyntax', {
+        inline: [
+            MarkupIt.Rule(MarkupIt.STYLES.BOLD)
+                .regExp(/^\*([\s\S]+?)\*/, function(match) {
+                    return {
+                        text: match[1]
+                    };
+                })
+                .toText('*%s*')
+        ]
+    });
     var markup = new MarkupIt(syntax);
 
     describe('.toContent', function() {
@@ -25,7 +20,7 @@ describe.only('Custom Syntax', function() {
             content.getSyntax().should.equal('mysyntax');
         });
 
-        it('should parse as a unstyled', function() {
+        it('should parse as unstyled', function() {
             var content = markup.toContent('Hello World');
             var tokens = content.getTokens();
 
@@ -50,21 +45,26 @@ describe.only('Custom Syntax', function() {
 
     describe('.toText', function() {
         it('should output correct string', function() {
-            var text = markup.toText({
-                blocks: [
+            var content = MarkupIt.JSONUtils.decode({
+                syntax: 'mysyntax',
+                tokens: [
                     {
+                        type: MarkupIt.BLOCKS.PARAGRAPH,
                         text: 'Hello World',
-                        inlineStyleRanges: [
+                        tokens: [
                             {
-                                offset: 6,
-                                length: 5,
-                                style: MarkupIt.STYLES.BOLD
+                                type: MarkupIt.STYLES.TEXT,
+                                text: 'Hello '
+                            },
+                            {
+                                type: MarkupIt.STYLES.BOLD,
+                                text: 'World'
                             }
                         ]
                     }
                 ]
             });
-
+            var text = markup.toText(content);
             text.should.equal('Hello *World*');
         });
     });
