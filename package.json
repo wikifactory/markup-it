@@ -37,6 +37,7 @@
   },
   "bin": {
     "markup-toJSON": "./bin/markup-toJSON.js",
+    "markup-toText": "./bin/markup-toText.js",
     "markup-toHTML": "./bin/markup-toHTML.js",
     "markup-toDraft": "./bin/markup-toDraft.js",
     "markup-toMarkdown": "./bin/markup-toMarkdown.js",
