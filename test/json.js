@@ -31,5 +31,27 @@ describe('JSON', function() {
 
     });
 
+    describe('encode', function() {
+        var token = MarkupIt.Token({
+            type: MarkupIt.BLOCKS.PARAGRAPH,
+            text: 'Hello World',
+            raw: 'Hello World'
+        });
+
+        var content = MarkupIt.Content.createFromTokens('mysyntax', [token]);
+        var json = MarkupIt.JSONUtils.encode(content);
+
+        it('should encode syntax name', function() {
+            json.syntax.should.equal('mysyntax');
+        });
+
+        it('should encode tokens', function() {
+            json.tokens.should.have.lengthOf(1);
+
+            var p = json.tokens[0];
+            p.type.should.equal(MarkupIt.BLOCKS.PARAGRAPH);
+            p.text.should.equal('Hello World');
+        });
+    });
 
 });
