@@ -3,11 +3,16 @@ var markup = require('../../');
 
 var utils = require('./utils');
 
-module.exports = [
+module.exports = markup.RulesSet([
     // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
         .setOption('parseInline', false)
         .regExp(reInline.escape, function(match) {
+            return {
+                text: utils.unescape(match[0])
+            };
+        })
+        .regExp(reInline.text, function(match) {
             return {
                 text: utils.unescape(match[0])
             };
@@ -135,15 +140,5 @@ module.exports = [
                 text: match[0]
             };
         })
-        .toText('%s'),
-
-    // ---- TEXT ----
-    markup.Rule(markup.STYLES.TEXT)
-        .setOption('parseInline', false)
-        .regExp(reInline.text, function(match) {
-            return {
-                text: utils.unescape(match[0])
-            };
-        })
-        .toText(utils.escape)
-];
+        .toText('%s')
+]);

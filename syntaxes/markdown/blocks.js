@@ -6,7 +6,7 @@ var list = require('./list');
 var code = require('./code');
 var table = require('./table');
 
-module.exports = [
+module.exports = markup.RulesSet([
     // ---- CODE BLOCKS ----
     code.block,
 
@@ -103,4 +103,4 @@ module.exports = [
     // ---- IGNORE
     markup.Rule(markup.BLOCKS.IGNORE)
         .regExp(reBlock.newline)
-];
+]);
