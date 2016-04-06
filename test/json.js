@@ -1,6 +1,7 @@
 var MarkupIt = require('../');
+var mock = require('./mock');
 
-describe('JSON', function() {
+describe('JSONUtils', function() {
 
     describe('decode', function() {
         var content = MarkupIt.JSONUtils.decode({
@@ -32,14 +33,7 @@ describe('JSON', function() {
     });
 
     describe('encode', function() {
-        var token = MarkupIt.Token({
-            type: MarkupIt.BLOCKS.PARAGRAPH,
-            text: 'Hello World',
-            raw: 'Hello World'
-        });
-
-        var content = MarkupIt.Content.createFromTokens('mysyntax', [token]);
-        var json = MarkupIt.JSONUtils.encode(content);
+        var json = MarkupIt.JSONUtils.encode(mock.paragraph);
 
         it('should encode syntax name', function() {
             json.syntax.should.equal('mysyntax');
@@ -51,6 +45,7 @@ describe('JSON', function() {
             var p = json.tokens[0];
             p.type.should.equal(MarkupIt.BLOCKS.PARAGRAPH);
             p.text.should.equal('Hello World');
+            p.tokens.should.be.an.Array().with.lengthOf(2);
         });
     });
 

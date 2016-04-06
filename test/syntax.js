@@ -4,12 +4,12 @@ describe('Custom Syntax', function() {
     var syntax = MarkupIt.Syntax('mysyntax', {
         inline: [
             MarkupIt.Rule(MarkupIt.STYLES.BOLD)
-                .regExp(/^\*([\s\S]+?)\*/, function(match) {
+                .regExp(/^\*\*([\s\S]+?)\*\*/, function(match) {
                     return {
                         text: match[1]
                     };
                 })
-                .toText('*%s*')
+                .toText('**%s**')
         ]
     });
     var markup = new MarkupIt(syntax);
@@ -32,7 +32,7 @@ describe('Custom Syntax', function() {
         });
 
         it('should parse inline', function() {
-            var content = markup.toContent('Hello *World*');
+            var content = markup.toContent('Hello **World**');
             var tokens = content.getTokens();
 
             tokens.size.should.equal(1);
@@ -65,7 +65,7 @@ describe('Custom Syntax', function() {
                 ]
             });
             var text = markup.toText(content);
-            text.should.equal('Hello *World*');
+            text.should.equal('Hello **World**');
         });
     });
 });
