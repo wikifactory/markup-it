@@ -1,16 +1,11 @@
 var MarkupIt = require('../../');
 
-var defaultInlineRule = MarkupIt.Rule(MarkupIt.STYLES.TEXT)
-    .setOption('parseInline', false)
-    .toText('%s');
-
+/*
+    This syntax uses the default rules (UNSTYLED)
+    with a block rule to add spacing between paragraphs.
+*/
 module.exports = MarkupIt.Syntax('markdown', {
-    // List of rules for parsing blocks
-    inline: [
-        defaultInlineRule
-    ],
-
-    // List of rules for parsing inline styles/entities
+    inline: [],
     blocks: [
         MarkupIt.Rule(MarkupIt.BLOCKS.PARAGRAPH)
             .toText('%s\n\n')

@@ -4,8 +4,46 @@ var mock = require('./mock');
 describe('DraftUtils', function() {
 
     describe('decode', function() {
+        var rawContent = {
+            entityMap: {
+                '1': {
+                    type: MarkupIt.ENTITIES.LINK,
+                    mutability: 'MUTABLE',
+                    data: {
+                        href: 'http://google.fr'
+                    }
+                }
+            },
+            blocks: [
+                {
+                    type: MarkupIt.BLOCKS.HEADING_1,
+                    text: 'Hello World',
+                    inlineStyleRanges: [],
+                    entityRanges: []
+                },
+                {
+                    type: MarkupIt.BLOCKS.PARAGRAPH,
+                    text: 'This is a link',
+                    inlineStyleRanges: [
+                        {
+                            offset: 0,
+                            length: 4,
+                            style: MarkupIt.STYLES.BOLD
+                        }
+                    ],
+                    entityRanges: [
+                        {
+                            offset: 10,
+                            length: 4,
+                            key: '1'
+                        }
+                    ]
+                }
+            ]
+        };
 
-
+        var content = MarkupIt.DraftUtils.decode(rawContent);
+        console.log(content);
     });
 
     describe('encode', function() {
