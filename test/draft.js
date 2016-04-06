@@ -43,7 +43,35 @@ describe('DraftUtils', function() {
         };
 
         var content = MarkupIt.DraftUtils.decode(rawContent);
-        console.log(content);
+
+        it('should correctly extract block tokens', function() {
+            var tokens = content.getTokens();
+
+            tokens.size.should.equal(2);
+            tokens.get(0).getType().should.equal(MarkupIt.BLOCKS.HEADING_1);
+            tokens.get(1).getType().should.equal(MarkupIt.BLOCKS.PARAGRAPH);
+        });
+
+        it('should correctly extract inline styles', function() {
+            var tokens = content.getTokens();
+            var p = tokens.get(1);
+            var inline = p.getTokens();
+
+            inline.size.should.equal(3);
+
+            var bold = inline.get(0);
+            bold.getType().should.equal(MarkupIt.STYLES.BOLD);
+            bold.getText().should.equal('This');
+
+            var text = inline.get(1);
+            text.getType().should.equal(MarkupIt.STYLES.TEXT);
+            text.getText().should.equal(' is a ');
+
+            var link = inline.get(2);
+            link.getType().should.equal(MarkupIt.ENTITIES.LINK);
+            link.getText().should.equal('link');
+        });
+
     });
 
     describe('encode', function() {
