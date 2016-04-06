@@ -1,16 +1,16 @@
-var reBlock = require('kramed/lib/rules/block');
+var reBlock = require('./re/block');
 var markup = require('../../');
 var utils = require('./utils');
 
 // Rule for parsing code blocks
 var blockRule = markup.Rule(markup.BLOCKS.CODE)
-    .option('parseInline', false)
+    .setOption('parseInline', false)
 
     // Currently causing problem since entities ar inlined
-    .option('renderInline', false)
+    .setOption('renderInline', false)
 
     // Fences
-    .regExp(reBlock.gfm.fences, function(match) {
+    .regExp(reBlock.fences, function(match) {
         return {
             text: match[3],
             data: {

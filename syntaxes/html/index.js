@@ -1,6 +1,6 @@
 var markup = require('../../');
 
-module.exports = markup.Syntax('markdown', {
+module.exports = markup.Syntax('html', {
     // List of rules for parsing blocks
     inline: require('./inline'),
 

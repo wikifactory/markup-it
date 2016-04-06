@@ -1,8 +1,6 @@
-var rBlock = require('kramed/lib/rules/block');
+var reBlock = require('./re/block');
+var reList = require('./re/list');
 var markup = require('../../');
-
-var reItem = /^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/;
-var reBullet = /^ *([*+-]|\d+\.) +/;
 
 // Return true if block is a list
 function isListItem(type) {
@@ -12,7 +10,7 @@ function isListItem(type) {
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
     return markup.Rule(type)
-        .regExp(rBlock.list, function(match) {
+        .regExp(reBlock.list, function(match) {
             var space;
             var rawList = match[0];
             var bull = match[2];
@@ -22,16 +20,16 @@ function listRule(type) {
             if (!ordered && type == markup.BLOCKS.OL_ITEM) return;
 
             // Parse first item
-            var item = rawList.match(reItem);
+            var item = rawList.match(reList.item);
             var text = item[0];
             var depth = item[1].length / 2;
 
             // Is it the last entry of the list?
-            var hasNext = Boolean(rawList.slice(item[0].length).match(reItem));
+            var hasNext = Boolean(rawList.slice(item[0].length).match(reList.item));
 
             // Remove the bullet
             space = text.length;
-            text = text.replace(reBullet, '');
+            text = text.replace(reList.bullet, '');
 
             // Outdent whatever the
             // list item contains. Hacky.
@@ -52,12 +50,14 @@ function listRule(type) {
             }
 
             // Trim to remove spaces and new line
-            if (loose) text = text.trim(); //replace(/\n$/, '');
+            if (loose) text = text.trim();
 
             return {
                 raw: item[0],
                 text: text,
-                depth: depth
+                data: {
+                    depth: depth
+                }
             };
         })
         .toText(function(text, block) {
@@ -66,7 +66,7 @@ function listRule(type) {
             if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
 
             var nextBlock = block.next? block.next.type : null;
-            var nextBlockDepth = block.next? block.next.depth : null;
+            var nextBlockDepth = block.next? block.next.data.depth : null;
 
             // Determine end of line
             var eol = '\n';
@@ -77,7 +77,7 @@ function listRule(type) {
             if (!isListItem(nextBlock)
                 || (
                     (isListItem(nextBlock) && nextBlock != type)
-                    && (block.depth !== (nextBlockDepth - 1))
+                    && (block.data.depth !== (nextBlockDepth - 1))
                 )
             ) {
                 eol = '\n\n';

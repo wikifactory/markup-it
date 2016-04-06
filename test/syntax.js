@@ -1,63 +1,71 @@
-require('should');
-
-var DraftMarkup = require('../');
-
-/*
-Simple syntax with only bold support
-*/
-
-var syntax = DraftMarkup.Syntax({
-    inlines: [
-        DraftMarkup.Rule(DraftMarkup.STYLES.BOLD)
-            .regExp(/^\*([\s\S]+?)\*/, function(match) {
-                return {
-                    text: match[1]
-                };
-            })
-            .toText('*%s*')
-    ]
-});
-
+var MarkupIt = require('../');
 
 describe('Custom Syntax', function() {
-    var markup = new DraftMarkup(syntax);
+    var syntax = MarkupIt.Syntax('mysyntax', {
+        inline: [
+            MarkupIt.Rule(MarkupIt.STYLES.BOLD)
+                .regExp(/^\*\*([\s\S]+?)\*\*/, function(match) {
+                    return {
+                        text: match[1]
+                    };
+                })
+                .toText('**%s**')
+        ]
+    });
+    var markup = new MarkupIt(syntax);
 
-    describe('.toRawContent', function() {
-        it('should parse as a paragraph', function() {
-            var blocks = markup.toRawContent('Hello World').blocks;
+    describe('.toContent', function() {
+        it('should return correct syntax name', function() {
+            var content = markup.toContent('Hello');
+            content.getSyntax().should.equal('mysyntax');
+        });
 
-            blocks.should.have.lengthOf(1);
-            blocks[0].text.should.equal('Hello World');
-            blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
+        it('should parse as unstyled', function() {
+            var content = markup.toContent('Hello World');
+            var tokens = content.getTokens();
+
+            tokens.size.should.equal(1);
+            var p = tokens.get(0);
+
+            p.getType().should.equal(MarkupIt.BLOCKS.UNSTYLED);
+            p.getText().should.equal('Hello World');
         });
 
         it('should parse inline', function() {
-            var blocks = markup.toRawContent('Hello *World*').blocks;
+            var content = markup.toContent('Hello **World**');
+            var tokens = content.getTokens();
 
-            blocks.should.have.lengthOf(1);
-            blocks[0].text.should.equal('Hello World');
-            blocks[0].type.should.equal(DraftMarkup.BLOCKS.PARAGRAPH);
+            tokens.size.should.equal(1);
+            var p = tokens.get(0);
+
+            p.getType().should.equal(MarkupIt.BLOCKS.UNSTYLED);
+            p.getText().should.equal('Hello World');
         });
     });
 
     describe('.toText', function() {
         it('should output correct string', function() {
-            var text = markup.toText({
-                blocks: [
+            var content = MarkupIt.JSONUtils.decode({
+                syntax: 'mysyntax',
+                tokens: [
                     {
+                        type: MarkupIt.BLOCKS.PARAGRAPH,
                         text: 'Hello World',
-                        inlineStyleRanges: [
+                        tokens: [
                             {
-                                offset: 6,
-                                length: 5,
-                                style: DraftMarkup.STYLES.BOLD
+                                type: MarkupIt.STYLES.TEXT,
+                                text: 'Hello '
+                            },
+                            {
+                                type: MarkupIt.STYLES.BOLD,
+                                text: 'World'
                             }
                         ]
                     }
                 ]
             });
-
-            text.should.equal('Hello *World*');
+            var text = markup.toText(content);
+            text.should.equal('Hello **World**');
         });
     });
 });

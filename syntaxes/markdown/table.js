@@ -1,29 +1,19 @@
-var reBlock = require('kramed/lib/rules/block');
-var reTable = require('kramed/lib/rules/table');
+var reTable = require('./re/table');
 var markup = require('../../');
+
+var tableRow = require('./tableRow');
 
 // Create a table entity
 function Table(header, align, rows) {
-    var that = this;
-
-    // Parse a cell and returns the content as data
-    function cell(text, i) {
-        var parser = that.createParsingSession();
-        parser.process(text);
-
-        return {
-            key: null,
-            content: parser.toRawContent()
-        };
-    }
+    var ctx = this;
 
     return {
         text: ' ',
         data: {
             align: align,
-            header: header.map(cell),
-            rows: rows.map(function(cells) {
-                return cells.map(cell);
+            header: tableRow.parse(header, ctx),
+            rows: rows.map(function(row) {
+                return tableRow.parse(row, ctx);
             })
         }
     };
@@ -41,15 +31,6 @@ function mapAlign(align) {
         } else {
             return null;
         }
-    });
-}
-
-// Split rows into cells
-function splitRows(rows) {
-    return rows = rows.map(function(row) {
-        return row
-            .replace(/^ *\| *| *\| *$/g, '')
-            .split(/ *\| */);
     });
 }
 
@@ -88,50 +69,34 @@ function alignToText(row) {
 var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
     // table no leading pipe (gfm)
-    .regExp(reBlock.tables.nptable, function(match) {
-        var header = match[1]
-            .replace(/\\\|/g, '&#124;')
-            .replace(reTable.trailingPipe, '')
-            .split(reTable.cell);
+    .regExp(reTable.nptable, function(match) {
+        var header = match[1];
         var align = match[2]
-            .replace(/\\\|/g, '&#124;')
             .replace(reTable.trailingPipeAlign, '')
             .split(reTable.cell);
         var rows = match[3]
-            .replace(/\\\|/g, '&#124;')
             .replace(/\n$/, '')
             .split('\n');
 
         // Align for columns
         align = mapAlign(align);
 
-        // Split each row into cells
-        rows = splitRows(rows);
-
         return Table.call(this, header, align, rows);
     })
 
     // normal table
-    .regExp(reBlock.tables.table, function(match) {
-        var header =  match[1]
-            .replace(/\\\|/g, '&#124;')
-            .replace(reTable.trailingPipe, '')
-            .split(reTable.cell);
+    .regExp(reTable.normal, function(match) {
+        var header =  match[1];
         var align = match[2]
-            .replace(/\\\|/g, '&#124;')
             .replace(reTable.trailingPipeAlign, '')
             .split(reTable.cell);
         var rows = match[3]
-            .replace(/\\\|/g, '&#124;')
             .replace(reTable.trailingPipeCell, '')
             .replace(/\n$/, '')
             .split('\n');
 
         // Align for columns
         align = mapAlign(align);
-
-        // Split each row into cells
-        rows = splitRows(rows);
 
         return Table.call(this, header, align, rows);
 

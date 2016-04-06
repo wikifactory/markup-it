@@ -1,20 +1,9 @@
-var reInline = require('kramed/lib/rules/inline');
+var reInline = require('./re/inline');
 var markup = require('../../');
 
 var utils = require('./utils');
-var text = require('./text');
 
-module.exports = [
-    // ---- ESCAPED ----
-    markup.Rule(markup.STYLES.TEXT)
-        .option('parseInline', false)
-        .regExp(text.reEscape, function(match) {
-            return {
-                text: utils.unescape(match[0])
-            };
-        })
-        .toText(utils.escape),
-
+module.exports = markup.RulesSet([
     // ---- FOOTNOTE REFS ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(match) {
@@ -93,7 +82,7 @@ module.exports = [
 
     // ---- CODE ----
     markup.Rule(markup.STYLES.CODE)
-        .option('parseInline', false)
+        .setOption('parseInline', false)
         .regExp(reInline.code, function(match) {
             return {
                 text: match[2]
@@ -121,7 +110,7 @@ module.exports = [
 
     // ---- STRIKETHROUGH ----
     markup.Rule(markup.STYLES.STRIKETHROUGH)
-        .regExp(reInline.gfm.del, function(match) {
+        .regExp(reInline.del, function(match) {
             return {
                 text: match[1]
             };
@@ -130,7 +119,7 @@ module.exports = [
 
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
-        .option('parseInline', false)
+        .setOption('parseInline', false)
         .regExp(reInline.html, function(match) {
             return {
                 text: match[0]
@@ -138,13 +127,18 @@ module.exports = [
         })
         .toText('%s'),
 
-    // ---- TEXT ----
+    // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
-        .option('parseInline', false)
-        .regExp(text.re, function(match) {
+        .setOption('parseInline', false)
+        .regExp(reInline.escape, function(match) {
+            return {
+                text: utils.unescape(match[0])
+            };
+        })
+        .regExp(reInline.text, function(match) {
             return {
                 text: utils.unescape(match[0])
             };
         })
         .toText(utils.escape)
-];
+]);

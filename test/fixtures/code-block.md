@@ -6,3 +6,8 @@
     This is another code block
     it's awesome
 
+
+```js
+var a = "Hello World";
+```
+

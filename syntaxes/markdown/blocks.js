@@ -1,4 +1,4 @@
-var reBlock = require('kramed/lib/rules/block');
+var reBlock = require('./re/block');
 var markup = require('../../');
 
 var heading = require('./heading');
@@ -6,7 +6,7 @@ var list = require('./list');
 var code = require('./code');
 var table = require('./table');
 
-module.exports = [
+module.exports = markup.RulesSet([
     // ---- CODE BLOCKS ----
     code.block,
 
@@ -93,7 +93,7 @@ module.exports = [
 
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
-        .regExp(reBlock.gfm.paragraph, function(match) {
+        .regExp(reBlock.paragraph, function(match) {
             return {
                 text: match[1].trim()
             };
@@ -103,4 +103,4 @@ module.exports = [
     // ---- IGNORE
     markup.Rule(markup.BLOCKS.IGNORE)
         .regExp(reBlock.newline)
-];
+]);
