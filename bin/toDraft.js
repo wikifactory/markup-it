@@ -7,7 +7,7 @@ var utils = require('./utils');
 utils.command(function(content) {
     console.log(
         JSON.stringify(
-            DraftMarkup.JSONUtils.encode(content),
+            DraftMarkup.DraftUtils.encode(content),
             null, 4
         )
     );

@@ -4,21 +4,6 @@ var markup = require('../../');
 var utils = require('./utils');
 
 module.exports = markup.RulesSet([
-    // ---- ESCAPED ----
-    markup.Rule(markup.STYLES.TEXT)
-        .setOption('parseInline', false)
-        .regExp(reInline.escape, function(match) {
-            return {
-                text: utils.unescape(match[0])
-            };
-        })
-        .regExp(reInline.text, function(match) {
-            return {
-                text: utils.unescape(match[0])
-            };
-        })
-        .toText(utils.escape),
-
     // ---- FOOTNOTE REFS ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(match) {
@@ -140,5 +125,20 @@ module.exports = markup.RulesSet([
                 text: match[0]
             };
         })
-        .toText('%s')
+        .toText('%s'),
+
+    // ---- ESCAPED ----
+    markup.Rule(markup.STYLES.TEXT)
+        .setOption('parseInline', false)
+        .regExp(reInline.escape, function(match) {
+            return {
+                text: utils.unescape(match[0])
+            };
+        })
+        .regExp(reInline.text, function(match) {
+            return {
+                text: utils.unescape(match[0])
+            };
+        })
+        .toText(utils.escape)
 ]);

@@ -1,7 +1,7 @@
 var markup = require('../../');
 
 var reTable = require('./re/table');
-var inlineRules = require('./inlines');
+var inlineRules = require('./inline');
 var utils = require('./utils');
 
 var CELL_SEPARATOR = 'cell';
