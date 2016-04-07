@@ -56,9 +56,14 @@ function parseRow(text, ctx) {
     function pushCell() {
         if (accu.length == 0) return;
 
+        var block = new MarkupIt.Token({
+            type: MarkupIt.BLOCKS.UNSTYLED,
+            tokens: accu
+        });
+
         var cellContent = MarkupIt.Content.createFromTokens(
             content.getSyntax(),
-            accu
+            [block]
         );
 
         groups.push({
