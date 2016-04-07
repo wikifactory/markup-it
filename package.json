@@ -36,11 +36,11 @@
     "range-utils": "^1.1.0"
   },
   "bin": {
-    "markup-toJSON": "./bin/markup-toJSON.js",
-    "markup-toText": "./bin/markup-toText.js",
-    "markup-toHTML": "./bin/markup-toHTML.js",
-    "markup-toDraft": "./bin/markup-toDraft.js",
-    "markup-toMarkdown": "./bin/markup-toMarkdown.js",
-    "markup-lint": "./bin/markup-lint.js"
+    "markup-toJSON": "./bin/toJSON.js",
+    "markup-toText": "./bin/toText.js",
+    "markup-toHTML": "./bin/toHTML.js",
+    "markup-toDraft": "./bin/toDraft.js",
+    "markup-toMarkdown": "./bin/toMarkdown.js",
+    "markup-lint": "./bin/lint.js"
   }
 }
