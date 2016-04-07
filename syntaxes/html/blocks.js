@@ -1,12 +1,19 @@
-var markup = require('../../');
+var MarkupIt = require('../../');
 var HTMLRule = require('./rule');
 
+var tableRule = require('./table');
+
+/*
+    Generate an heading rule for a specific level
+*/
 function headingRule(n) {
-    var type = markup.BLOCKS['HEADING_' + n];
+    var type = MarkupIt.BLOCKS['HEADING_' + n];
     return HTMLRule(type, 'h'+n);
 }
 
 module.exports = [
+    tableRule,
+
     headingRule(1),
     headingRule(2),
     headingRule(3),
@@ -14,11 +21,11 @@ module.exports = [
     headingRule(5),
     headingRule(6),
 
-    HTMLRule(markup.BLOCKS.HR, 'hr'),
-    HTMLRule(markup.BLOCKS.PARAGRAPH, 'p'),
-    HTMLRule(markup.BLOCKS.BLOCKQUOTE, 'blockquote'),
+    HTMLRule(MarkupIt.BLOCKS.HR, 'hr'),
+    HTMLRule(MarkupIt.BLOCKS.PARAGRAPH, 'p'),
+    HTMLRule(MarkupIt.BLOCKS.BLOCKQUOTE, 'blockquote'),
 
-    markup.Rule(markup.BLOCKS.FOOTNOTE)
+    MarkupIt.Rule(MarkupIt.BLOCKS.FOOTNOTE)
         .toText(function(text, token) {
             var refname = token.data.id;
 
@@ -29,12 +36,17 @@ module.exports = [
                 + '</blockquote>\n';
         }),
 
-    markup.Rule(markup.BLOCKS.HTML)
+    MarkupIt.Rule(MarkupIt.BLOCKS.HTML)
         .toText('%s\n\n'),
 
-    markup.Rule(markup.BLOCKS.CODE)
+    MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
         .toText(function(text, token) {
-            return '<pre><code class="lang-' + token.data.syntax + '">' + text + '</code></pre>\n\n';
-        })
+            var className = '';
 
+            if (token.data.syntax) {
+                className = 'lang-' + token.data.syntax;
+            }
+
+            return '<pre><code class="' + className + '">' + text + '</code></pre>\n\n';
+        })
 ];
