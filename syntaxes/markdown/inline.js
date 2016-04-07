@@ -58,22 +58,21 @@ module.exports = markup.RulesSet([
     markup.Rule(markup.ENTITIES.LINK_REF)
         .regExp(reInline.reflink, function(match) {
             return {
-                mutability: 'MUTABLE',
                 text: match[1],
                 data: {
                     ref: match[2]
                 }
             };
         })
-        .finish(function(text, entity) {
+        .finish(function(token) {
             var refs = (this.refs || {});
-            var refId = entity.data.ref;
+            var refId = token.data.ref;
             var ref = refs[refId];
 
-            entity.type = markup.ENTITIES.LINK;
-            entity.data = ref || { href: refId };
+            token.type = markup.ENTITIES.LINK;
+            token.data = ref || { href: refId };
 
-            return entity;
+            return token;
         })
         .toText(function(text, entity) {
             var title = entity.data.title? ' "' + entity.data.title + '"' : '';
