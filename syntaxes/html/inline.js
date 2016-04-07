@@ -26,7 +26,12 @@ module.exports = [
     HTMLRule(markup.ENTITIES.IMAGE, 'img'),
 
     // ---- LINK ----
-    HTMLRule(markup.ENTITIES.LINK, 'a'),
+    HTMLRule(markup.ENTITIES.LINK, 'a', function(data) {
+        return {
+            title: data.title? utils.escape(data.title) : undefined,
+            href: utils.escape(data.href || '')
+        };
+    }),
 
     // ---- FOOTNOTE ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
