@@ -67,6 +67,7 @@ function parseRow(text, ctx) {
         );
 
         groups.push({
+            key: MarkupIt.genKey(),
             content: MarkupIt.JSONUtils.encode(cellContent)
         });
         accu = [];
