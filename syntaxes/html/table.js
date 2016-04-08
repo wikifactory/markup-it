@@ -40,7 +40,7 @@ function renderRows(rows, align) {
     }).join('');
 }
 
-module.exports = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
+var rule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
     .toText(function(text, token) {
         var table = token.data;
 
@@ -53,3 +53,6 @@ module.exports = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
             '</tbody>' +
         '</table>\n\n';
     });
+
+
+module.exports = rule;

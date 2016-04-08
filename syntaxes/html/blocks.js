@@ -2,6 +2,7 @@ var MarkupIt = require('../../');
 var HTMLRule = require('./rule');
 
 var tableRule = require('./table');
+var listRules = require('./list');
 
 /*
     Generate an heading rule for a specific level
@@ -13,6 +14,9 @@ function headingRule(n) {
 
 module.exports = [
     tableRule,
+
+    listRules.ul,
+    listRules.ol,
 
     headingRule(1),
     headingRule(2),
