@@ -48,6 +48,15 @@ module.exports = markup.RulesSet([
                 }
             };
         })
+        .regExp(reInline.autolink, function(match) {
+            return {
+                mutability: 'MUTABLE',
+                text: match[1],
+                data: {
+                    href: match[1]
+                }
+            };
+        })
         .toText(function(text, entity) {
             var title = entity.data.title? ' "' + entity.data.title + '"' : '';
             return '[' + text + '](' + entity.data.href + title + ')';
