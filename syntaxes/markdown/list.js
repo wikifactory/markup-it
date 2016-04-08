@@ -2,6 +2,7 @@ var reBlock = require('./re/block');
 var reList = require('./re/list');
 var markup = require('../../');
 
+
 // Return true if block is a list
 function isListItem(type) {
     return (type == markup.BLOCKS.UL_ITEM || type == markup.BLOCKS.OL_ITEM);
@@ -21,6 +22,7 @@ function listRule(type) {
 
             // Parse first item
             var item = rawList.match(reList.item);
+
             var text = item[0];
             var depth = item[1].length / 2;
 
@@ -29,7 +31,7 @@ function listRule(type) {
 
             // Remove the bullet
             space = text.length;
-            text = text.replace(reList.bullet, '');
+            text = text.replace(reList.bulletAndSpaces, '');
 
             // Outdent whatever the
             // list item contains. Hacky.
@@ -65,6 +67,7 @@ function listRule(type) {
             var bullet = '*';
             if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
 
+            var depth = block.data.depth;
             var nextBlock = block.next? block.next.type : null;
             var nextBlockDepth = block.next? block.next.data.depth : null;
 
@@ -77,14 +80,14 @@ function listRule(type) {
             if (!isListItem(nextBlock)
                 || (
                     (isListItem(nextBlock) && nextBlock != type)
-                    && (block.data.depth !== (nextBlockDepth - 1))
+                    && (depth !== (nextBlockDepth - 1))
                 )
             ) {
                 eol = '\n\n';
             }
 
             return (
-                Array(block.depth + 1).join('  ') +
+                Array(depth + 1).join('  ') +
                 bullet + ' ' +
                 text + eol
             );

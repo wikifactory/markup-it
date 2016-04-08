@@ -7,6 +7,10 @@ var code = require('./code');
 var table = require('./table');
 
 module.exports = markup.RulesSet([
+    // ---- LISTS ----
+    list.ul,
+    list.ol,
+
     // ---- CODE BLOCKS ----
     code.block,
 
@@ -23,10 +27,6 @@ module.exports = markup.RulesSet([
 
     heading.lrule(2),
     heading.lrule(1),
-
-    // ---- LISTS ----
-    list.ul,
-    list.ol,
 
     // ---- HTML ----
     markup.Rule(markup.BLOCKS.HTML)

@@ -14,10 +14,6 @@ function toHTML(text) {
     return html.toText(content);
 }
 
-function hashHTML(source) {
-    return source.replace(/\s/g, '');
-}
-
 describe('Markdown', function() {
 
     describe('Fixtures', function() {
@@ -28,7 +24,7 @@ describe('Markdown', function() {
             var expectedHTML = fs.readFileSync(path.resolve(FIXTURES, htmlFilePath), 'utf8');
 
             var resultHTML = toHTML(sourceMD);
-            hashHTML(resultHTML).should.equal(hashHTML(expectedHTML));
+            resultHTML.should.be.html(expectedHTML);
         }
 
         var files = fs.readdirSync(FIXTURES);

@@ -1,4 +1,5 @@
 require('should');
+require('should-html');
 
 require('./json');
 require('./draft');
