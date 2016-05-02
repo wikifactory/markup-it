@@ -90,7 +90,7 @@ module.exports = markup.RulesSet([
 
     // ---- CODE ----
     markup.Rule(markup.STYLES.CODE)
-        .setOption('parseInline', false)
+        .setOption('parse', false)
         .regExp(reInline.code, function(match) {
             return {
                 text: match[2]
@@ -127,7 +127,7 @@ module.exports = markup.RulesSet([
 
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
-        .setOption('parseInline', false)
+        .setOption('parse', false)
         .regExp(reInline.html, function(match) {
             return {
                 text: match[0]
@@ -137,7 +137,7 @@ module.exports = markup.RulesSet([
 
     // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
-        .setOption('parseInline', false)
+        .setOption('parse', false)
         .regExp(reInline.escape, function(match) {
             return {
                 text: utils.unescape(match[0])

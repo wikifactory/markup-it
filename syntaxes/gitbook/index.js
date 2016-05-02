@@ -6,7 +6,7 @@ var reMathBlock = /^\$\$\n([^$]+)\n\$\$/;
 var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
 
 var inlineMathRule = markup.Rule('math')
-    .setOption('parseInline', false)
+    .setOption('parse', false)
     .regExp(reMathInline, function(match) {
         var text = match[1];
         if (text.trim().length == 0) return;
@@ -18,7 +18,7 @@ var inlineMathRule = markup.Rule('math')
     });
 
 var blockMathRule = markup.Rule('math-block')
-    .setOption('parseInline', false)
+    .setOption('parse', false)
     .regExp(reMathBlock, function(match) {
         var text = match[1];
         if (text.trim().length == 0) return;
@@ -29,7 +29,7 @@ var blockMathRule = markup.Rule('math-block')
     });
 
 var tplExpr = markup.Rule('template')
-    .setOption('parseInline', false)
+    .setOption('parse', false)
     .regExp(reTpl, function(match) {
         var type = match[0];
         var text = match[2];

@@ -44,9 +44,12 @@ module.exports = markup.RulesSet([
 
     // ---- BLOCKQUOTE ----
     markup.Rule(markup.BLOCKS.BLOCKQUOTE)
+        .setOption('parse', 'block')
         .regExp(reBlock.blockquote, function(match) {
+            var inner = match[1].replace(/^ *> ?/gm, '').trim();
+
             return {
-                text: match[1].replace(/^ *> ?/gm, '').trim()
+                text: inner
             };
         })
         .toText('> %s\n\n'),

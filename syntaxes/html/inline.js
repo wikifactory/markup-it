@@ -6,12 +6,12 @@ var HTMLRule = require('./rule');
 module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
-        .setOption('parseInline', false)
+        .setOption('parse', false)
         .toText(utils.escape),
 
     // ---- CODE ----
     HTMLRule(markup.STYLES.CODE, 'code')
-        .setOption('parseInline', false),
+        .setOption('parse', false),
 
     // ---- BOLD ----
     HTMLRule(markup.STYLES.BOLD, 'b'),

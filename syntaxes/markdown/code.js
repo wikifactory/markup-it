@@ -4,10 +4,10 @@ var utils = require('./utils');
 
 // Rule for parsing code blocks
 var blockRule = markup.Rule(markup.BLOCKS.CODE)
-    .setOption('parseInline', false)
+    .setOption('parse', false)
 
     // Currently causing problem since entities ar inlined
-    .setOption('renderInline', false)
+    .setOption('renderInner', false)
 
     // Fences
     .regExp(reBlock.fences, function(match) {
