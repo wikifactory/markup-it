@@ -7,7 +7,12 @@ var list = {
     bulletAndSpaces: /^ *([*+-]|\d+\.) +/
 };
 
-list.item = /^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/ /*replace(list.item)
+list.item = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;
+list.item = replace(list.item, 'gm')
+  (/bull/g, list.bullet)
+  ();
+
+/^( *)((?:[*+-]|\d+\.)) [^\n]*(?:\n(?!(?:[*+-]|\d+\.) ))*/gm  /*replace(list.item)
     (/bull/g, list.bullet)
     ();*/
 

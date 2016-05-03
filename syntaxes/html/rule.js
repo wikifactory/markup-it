@@ -10,9 +10,10 @@ function attrsToString(attrs) {
 
     for (var key in attrs) {
         value = attrs[key];
-        if (is.undefined(value) || is.null(value)) {
+        if (is.undefined(value) || is.null(value) || (is.string(value) && !value)) {
             continue;
         }
+
         output += ' ' + key + '=' + JSON.stringify(value);
     }
 

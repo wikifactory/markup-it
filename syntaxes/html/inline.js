@@ -10,8 +10,10 @@ module.exports = [
         .toText(utils.escape),
 
     // ---- CODE ----
-    HTMLRule(markup.STYLES.CODE, 'code')
-        .setOption('parse', false),
+    markup.Rule(markup.STYLES.CODE)
+        .toText(function(text, token) {
+            return '<code>' + utils.escape(text) + '</code>';
+        }),
 
     // ---- BOLD ----
     HTMLRule(markup.STYLES.BOLD, 'b'),

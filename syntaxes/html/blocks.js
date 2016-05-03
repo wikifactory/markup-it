@@ -4,6 +4,8 @@ var HTMLRule = require('./rule');
 var tableRule = require('./table');
 var listRules = require('./list');
 
+var utils = require('./utils');
+
 /*
     Generate an heading rule for a specific level
 */
@@ -45,12 +47,12 @@ module.exports = [
 
     MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
         .toText(function(text, token) {
-            var className = '';
+            var attr = '';
 
             if (token.data.syntax) {
-                className = 'lang-' + token.data.syntax;
+                attr = ' class="lang-' + token.data.syntax +'"';
             }
 
-            return '<pre><code class="' + className + '">' + text + '</code></pre>\n\n';
+            return '<pre><code' + attr + '>' + utils.escape(text) + '</code></pre>\n\n';
         })
 ];

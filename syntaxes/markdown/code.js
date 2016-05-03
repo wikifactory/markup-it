@@ -28,8 +28,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         inner = lines.map(function(line) {
             return line.replace(/^( {4}|\t)/, '');
         })
-        .join('\n')
-        .replace(/\s+$/g, '');
+        .join('\n');
 
         return {
             text: inner,

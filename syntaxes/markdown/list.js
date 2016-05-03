@@ -1,7 +1,7 @@
 var reBlock = require('./re/block');
 var reList = require('./re/list');
 var markup = require('../../');
-
+var utils = require('./utils');
 
 // Return true if block is a list
 function isListItem(type) {
@@ -11,8 +11,8 @@ function isListItem(type) {
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
     return markup.Rule(type)
+        .setOption('parse', 'block')
         .regExp(reBlock.list, function(match) {
-            var space;
             var rawList = match[0];
             var bull = match[2];
             var ordered = bull.length > 1;
@@ -20,54 +20,47 @@ function listRule(type) {
             if (ordered && type == markup.BLOCKS.UL_ITEM) return;
             if (!ordered && type == markup.BLOCKS.OL_ITEM) return;
 
-            // Parse first item
-            var item = rawList.match(reList.item);
+            var item;
 
-            var text = item[0];
-            var depth = item[1].length / 2;
+            reList.item.lastIndex = 0;
+            var lastIndex = 0;
 
-            // Is it the last entry of the list?
-            var hasNext = Boolean(rawList.slice(item[0].length).match(reList.item));
+            var result = [];
+            var rawItem, textItem, space;
 
-            // Remove the bullet
-            space = text.length;
-            text = text.replace(reList.bulletAndSpaces, '');
+            while ((item = reList.item.exec(rawList)) !== null) {
+                rawItem = rawList.slice(lastIndex, reList.item.lastIndex);
 
-            // Outdent whatever the
-            // list item contains. Hacky.
-            if (~text.indexOf('\n ')) {
-                space -= item.length;
-                text = text.replace(new RegExp('^ {1,' + space + '}', 'gm'), '');
-            }
+                // Remove the list item's bullet
+                // so it is seen as the next token.
+                textItem = item[0];
+                space = textItem.length;
+                textItem = textItem.replace(/^ *([*+-]|\d+\.) +/, '');
 
-            // Determine whether item is loose or not.
-            // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
-            // for discount behavior.
-            var loose = this.listNext || /\n\n(?!\s*$)/.test(text);
-            if (hasNext) {
-                this.listNext = text.charAt(text.length - 1) === '\n';
-                if (!loose) loose = hasNext;
-            } else {
-                this.listNext = false;
-            }
-
-            // Trim to remove spaces and new line
-            if (loose) text = text.trim();
-
-            return {
-                raw: item[0],
-                text: text,
-                data: {
-                    depth: depth
+                // Outdent whatever the
+                // list item contains. Hacky.
+                if (~textItem.indexOf('\n ')) {
+                    space -= textItem.length;
+                    textItem =  textItem.replace(new RegExp('^ {1,' + space + '}', 'gm'), '');
                 }
-            };
+
+                result.push({
+                    type: markup.BLOCKS.UL_ITEM,
+                    raw: rawItem,
+                    text: textItem
+                });
+
+                lastIndex = reList.item.lastIndex;
+            }
+
+
+            return result;
         })
         .toText(function(text, block) {
             // Determine which bullet to use
             var bullet = '*';
             if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
 
-            var depth = block.data.depth;
             var nextBlock = block.next? block.next.type : null;
             var nextBlockDepth = block.next? block.next.data.depth : null;
 
@@ -77,18 +70,25 @@ function listRule(type) {
             // We finish list if:
             //    - Next block is not a list
             //    - List from a different type with same depth
-            if (!isListItem(nextBlock)
-                || (
-                    (isListItem(nextBlock) && nextBlock != type)
-                    && (depth !== (nextBlockDepth - 1))
-                )
-            ) {
+            if (!isListItem(nextBlock)) {
                 eol = '\n\n';
             }
 
+            // Add bullet
+            text = bullet + ' ' + text;
+
+            // Prepend text with spacing
+            var lines = utils.splitLines(text);
+
+            text = lines
+                .map(function(line, i) {
+                    if (i === 0) return line;
+                    if (!line.trim()) return '';
+                    return '    ' + line;
+                })
+                .join('\n');
+
             return (
-                Array(depth + 1).join('  ') +
-                bullet + ' ' +
                 text + eol
             );
         });
