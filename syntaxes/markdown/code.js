@@ -54,10 +54,12 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         // Use four spaces otherwise
         var lines = utils.splitLines(text);
 
-        return lines.map(function(line) {
-            if (!line.trim()) return '';
-            return '    ' + line;
-        }).join('\n') + '\n\n';
+        return lines
+            .map(function(line) {
+                if (!line.trim()) return '';
+                return '    ' + line;
+            })
+            .join('\n') + '\n\n';
     });
 
 

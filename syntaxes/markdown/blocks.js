@@ -5,6 +5,7 @@ var heading = require('./heading');
 var list = require('./list');
 var code = require('./code');
 var table = require('./table');
+var utils = require('./utils');
 
 module.exports = markup.RulesSet([
     // ---- LISTS ----
@@ -52,7 +53,17 @@ module.exports = markup.RulesSet([
                 text: inner
             };
         })
-        .toText('> %s\n\n'),
+
+        .toText(function(text) {
+            var lines = utils.splitLines(text);
+
+            return lines
+            .map(function(line) {
+                // todo: can be improved to avoid empty line at the end
+                return '> ' + line;
+            })
+            .join('\n') + '\n\n';
+        }),
 
 
     // ---- FOOTNOTES ----
