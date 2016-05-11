@@ -140,7 +140,7 @@ module.exports = markup.RulesSet([
         .setOption('parse', false)
         .regExp(reInline.escape, function(match) {
             return {
-                text: utils.unescape(match[0])
+                text: match[1]
             };
         })
         .regExp(reInline.text, function(match) {
