@@ -17,6 +17,9 @@ module.exports = markup.RulesSet([
 
     // ---- TABLE ----
     table.block,
+    table.header,
+    table.row,
+    table.cell,
 
     // ---- HEADING ----
     heading.rule(6),

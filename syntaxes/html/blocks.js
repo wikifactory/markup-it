@@ -1,7 +1,7 @@
 var MarkupIt = require('../../');
 var HTMLRule = require('./rule');
 
-var tableRule = require('./table');
+var tableRules = require('./table');
 var listRules = require('./list');
 
 var utils = require('./utils');
@@ -15,7 +15,11 @@ function headingRule(n) {
 }
 
 module.exports = [
-    tableRule,
+    tableRules.block,
+    tableRules.header,
+    tableRules.body,
+    tableRules.row,
+    tableRules.cell,
 
     listRules.ul,
     listRules.ol,

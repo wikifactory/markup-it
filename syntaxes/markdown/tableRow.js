@@ -44,11 +44,12 @@ var rowSyntax = MarkupIt.Syntax('markdown+row', {
 
     @param {String} text
     @param {Object} ctx
+    @param {Array<String>} align
 
-    @return Array<Cell>
+    @return {Token}
 */
-function parseRow(text, ctx) {
-    var groups = [];
+function parseRow(text, ctx, align) {
+    var cells = [];
     var accu = [];
     var content = MarkupIt.parseInline(rowSyntax, text, ctx);
     var tokens = content.getTokens();
@@ -56,20 +57,14 @@ function parseRow(text, ctx) {
     function pushCell() {
         if (accu.length == 0) return;
 
-        var block = new MarkupIt.Token({
-            type: MarkupIt.BLOCKS.UNSTYLED,
-            tokens: accu
+        var cell = MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_CELL, {
+            tokens: accu,
+            data: {
+                align: align[cells.length]
+            }
         });
 
-        var cellContent = MarkupIt.Content.createFromTokens(
-            content.getSyntax(),
-            [block]
-        );
-
-        groups.push({
-            key: MarkupIt.genKey(),
-            content: MarkupIt.JSONUtils.encode(cellContent)
-        });
+        cells.push(cell);
         accu = [];
     }
 
@@ -83,35 +78,11 @@ function parseRow(text, ctx) {
 
     pushCell();
 
-    return groups;
-}
-
-/*
-    Render a cell
-
-    @param {Cell} cell
-    @param {Object} ctx
-    @return {String}
-*/
-function renderCell(cell, ctx) {
-    var content = MarkupIt.JSONUtils.decode(cell.content);
-    return MarkupIt.render(rowSyntax, content, ctx);
-}
-
-/*
-    Render a row
-
-    @param {Array<Cell>} row
-    @param {Object} ctx
-    @return {String}
-*/
-function renderRow(row, ctx) {
-    return '|' + row.map(function(cell) {
-        return ' ' + renderCell(cell, ctx) + ' |';
-    }).join('');
+    return MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_ROW, {
+        tokens: cells
+    });
 }
 
 module.exports = {
-    parse: parseRow,
-    render: renderRow
+    parse: parseRow
 };

@@ -17,6 +17,10 @@ var TAGS_TO_TYPE = {
     p:              markup.BLOCKS.PARAGRAPH,
     hr:             markup.BLOCKS.HR,
 
+    table:          markup.BLOCKS.TABLE,
+    tr:             markup.BLOCKS.TR_ROW,
+    td:             markup.BLOCKS.TABLE_CELL,
+
     b:              markup.INLINES.BOLD,
     strike:         markup.INLINES.STRIKETHROUGH,
     em:             markup.INLINES.ITALIC,

@@ -4,22 +4,51 @@ var markup = require('../../');
 var tableRow = require('./tableRow');
 
 // Create a table entity
+
+/**
+    Create a table entity from parsed header/rows
+
+    @param {Array} header
+    @param {Array<String>} align
+    @param {Array<Array>} rows
+    @rteturn {Object} tokenMatch
+*/
 function Table(header, align, rows) {
     var ctx = this;
 
-    return {
-        text: ' ',
+    var headerRow = tableRow.parse(header, ctx, align);
+    var rowTokens = rows.map(function(row) {
+        return tableRow.parse(row, ctx, align);
+    });
+
+    var headerToken = markup.Token.create(markup.BLOCKS.TABLE_HEADER, {
+        tokens: [headerRow],
         data: {
-            align: align,
-            header: tableRow.parse(header, ctx),
-            rows: rows.map(function(row) {
-                return tableRow.parse(row, ctx);
-            })
+            align: align
         }
+    });
+
+    var bodyToken = markup.Token.create(markup.BLOCKS.TABLE_BODY, {
+        tokens: rowTokens,
+        data: {
+            align: align
+        }
+    });
+
+    return {
+        tokens: [
+            headerToken,
+            bodyToken
+        ]
     };
 }
 
-// Detect alignement per column
+/**
+    Detect alignement per column
+
+    @param {Array<String>}
+    @return {Array<String|null>}
+*/
 function mapAlign(align) {
     return align.map(function(s) {
         if (reTable.alignRight.test(s)) {
@@ -34,15 +63,12 @@ function mapAlign(align) {
     });
 }
 
-// Render a cell as text
-function cellToText(cell) {
-    var output = this.createOutputSession();
-    output.processInline(cell.content);
+/**
+    Render align to text
 
-    return output.toText();
-}
-
-// Render align to text
+    @param {Array<String>} row
+    @return {String}
+*/
 function alignToText(row) {
     return '|' + row.map(function(align) {
         if (align == 'right') {
@@ -59,7 +85,7 @@ function alignToText(row) {
 
 var blockRule = markup.Rule(markup.BLOCKS.TABLE)
 
-    // table no leading pipe (gfm)
+    // Table no leading pipe (gfm)
     .regExp(reTable.nptable, function(match) {
         var header = match[1];
         var align = match[2]
@@ -75,7 +101,7 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
         return Table.call(this, header, align, rows);
     })
 
-    // normal table
+    // Normal table
     .regExp(reTable.normal, function(match) {
         var header =  match[1];
         var align = match[2]
@@ -90,26 +116,27 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
         align = mapAlign(align);
 
         return Table.call(this, header, align, rows);
+    });
 
-    })
 
-    // Output table as text
-    .toText(function(inner, block) {
-        var ctx = this;
-        var result = '';
-        var align = block.data.align || [];
-        var header = block.data.header || [];
-        var rows = block.data.rows || [];
+var cellRule = markup.Rule(markup.BLOCKS.TABLE_CELL)
+    .toText(function(text) {
+        return ' ' + text + ' |';
+    });
 
-        result += tableRow.render(header, ctx) + '\n';
-        result += alignToText(align) + '\n';
-        result += rows.map(function(row) {
-            return tableRow.render(row, ctx);
-        }).join('\n');
+var headerRule = markup.Rule(markup.BLOCKS.TABLE_HEADER)
+    .toText(function(text, tok) {
+        return text + alignToText(tok.data.align) + '\n';
+    });
 
-        return (result + '\n\n');
+var rowRule = markup.Rule(markup.BLOCKS.TABLE_ROW)
+    .toText(function(text) {
+        return '|' + text + '\n';
     });
 
 module.exports = {
-    block: blockRule
+    block:  blockRule,
+    header: headerRule,
+    cell:   cellRule,
+    row:    rowRule
 };
