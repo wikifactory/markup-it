@@ -89,7 +89,7 @@ module.exports = markup.RulesSet([
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)
         .regExp(reBlock.def, function(match) {
-            var id = match[1];
+            var id = match[1].toLowerCase();
             var href = match[2];
             var title = match[3];
 

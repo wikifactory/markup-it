@@ -66,10 +66,29 @@ module.exports = markup.RulesSet([
     // Doesn't render, but match and resolve reference
     markup.Rule(markup.ENTITIES.LINK_REF)
         .regExp(reInline.reflink, function(match) {
+
             return {
                 text: match[1],
                 data: {
-                    ref: match[2]
+                    ref: match[2].toLowerCase()
+                }
+            };
+        })
+        .regExp(reInline.nolink, function(match) {
+
+            return {
+                text: match[1],
+                data: {
+                    ref: match[1].toLowerCase()
+                }
+            };
+        })
+        .regExp(reInline.reffn, function(match) {
+
+            return {
+                text: match[1],
+                data: {
+                    ref: match[1].toLowerCase()
                 }
             };
         })
