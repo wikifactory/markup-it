@@ -2,6 +2,8 @@ var MarkupIt = require('../../');
 
 var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
     .toText(function(innerHTML) {
+        this._rowIndex = 0;
+
         return '<table>\n' + innerHTML + '</table>\n\n';
     });
 
@@ -17,12 +19,14 @@ var bodyRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE_BODY)
 
 var rowRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE_ROW)
     .toText(function(innerHTML) {
+        this._rowIndex = (this._rowIndex || 0) + 1;
+
         return '<tr>' + innerHTML + '</tr>';
     });
 
 var cellRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE_CELL)
     .toText(function(innerHTML, token) {
-        var isHeader = false; // todo
+        var isHeader = (this._rowIndex || 0) === 0;
         var align = token.data.align;
 
         var type = isHeader ? 'th' : 'td';

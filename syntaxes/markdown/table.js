@@ -36,6 +36,9 @@ function Table(header, align, rows) {
     });
 
     return {
+        data: {
+            align: align
+        },
         tokens: [
             headerToken,
             bodyToken
@@ -116,12 +119,10 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
         align = mapAlign(align);
 
         return Table.call(this, header, align, rows);
-    });
+    })
 
-
-var cellRule = markup.Rule(markup.BLOCKS.TABLE_CELL)
     .toText(function(text) {
-        return ' ' + text + ' |';
+        return text;
     });
 
 var headerRule = markup.Rule(markup.BLOCKS.TABLE_HEADER)
@@ -129,14 +130,25 @@ var headerRule = markup.Rule(markup.BLOCKS.TABLE_HEADER)
         return text + alignToText(tok.data.align) + '\n';
     });
 
+var bodyRule = markup.Rule(markup.BLOCKS.TABLE_BODY)
+    .toText(function(text) {
+        return text;
+    });
+
 var rowRule = markup.Rule(markup.BLOCKS.TABLE_ROW)
     .toText(function(text) {
         return '|' + text + '\n';
     });
 
+var cellRule = markup.Rule(markup.BLOCKS.TABLE_CELL)
+    .toText(function(text) {
+        return ' ' + text + ' |';
+    });
+
 module.exports = {
     block:  blockRule,
     header: headerRule,
+    body:   bodyRule,
     cell:   cellRule,
     row:    rowRule
 };
