@@ -8,19 +8,28 @@ var table = require('./table');
 var utils = require('./utils');
 
 module.exports = markup.RulesSet([
-    // ---- LISTS ----
-    list.ul,
-    list.ol,
+    // ---- IGNORE
+    markup.Rule(markup.BLOCKS.IGNORE)
+        .regExp(reBlock.newline),
 
     // ---- CODE BLOCKS ----
     code.block,
 
-    // ---- TABLE ----
-    table.block,
-    table.header,
-    table.body,
-    table.row,
-    table.cell,
+    // ---- FOOTNOTES ----
+    markup.Rule(markup.BLOCKS.FOOTNOTE)
+        .regExp(reBlock.footnote, function(match) {
+            var text = match[2];
+
+            return {
+                text: text,
+                data: {
+                    id: match[1]
+                }
+            };
+        })
+        .toText(function(text, block) {
+            return '[^' + block.data.id + ']: ' + text + '\n\n';
+        }),
 
     // ---- HEADING ----
     heading.rule(6),
@@ -33,17 +42,17 @@ module.exports = markup.RulesSet([
     heading.lrule(2),
     heading.lrule(1),
 
-    // ---- HTML ----
-    markup.Rule(markup.BLOCKS.HTML)
-        .regExp(reBlock.html, function(match) {
-            return {
-                text: match[0]
-            };
-        })
-        .toText('%s\n\n'),
+    // ---- TABLE ----
+    table.block,
+    table.header,
+    table.body,
+    table.row,
+    table.cell,
 
     // ---- HR ----
     markup.Rule(markup.BLOCKS.HR)
+        .setOption('parse', false)
+        .setOption('renderInner', false)
         .regExp(reBlock.hr)
         .toText('---\n\n'),
 
@@ -69,22 +78,18 @@ module.exports = markup.RulesSet([
             .join('\n') + '\n\n';
         }),
 
+    // ---- LISTS ----
+    list.ul,
+    list.ol,
 
-    // ---- FOOTNOTES ----
-    markup.Rule(markup.BLOCKS.FOOTNOTE)
-        .regExp(reBlock.footnote, function(match) {
-            var text = match[2];
-
+    // ---- HTML ----
+    markup.Rule(markup.BLOCKS.HTML)
+        .regExp(reBlock.html, function(match) {
             return {
-                text: text,
-                data: {
-                    id: match[1]
-                }
+                text: match[0]
             };
         })
-        .toText(function(text, block) {
-            return '[^' + block.data.id + ']: ' + text + '\n\n';
-        }),
+        .toText('%s\n\n'),
 
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)
@@ -108,17 +113,16 @@ module.exports = markup.RulesSet([
             return '\n\n';
         }),
 
-
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(match) {
+            var text = match[1];
+
             return {
-                text: match[1].trim()
+                text: text.charAt(text.length - 1) === '\n'
+                ? text.slice(0, -1)
+                : text.trim()
             };
         })
-        .toText('%s\n\n'),
-
-    // ---- IGNORE
-    markup.Rule(markup.BLOCKS.IGNORE)
-        .regExp(reBlock.newline)
+        .toText('%s\n\n')
 ]);

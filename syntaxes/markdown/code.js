@@ -5,8 +5,6 @@ var utils = require('./utils');
 // Rule for parsing code blocks
 var blockRule = markup.Rule(markup.BLOCKS.CODE)
     .setOption('parse', false)
-
-    // Currently causing problem since entities ar inlined
     .setOption('renderInner', false)
 
     // Fences

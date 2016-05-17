@@ -17,6 +17,11 @@ var block = {
     list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/
 };
 
+var _tag = '(?!(?:'
+    + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'
+    + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
+    + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:\\/|[^\\w\\s@]*@)\\b';
+
 block.list = replace(block.list)
     (/bull/g, list.bullet)
     ('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
@@ -24,12 +29,19 @@ block.list = replace(block.list)
     ('footnote', block.footnote)
     ();
 
+block.html = replace(block.html)
+    ('comment', /<!--[\s\S]*?-->/)
+    ('closed', /<(tag)[\s\S]+?<\/\1>/)
+    ('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)
+    (/tag/g, _tag)
+    ();
+
 block.paragraph = replace(block.paragraph)
     ('hr', block.hr)
     ('heading', heading.normal)
     ('lheading', heading.line)
     ('blockquote', block.blockquote)
-    //('tag', '<' + block._tag)
+    ('tag', '<' + _tag)
     ('def', block.def)
     ();
 
@@ -37,6 +49,5 @@ block.paragraph = replace(block.paragraph)('(?!', '(?!'
         + block.fences.source.replace('\\1', '\\2') + '|'
         + block.list.source.replace('\\1', '\\3') + '|')
     ();
-
 
 module.exports = block;
