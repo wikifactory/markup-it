@@ -1,5 +1,6 @@
 var replace = require('../utils').replace;
 var list = require('./list');
+var heading = require('./heading');
 
 var block = {
     newline: /^\n+/,
@@ -9,7 +10,7 @@ var block = {
     html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
     def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n|$)/,
     footnote: /^\[\^([^\]]+)\]: ([^\n]+)/,
-    paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def|math))+)\n*/,
+    paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,
     text: /^[^\n]+/,
     fences: /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n|$)/,
     yamlHeader: /^ *(?=```)/,
@@ -21,6 +22,15 @@ block.list = replace(block.list)
     ('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
     ('def', '\\n+(?=' + block.def.source + ')')
     ('footnote', block.footnote)
+    ();
+
+block.paragraph = replace(block.paragraph)
+    ('hr', block.hr)
+    ('heading', heading.normal)
+    ('lheading', heading.line)
+    ('blockquote', block.blockquote)
+    //('tag', '<' + block._tag)
+    ('def', block.def)
     ();
 
 block.paragraph = replace(block.paragraph)('(?!', '(?!'
