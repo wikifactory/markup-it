@@ -18,8 +18,8 @@ function listRule(type) {
             var bull = match[2];
             var ordered = bull.length > 1;
 
-            if (ordered && type == markup.BLOCKS.UL_ITEM) return;
-            if (!ordered && type == markup.BLOCKS.OL_ITEM) return;
+            if (ordered && type === markup.BLOCKS.UL_ITEM) return;
+            if (!ordered && type === markup.BLOCKS.OL_ITEM) return;
 
             var item;
 
@@ -46,7 +46,7 @@ function listRule(type) {
                 }
 
                 result.push({
-                    type: markup.BLOCKS.UL_ITEM,
+                    type: type,
                     raw: rawItem,
                     text: textItem
                 });

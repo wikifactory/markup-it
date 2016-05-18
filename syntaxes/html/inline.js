@@ -19,7 +19,7 @@ module.exports = [
     HTMLRule(markup.STYLES.BOLD, 'strong'),
 
     // ---- ITALIC ----
-    HTMLRule(markup.STYLES.ITALIC, 'i'),
+    HTMLRule(markup.STYLES.ITALIC, 'em'),
 
     // ---- STRIKETHROUGH ----
     HTMLRule(markup.STYLES.STRIKETHROUGH, 'strike'),
