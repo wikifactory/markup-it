@@ -24,11 +24,7 @@
   "homepage": "https://github.com/GitbookIO/markup-it#readme",
   "devDependencies": {
     "eslint": "^2.4.0",
-    "event-stream": "^3.3.2",
     "mocha": "^2.4.5",
-    "octocat": "^0.11.0",
-    "readdirp": "^2.0.0",
-    "replace-ext": "0.0.1",
     "should": "^8.2.2",
     "should-html": "^1.0.0"
   },

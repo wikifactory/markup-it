@@ -1,18 +1,10 @@
-<h2>
-<a id="user-content-foo" class="anchor" href="#foo" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>foo</h2>
-
+<h2 id="foo">foo</h2>
 <ol>
-<li>
-<p>bar:</p>
-
+<li><p>bar:</p>
 <blockquote>
 <ul>
-<li>one
-
-<ul>
-<li>two
-
-<ul>
+<li>one<ul>
+<li>two<ul>
 <li>three</li>
 <li>four</li>
 <li>five</li>
@@ -23,50 +15,38 @@
 </ul>
 </blockquote>
 </li>
-<li>
-<p>foo:</p>
-
-<pre><code>line 1
-line 2
-</code></pre>
+<li><p>foo:</p>
+<pre><code> line 1
+ line 2</code></pre>
 </li>
-<li>
-<p>foo:</p>
-
+<li><p>foo:</p>
 <ol>
-<li>
-<p>foo <code>bar</code> bar:</p>
-
-<div class="highlight highlight-text-html-erb"><pre>some code here</pre></div>
-</li>
-<li>
-<p>foo <code>bar</code> bar:</p>
-
-<div class="highlight highlight-text-html-erb"><pre>foo
----
-bar
----
-foo
-bar</pre></div>
-</li>
-<li>
-<p>foo <code>bar</code> bar:</p>
-
-<div class="highlight highlight-text-html-basic"><pre>---
-foo
-foo
----
-bar</pre></div>
-</li>
-<li>
-<p>foo <code>bar</code> bar:</p>
-
-<pre><code>foo
----
-bar
+<li><p>foo <code>bar</code> bar:</p>
+<pre><code class="lang-erb"> some code here
 </code></pre>
 </li>
-<li><p>foo</p></li>
+<li><p>foo <code>bar</code> bar:</p>
+<pre><code class="lang-erb"> foo
+ ---
+ bar
+ ---
+ foo
+ bar</code></pre>
+</li>
+<li><p>foo <code>bar</code> bar:</p>
+<pre><code class="lang-html"> ---
+ foo
+ foo
+ ---
+ bar</code></pre>
+</li>
+<li><p>foo <code>bar</code> bar:</p>
+<pre><code> foo
+ ---
+ bar</code></pre>
+</li>
+<li><p>foo</p>
+</li>
 </ol>
 </li>
 </ol>
