@@ -7,11 +7,13 @@ var code = require('./code');
 var table = require('./table');
 var utils = require('./utils');
 
-module.exports = markup.RulesSet([
-    // ---- IGNORE
-    markup.Rule(markup.BLOCKS.IGNORE)
-        .regExp(reBlock.newline),
+function isTop(parents) {
+    return parents.find(function(token) {
+        return token.getType() !== markup.BLOCKS.BLOCKQUOTE;
+    }) === undefined;
+}
 
+module.exports = markup.RulesSet([
     // ---- CODE BLOCKS ----
     code.block,
 
@@ -115,7 +117,11 @@ module.exports = markup.RulesSet([
 
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
-        .regExp(reBlock.paragraph, function(match) {
+        .regExp(reBlock.paragraph, function(match, parents) {
+            if (!isTop(parents)) {
+                return;
+            }
+
             var text = match[1];
 
             return {
