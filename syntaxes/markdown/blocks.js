@@ -59,7 +59,6 @@ module.exports = markup.RulesSet([
     // ---- BLOCKQUOTE ----
     markup.Rule(markup.BLOCKS.BLOCKQUOTE)
         .setOption('parse', 'block')
-        .setOption('parse.' + markup.BLOCKS.DEFINITION, false)
         .regExp(reBlock.blockquote, function(match) {
             var inner = match[1].replace(/^ *> ?/gm, '').trim();
 
