@@ -93,8 +93,8 @@ module.exports = markup.RulesSet([
 
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)
-        .regExp(reBlock.def, function(match, parent) {
-            if (parent) {
+        .regExp(reBlock.def, function(match, parents) {
+            if (parents.size > 0) {
                 return null;
             }
 

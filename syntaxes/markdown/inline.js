@@ -3,12 +3,11 @@ var markup = require('../../');
 
 var utils = require('./utils');
 
-module.exports = markup.RulesSet([
+var inlineRules = markup.RulesSet([
     // ---- FOOTNOTE REFS ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(match) {
             return {
-                mutability: 'MUTABLE',
                 text: match[1],
                 data: {}
             };
@@ -137,7 +136,7 @@ module.exports = markup.RulesSet([
     markup.Rule(markup.STYLES.ITALIC)
         .regExp(reInline.em, function(match) {
             return {
-                text: match[1]
+                text: match[2] || match[1]
             };
         })
         .toText('_%s_'),
@@ -154,12 +153,40 @@ module.exports = markup.RulesSet([
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
         .setOption('parse', false)
-        .regExp(reInline.html, function(match) {
+        .regExp(reInline.html, function(match, parents) {
+            var tag = match[0];
+            var tagName = match[1];
+            var innerText = match[2];
+            var isInLink = parents.find(function(tok) {
+                return tok.getType() === markup.ENTITIES.LINK;
+            }) !== undefined;
+
+            var startTag = tag.substring(0, tag.indexOf(innerText));
+            var endTag = tag.substring(tag.indexOf(innerText) + innerText.length);
+
+
+            if (tagName === 'a' && innerText) {
+
+            }
+
+            var inlineSyntax = markup.Syntax('markdown+html', {
+                inline: inlineRules
+            });
+            var content = markup.parseInline(inlineSyntax, innerText, this);
+            var tokens = content.getTokens();
+
             return {
-                text: match[0]
+                text: innerText,
+                data: {
+                    start: startTag,
+                    end: endTag
+                },
+                tokens: tokens
             };
         })
-        .toText('%s'),
+        .toText(function(text, token) {
+            return token.data.start + text + token.data.end;
+        }),
 
     // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
@@ -176,3 +203,5 @@ module.exports = markup.RulesSet([
         })
         .toText(utils.escape)
 ]);
+
+module.exports = inlineRules;

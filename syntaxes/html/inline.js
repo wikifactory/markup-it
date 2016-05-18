@@ -16,7 +16,7 @@ module.exports = [
         }),
 
     // ---- BOLD ----
-    HTMLRule(markup.STYLES.BOLD, 'b'),
+    HTMLRule(markup.STYLES.BOLD, 'strong'),
 
     // ---- ITALIC ----
     HTMLRule(markup.STYLES.ITALIC, 'i'),
@@ -39,5 +39,11 @@ module.exports = [
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
         .toText(function(refname, token) {
             return '<sup><a href="#fn_' + refname + '" id="reffn_' + refname + '">' + refname + '</a></sup>';
+        }),
+
+    // ---- HTML ----
+    markup.Rule(markup.STYLES.HTML)
+        .toText(function(text, token) {
+            return token.data.start + text + token.data.end;
         })
 ];
