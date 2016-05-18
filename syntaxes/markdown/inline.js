@@ -66,41 +66,48 @@ module.exports = markup.RulesSet([
     // Doesn't render, but match and resolve reference
     markup.Rule(markup.ENTITIES.LINK_REF)
         .regExp(reInline.reflink, function(match) {
+            var refs = (this.refs || {});
+            var refId = match[2].toLowerCase();
+            var ref = refs[refId];
+
+            if (!ref) {
+                return null;
+            }
 
             return {
+                type: markup.ENTITIES.LINK,
                 text: match[1],
-                data: {
-                    ref: match[2].toLowerCase()
-                }
+                data: ref
             };
         })
         .regExp(reInline.nolink, function(match) {
+            var refs = (this.refs || {});
+            var refId = match[1].toLowerCase();
+            var ref = refs[refId];
+
+            if (!ref) {
+                return null;
+            }
 
             return {
+                type: markup.ENTITIES.LINK,
                 text: match[1],
-                data: {
-                    ref: match[1].toLowerCase()
-                }
+                data: ref
             };
         })
         .regExp(reInline.reffn, function(match) {
+            var refs = (this.refs || {});
+            var refId = match[1].toLowerCase();
+            var ref = refs[refId];
+
+            if (!ref) {
+                return null;
+            }
 
             return {
                 text: match[1],
-                data: {
-                    ref: match[1].toLowerCase()
-                }
+                data: ref
             };
-        })
-        .finish(function(token) {
-            var refs = (this.refs || {});
-            var refId = token.data.ref;
-            var ref = refs[refId];
-
-            token.type = markup.ENTITIES.LINK;
-            token.data = ref || { href: refId };
-
-            return token;
         })
         .toText(function(text, entity) {
             var title = entity.data.title? ' "' + entity.data.title + '"' : '';

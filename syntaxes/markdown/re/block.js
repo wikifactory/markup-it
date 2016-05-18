@@ -1,5 +1,4 @@
 var replace = require('../utils').replace;
-var list = require('./list');
 var heading = require('./heading');
 
 var block = {
@@ -14,7 +13,12 @@ var block = {
     text: /^[^\n]+/,
     fences: /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n|$)/,
     yamlHeader: /^ *(?=```)/,
-    list: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/
+    list: {
+        block: /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/,
+        item: /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/,
+        bullet: /(?:[*+-]|\d+\.)/,
+        bulletAndSpaces: /^ *([*+-]|\d+\.) +/
+    }
 };
 
 var _tag = '(?!(?:'
@@ -22,8 +26,16 @@ var _tag = '(?!(?:'
     + '|var|samp|kbd|sub|sup|i|b|u|mark|ruby|rt|rp|bdi|bdo'
     + '|span|br|wbr|ins|del|img)\\b)\\w+(?!:\\/|[^\\w\\s@]*@)\\b';
 
-block.list = replace(block.list)
-    (/bull/g, list.bullet)
+block.list.item = replace(block.list.item, 'gm')
+    (/bull/g, block.list.bullet)
+    ();
+
+block.blockquote = replace(block.blockquote)
+    ('def', block.def)
+    ();
+
+block.list.block = replace(block.list.block)
+    (/bull/g, block.list.bullet)
     ('hr', '\\n+(?=\\1?(?:[-*_] *){3,}(?:\\n+|$))')
     ('def', '\\n+(?=' + block.def.source + ')')
     ('footnote', block.footnote)
@@ -47,7 +59,7 @@ block.paragraph = replace(block.paragraph)
 
 block.paragraph = replace(block.paragraph)('(?!', '(?!'
         + block.fences.source.replace('\\1', '\\2') + '|'
-        + block.list.source.replace('\\1', '\\3') + '|')
+        + block.list.block.source.replace('\\1', '\\3') + '|')
     ();
 
 module.exports = block;

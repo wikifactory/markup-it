@@ -59,6 +59,7 @@ module.exports = markup.RulesSet([
     // ---- BLOCKQUOTE ----
     markup.Rule(markup.BLOCKS.BLOCKQUOTE)
         .setOption('parse', 'block')
+        .setOption('parse.' + markup.BLOCKS.DEFINITION, false)
         .regExp(reBlock.blockquote, function(match) {
             var inner = match[1].replace(/^ *> ?/gm, '').trim();
 
@@ -93,7 +94,11 @@ module.exports = markup.RulesSet([
 
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)
-        .regExp(reBlock.def, function(match) {
+        .regExp(reBlock.def, function(match, parent) {
+            if (parent) {
+                return null;
+            }
+
             var id = match[1].toLowerCase();
             var href = match[2];
             var title = match[3];
@@ -104,13 +109,9 @@ module.exports = markup.RulesSet([
                 title: title
             };
 
-            // Don't create block, we just index it
             return {
-                text: ''
+                type: markup.BLOCKS.IGNORE
             };
-        })
-        .toText(function() {
-            return '\n\n';
         }),
 
     // ---- PARAGRAPH ----

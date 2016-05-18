@@ -1,7 +1,8 @@
 var reBlock = require('./re/block');
-var reList = require('./re/list');
 var markup = require('../../');
 var utils = require('./utils');
+
+var reList = reBlock.list;
 
 // Return true if block is a list
 function isListItem(type) {
@@ -12,7 +13,7 @@ function isListItem(type) {
 function listRule(type) {
     return markup.Rule(type)
         .setOption('parse', 'block')
-        .regExp(reBlock.list, function(match) {
+        .regExp(reList.block, function(match) {
             var rawList = match[0];
             var bull = match[2];
             var ordered = bull.length > 1;
