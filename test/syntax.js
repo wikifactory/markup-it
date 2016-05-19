@@ -65,7 +65,7 @@ describe('Custom Syntax', function() {
                 ]
             });
             var text = markup.toText(content);
-            text.should.equal('Hello **World**');
+            text.should.equal('Hello **World**\n');
         });
     });
 });

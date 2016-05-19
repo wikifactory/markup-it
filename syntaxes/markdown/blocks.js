@@ -70,11 +70,10 @@ module.exports = markup.RulesSet([
         })
 
         .toText(function(text) {
-            var lines = utils.splitLines(text);
+            var lines = utils.splitLines(text.trim());
 
             return lines
             .map(function(line) {
-                // todo: can be improved to avoid empty line at the end
                 return '> ' + line;
             })
             .join('\n') + '\n\n';
@@ -122,12 +121,10 @@ module.exports = markup.RulesSet([
                 return;
             }
 
-            var text = match[1];
+            var text = match[1].trim();
 
             return {
-                text: text.charAt(text.length - 1) === '\n'
-                ? text.slice(0, -1)
-                : text.trim()
+                text: text
             };
         })
         .toText('%s\n\n')

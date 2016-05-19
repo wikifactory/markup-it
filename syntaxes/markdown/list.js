@@ -65,13 +65,13 @@ function listRule(type) {
             var nextBlock = block.next? block.next.type : null;
 
             // Determine end of line
-            var eol = '\n';
+            var eol = '';
 
             // We finish list if:
             //    - Next block is not a list
             //    - List from a different type with same depth
             if (!isListItem(nextBlock)) {
-                eol = '\n\n';
+                eol = '\n';
             }
 
             // Add bullet
@@ -84,7 +84,8 @@ function listRule(type) {
                 .map(function(line, i) {
                     if (i === 0) return line;
                     if (!line.trim()) return '';
-                    return '    ' + line;
+
+                    return '  ' + line;
                 })
                 .join('\n');
 
