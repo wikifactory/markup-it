@@ -22,7 +22,7 @@ module.exports = [
     HTMLRule(markup.STYLES.ITALIC, 'em'),
 
     // ---- STRIKETHROUGH ----
-    HTMLRule(markup.STYLES.STRIKETHROUGH, 'strike'),
+    HTMLRule(markup.STYLES.STRIKETHROUGH, 'del'),
 
     // ---- IMAGES ----
     HTMLRule(markup.ENTITIES.IMAGE, 'img'),
