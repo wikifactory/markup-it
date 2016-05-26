@@ -5,16 +5,28 @@ var identity = require('../../lib/utils/identity');
 
 var SINGLE_TAG = ['img', 'hr'];
 
+/**
+    Convert a map of attributes into a string
+
+    @param {Object} attrs
+    @return {String}
+*/
 function attrsToString(attrs) {
     var output = '', value;
 
     for (var key in attrs) {
         value = attrs[key];
-        if (is.undefined(value) || is.null(value) || (is.string(value) && !value)) {
+        if (is.undefined(value) || is.null(value)) {
             continue;
         }
 
-        output += ' ' + key + '=' + JSON.stringify(value);
+        if (is.string(value) && !value) {
+            output += ' ' + key;
+        } else {
+            output += ' ' + key + '=' + JSON.stringify(value);
+        }
+
+
     }
 
     return output;
