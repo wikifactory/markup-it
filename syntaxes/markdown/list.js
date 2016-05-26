@@ -21,16 +21,25 @@ function listRule(type) {
             if (ordered && type === markup.BLOCKS.UL_ITEM) return;
             if (!ordered && type === markup.BLOCKS.OL_ITEM) return;
 
-            var item;
+            var item, loose, next = false;
 
-            reList.item.lastIndex = 0;
             var lastIndex = 0;
-
             var result = [];
-            var rawItem, textItem, space;
+            var rawItem, textItem, space, items = [];
 
+            // Extract all items
+            reList.item.lastIndex = 0;
             while ((item = reList.item.exec(rawList)) !== null) {
                 rawItem = rawList.slice(lastIndex, reList.item.lastIndex);
+                lastIndex = reList.item.lastIndex;
+
+
+                items.push([item, rawItem]);
+            }
+
+            for (var i = 0; i < items.length; i++) {
+                item = items[i][0];
+                rawItem = items[i][1];
 
                 // Remove the list item's bullet
                 // so it is seen as the next token.
@@ -45,13 +54,23 @@ function listRule(type) {
                     textItem =  textItem.replace(new RegExp('^ {1,' + space + '}', 'gm'), '');
                 }
 
+                // Determine whether item is loose or not.
+                // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
+                // for discount behavior.
+                loose = next || /\n\n(?!\s*$)/.test(textItem);
+                if (i !== items.length - 1) {
+                    next = textItem.charAt(textItem.length - 1) === '\n';
+                    if (!loose) loose = next;
+                }
+
                 result.push({
                     type: type,
                     raw: rawItem,
-                    text: textItem
+                    text: textItem,
+                    data:{
+                        loose: loose
+                    }
                 });
-
-                lastIndex = reList.item.lastIndex;
             }
 
 

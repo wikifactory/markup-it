@@ -7,9 +7,17 @@ var code = require('./code');
 var table = require('./table');
 var utils = require('./utils');
 
+/**
+    Is top block check that a paragraph can be parsed
+
+    Paragraphs can exists only in loose list or blockquote.
+*/
 function isTop(parents) {
     return parents.find(function(token) {
-        return token.getType() !== markup.BLOCKS.BLOCKQUOTE;
+        var isBlockquote = token.getType() === markup.BLOCKS.BLOCKQUOTE;
+        var isLooseList = token.isListItem() && token.getData().get('loose');
+
+        return (!isBlockquote && !isLooseList);
     }) === undefined;
 }
 
