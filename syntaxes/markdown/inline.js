@@ -145,7 +145,7 @@ var inlineRules = markup.RulesSet([
     markup.Rule(markup.STYLES.BOLD)
         .regExp(reInline.strong, function(match) {
             return {
-                text: match[2]
+                text: match[2] || match[1]
             };
         })
         .toText('**%s**'),
