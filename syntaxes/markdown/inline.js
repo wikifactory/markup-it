@@ -3,6 +3,13 @@ var markup = require('../../');
 
 var utils = require('./utils');
 
+function isInLink(parents) {
+    return parents.find(function(tok) {
+        return tok.getType() === markup.ENTITIES.LINK;
+    }) !== undefined;
+}
+
+
 var inlineRules = markup.RulesSet([
     // ---- FOOTNOTE REFS ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
@@ -23,7 +30,6 @@ var inlineRules = markup.RulesSet([
             if (!isImage) return null;
 
             return {
-                mutability: 'IMMUTABLE',
                 text: ' ',
                 data: {
                     title: match[1],
@@ -39,7 +45,6 @@ var inlineRules = markup.RulesSet([
     markup.Rule(markup.ENTITIES.LINK)
         .regExp(reInline.link, function(match) {
             return {
-                mutability: 'MUTABLE',
                 text: match[1],
                 data: {
                     href: match[2],
@@ -49,10 +54,23 @@ var inlineRules = markup.RulesSet([
         })
         .regExp(reInline.autolink, function(match) {
             return {
-                mutability: 'MUTABLE',
                 text: match[1],
                 data: {
                     href: match[1]
+                }
+            };
+        })
+        .regExp(reInline.url, function(match, parents) {
+            if (isInLink(parents)) {
+                return;
+            }
+
+            var uri = match[1];
+
+            return {
+                text: uri,
+                data: {
+                    href: uri
                 }
             };
         })
@@ -157,9 +175,7 @@ var inlineRules = markup.RulesSet([
             var tag = match[0];
             var tagName = match[1];
             var innerText = match[2];
-            var isInLink = parents.find(function(tok) {
-                return tok.getType() === markup.ENTITIES.LINK;
-            }) !== undefined;
+            //var _isInLink = isInLink(parents);
 
             var startTag = tag.substring(0, tag.indexOf(innerText));
             var endTag = tag.substring(tag.indexOf(innerText) + innerText.length);

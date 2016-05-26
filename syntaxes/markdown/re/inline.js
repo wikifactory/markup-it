@@ -3,6 +3,7 @@ var replace = require('../utils').replace;
 var inline = {
     escape: /^\\([\\`*{}\[\]()#$+\-.!_>|])/,
     autolink: /^<([^ >]+(@|:\/)[^ >]+)>/,
+    url: /^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/,
     html: /^<!--[\s\S]*?-->|^<(\w+(?!:\/|[^\w\s@]*@)\b)*?(?:"[^"]*"|'[^']*'|[^'">])*?>([\s\S]*?)?<\/\1>|^<(\w+(?!:\/|[^\w\s@]*@)\b)(?:"[^"]*"|'[^']*'|[^'">])*?>/,
     link: /^!?\[(inside)\]\(href\)/,
     reflink: /^!?\[(inside)\]\s*\[([^\]]*)\]/,
@@ -35,7 +36,10 @@ inline.reffn = replace(inline.reffn)
     ();
 
 // Update RegExp for text/escape to stop at strikethrough
-inline.text = replace(inline.text)(']|', '~]|')();
+inline.text = replace(inline.text)
+    (']|', '~]|')
+    ('|', '|https?://|')
+    ();
 inline.escape = replace(inline.escape)('])', '~|])')();
 
 module.exports = inline;
