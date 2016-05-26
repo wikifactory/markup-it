@@ -127,5 +127,17 @@ module.exports = markup.RulesSet([
                 text: text
             };
         })
-        .toText('%s\n\n')
+        .toText('%s\n\n'),
+
+    // ---- PARAGRAPH ----
+    markup.Rule(markup.BLOCKS.UNSTYLED)
+        .regExp(reBlock.text, function(match, parents) {
+            // Top-level should never reach here.
+            var text = match[0];
+
+            return {
+                text: text
+            };
+        })
+        .toText('%s\n')
 ]);
