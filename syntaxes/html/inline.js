@@ -44,6 +44,6 @@ module.exports = [
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
         .toText(function(text, token) {
-            return token.data.start + text + token.data.end;
+            return text;
         })
 ];

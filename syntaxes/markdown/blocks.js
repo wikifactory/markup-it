@@ -93,6 +93,7 @@ module.exports = markup.RulesSet([
 
     // ---- HTML ----
     markup.Rule(markup.BLOCKS.HTML)
+        .setOption('parse', false)
         .regExp(reBlock.html, function(match) {
             return {
                 text: match[0]

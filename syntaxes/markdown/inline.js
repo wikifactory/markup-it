@@ -2,13 +2,38 @@ var reInline = require('./re/inline');
 var markup = require('../../');
 
 var utils = require('./utils');
+var isHTMLBlock = require('./isHTMLBlock');
 
+/**
+    Test if we are parsing inside a link
+
+    @param {List<Token>} parents
+    @return {Boolean}
+*/
 function isInLink(parents) {
     return parents.find(function(tok) {
         return tok.getType() === markup.ENTITIES.LINK;
     }) !== undefined;
 }
 
+/**
+    Resolve a reflink
+
+    @param {Object} ctx
+    @param {String} text
+    @return {Object|null}
+*/
+function resolveRefLink(ctx, text) {
+    var refs = (ctx.refs || {});
+
+    // Normalize the refId
+    var refId = (text)
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+    var ref = refs[refId];
+
+    return (ref && ref.href)? ref : null;
+}
 
 var inlineRules = markup.RulesSet([
     // ---- FOOTNOTE REFS ----
@@ -83,9 +108,7 @@ var inlineRules = markup.RulesSet([
     // Doesn't render, but match and resolve reference
     markup.Rule(markup.ENTITIES.LINK_REF)
         .regExp(reInline.reflink, function(match) {
-            var refs = (this.refs || {});
-            var refId = match[2].toLowerCase();
-            var ref = refs[refId];
+            var ref = resolveRefLink(this, (match[2] || match[1]));
 
             if (!ref) {
                 return null;
@@ -98,9 +121,7 @@ var inlineRules = markup.RulesSet([
             };
         })
         .regExp(reInline.nolink, function(match) {
-            var refs = (this.refs || {});
-            var refId = match[1].toLowerCase();
-            var ref = refs[refId];
+            var ref = resolveRefLink(this, (match[2] || match[1]));
 
             if (!ref) {
                 return null;
@@ -113,9 +134,7 @@ var inlineRules = markup.RulesSet([
             };
         })
         .regExp(reInline.reffn, function(match) {
-            var refs = (this.refs || {});
-            var refId = match[1].toLowerCase();
-            var ref = refs[refId];
+            var ref = resolveRefLink(this, match[1]);
 
             if (!ref) {
                 return null;
@@ -171,37 +190,69 @@ var inlineRules = markup.RulesSet([
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
         .setOption('parse', false)
+        .setOption('renderInline', false)
         .regExp(reInline.html, function(match, parents) {
             var tag = match[0];
             var tagName = match[1];
-            var innerText = match[2];
-            //var _isInLink = isInLink(parents);
+            var innerText = match[2] || '';
 
-            var startTag = tag.substring(0, tag.indexOf(innerText));
-            var endTag = tag.substring(tag.indexOf(innerText) + innerText.length);
+            var startTag, endTag;
 
-
-            if (tagName === 'a' && innerText) {
-
+            if (innerText) {
+                startTag = tag.substring(0, tag.indexOf(innerText));
+                endTag = tag.substring(tag.indexOf(innerText) + innerText.length);
+            } else {
+                startTag = match[0];
+                endTag = '';
             }
 
-            var inlineSyntax = markup.Syntax('markdown+html', {
-                inline: inlineRules
-            });
-            var content = markup.parseInline(inlineSyntax, innerText, this);
-            var tokens = content.getTokens();
 
-            return {
-                text: innerText,
-                data: {
-                    start: startTag,
-                    end: endTag
-                },
-                tokens: tokens
-            };
+            // todo: handle link tags
+            /*if (tagName === 'a' && innerText) {
+
+            }*/
+
+            var innerTokens = [];
+
+            if (tagName && !isHTMLBlock(tagName) && innerText) {
+                var inlineSyntax = markup.Syntax('markdown+html', {
+                    inline: inlineRules
+                });
+                innerTokens = markup.parseInline(inlineSyntax, innerText, this)
+                    .getTokens()
+                    .toArray();
+            } else {
+                innerTokens = [
+                    {
+                        type: markup.STYLES.HTML,
+                        text: innerText,
+                        raw: innerText
+                    }
+                ];
+            }
+
+            var result = [];
+
+            result.push({
+                type: markup.STYLES.HTML,
+                text: startTag,
+                raw: startTag
+            });
+
+            result = result.concat(innerTokens);
+
+            if (endTag) {
+                result.push({
+                    type: markup.STYLES.HTML,
+                    text: endTag,
+                    raw: endTag
+                });
+            }
+
+            return result;
         })
         .toText(function(text, token) {
-            return token.data.start + text + token.data.end;
+            return text;
         }),
 
     // ---- ESCAPED ----
