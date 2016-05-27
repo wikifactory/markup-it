@@ -12,7 +12,11 @@ var isHTMLBlock = require('./isHTMLBlock');
 */
 function isInLink(parents) {
     return parents.find(function(tok) {
-        return tok.getType() === markup.ENTITIES.LINK;
+        if (tok.getType() === markup.ENTITIES.LINK) {
+            return true;
+        }
+
+        return false;
     }) !== undefined;
 }
 
