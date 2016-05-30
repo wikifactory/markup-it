@@ -139,7 +139,7 @@ module.exports = markup.RulesSet([
         .toText('%s\n\n'),
 
     // ---- PARAGRAPH ----
-    markup.Rule(markup.BLOCKS.UNSTYLED)
+    markup.Rule(markup.BLOCKS.TEXT)
         .regExp(reBlock.text, function(match, parents) {
             // Top-level should never reach here.
             var text = match[0];
