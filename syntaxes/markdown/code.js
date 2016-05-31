@@ -38,11 +38,13 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
 
     // Output code blocks
     .toText(function(text, block) {
+        var hasFences = text.indexOf('`') >= 0;
+
         // Use fences if syntax is set
-        if (block.data.syntax) {
+        if (!hasFences) {
             return (
                 '```'
-                + block.data.syntax
+                + (block.data.syntax || '')
                 + '\n'
                 + text
                 + '\n```\n\n'
