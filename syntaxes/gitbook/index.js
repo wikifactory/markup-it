@@ -28,6 +28,9 @@ var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
         return {
             text: text
         };
+    })
+    .toText(function(text, block) {
+        return '$$\n' + text + '\n$$\n\n';
     });
 
 var tplExpr = markup.Rule(markup.STYLES.MATH)
@@ -46,6 +49,9 @@ var tplExpr = markup.Rule(markup.STYLES.MATH)
                 type: type
             }
         };
+    })
+    .toText(function(text, block) {
+        return '$$' + text + '$$';
     });
 
 var inlineRules = markdown.getInlineRules();
