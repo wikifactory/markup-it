@@ -16,6 +16,9 @@ var inlineMathRule = markup.Rule(markup.ENTITIES.MATH)
             text: text,
             data: {}
         };
+    })
+    .toText(function(text, block) {
+        return '$$' + text + '$$';
     });
 
 var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
@@ -33,7 +36,7 @@ var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
         return '$$\n' + text + '\n$$\n\n';
     });
 
-var tplExpr = markup.Rule(markup.STYLES.MATH)
+var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
     .setOption('parse', false)
     .regExp(reTpl, function(match) {
         var type = match[0];
@@ -51,7 +54,13 @@ var tplExpr = markup.Rule(markup.STYLES.MATH)
         };
     })
     .toText(function(text, block) {
-        return '$$' + text + '$$';
+        var type = block.data.type;
+
+        if (type == 'expr') text = '{% ' + text + ' %}';
+        else if (type == 'comment') text = '{# ' + text + ' #}';
+        else if (type == 'var') text = '{{ ' + text + ' }}';
+
+        return text;
     });
 
 var inlineRules = markdown.getInlineRules();
