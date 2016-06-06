@@ -35,7 +35,8 @@
     "immutable": "^3.7.6",
     "is": "^3.1.0",
     "object-values": "^1.0.0",
-    "range-utils": "^1.1.0"
+    "range-utils": "^1.1.0",
+    "yargs": "^4.7.1"
   },
   "bin": {
     "markup-toJSON": "./bin/toJSON.js",

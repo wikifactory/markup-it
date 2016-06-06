@@ -2,13 +2,11 @@
 /* eslint-disable no-console */
 
 var DraftMarkup = require('../');
-var markdownSyntax = require('../syntaxes/markdown');
-
 var utils = require('./utils');
 
-utils.command(function(content, markup) {
-    var htmlMarkup = new DraftMarkup(markdownSyntax);
-    var output = htmlMarkup.toText(content);
+utils.command(function(content) {
+    var markup = new DraftMarkup(utils.getSyntax('out.md'));
+    var output = markup.toText(content);
 
     console.log(output);
 });
