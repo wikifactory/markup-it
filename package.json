@@ -6,7 +6,7 @@
   "scripts": {
     "test": "export TESTING=true; mocha --inline-diffs --reporter list ./test/all.js",
     "test-fixture": "export TESTING=true; mocha --inline-diffs --reporter list ./test/all.js --testOnlyFixture=$FIXTURE",
-    "test-overview": "export TESTING=true; mocha --reporter '../../../test/reporter-overview' ./test/all.js"
+    "test-overview": "export TESTING=true; mocha --reporter '../../../test/reporter-overview' ./test/all.js || true"
   },
   "repository": {
     "type": "git",
