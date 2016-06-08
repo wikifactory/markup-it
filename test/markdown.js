@@ -1,4 +1,5 @@
 var fs = require('fs');
+var argv = require('yargs').argv;
 var path = require('path');
 var MarkupIt = require('../');
 var markdownSyntax = require('../syntaxes/markdown');
@@ -13,6 +14,8 @@ function toHTML(text) {
     var content = markdown.toContent(text);
     return html.toText(content);
 }
+
+var ONLY = argv.testOnlyFixture;
 
 describe('Markdown', function() {
 
@@ -30,7 +33,8 @@ describe('Markdown', function() {
 
         var files = fs.readdirSync(FIXTURES);
         files.forEach(function(file) {
-            if (path.extname(file) != '.md') return;
+            if (path.extname(file) !== '.md') return;
+            if (ONLY && path.basename(file, '.md') !== ONLY) return;
 
             it(file, function() {
                 testFile(file);
