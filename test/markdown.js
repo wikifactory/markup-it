@@ -23,8 +23,9 @@ describe('Markdown', function() {
             var sourceMD = fs.readFileSync(path.resolve(FIXTURES, filename), 'utf8');
             var expectedHTML = fs.readFileSync(path.resolve(FIXTURES, htmlFilePath), 'utf8');
 
-            var resultHTML = toHTML(sourceMD);
-            resultHTML.should.be.html(expectedHTML);
+            // Our fixtures files all end with trailing newline
+            var resultHTML = toHTML(sourceMD)+'\n';
+            resultHTML.should.equal(expectedHTML);
         }
 
         var files = fs.readdirSync(FIXTURES);
