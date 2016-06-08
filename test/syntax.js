@@ -27,7 +27,7 @@ describe('Custom Syntax', function() {
             tokens.size.should.equal(1);
             var p = tokens.get(0);
 
-            p.getType().should.equal(MarkupIt.BLOCKS.UNSTYLED);
+            p.getType().should.equal(MarkupIt.BLOCKS.TEXT);
             p.getText().should.equal('Hello World');
         });
 
@@ -38,7 +38,7 @@ describe('Custom Syntax', function() {
             tokens.size.should.equal(1);
             var p = tokens.get(0);
 
-            p.getType().should.equal(MarkupIt.BLOCKS.UNSTYLED);
+            p.getType().should.equal(MarkupIt.BLOCKS.TEXT);
             p.getText().should.equal('Hello World');
         });
     });
