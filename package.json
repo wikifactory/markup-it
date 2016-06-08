@@ -26,7 +26,7 @@
     "eslint": "^2.4.0",
     "mocha": "^2.4.5",
     "should": "^8.2.2",
-    "should-html": "^1.0.0"
+    "should-html": ">=1.0.1"
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
