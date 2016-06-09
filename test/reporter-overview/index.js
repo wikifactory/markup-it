@@ -1,4 +1,5 @@
 // Based on the origin 'list' reporter
+/* eslint-disable no-console */
 
 /**
  * Module dependencies.
@@ -24,39 +25,56 @@ exports = module.exports = Overview;
 function Overview(runner) {
     Base.call(this, runner);
 
-    var passes = 0;
-    var failures = 0;
-
     var self = this;
+    var indents = 0;
     var n = 0;
+
+    function indent() {
+        return Array(indents).join('  ');
+    }
 
     runner.on('start', function() {
         console.log();
     });
 
-    runner.on('test', function(test) {
-        process.stdout.write(color('pass', '    ' + test.fullTitle() + ': '));
+    runner.on('suite', function(suite) {
+        ++indents;
+        console.log(color('suite', '%s%s'), indent(), suite.title);
+    });
+
+    runner.on('suite end', function() {
+        --indents;
+        if (indents === 1) {
+            console.log();
+        }
     });
 
     runner.on('pending', function(test) {
-        var fmt = color('checkmark', '  -')
-                + color('pending', ' %s');
-        console.log(fmt, test.fullTitle());
+        var fmt = indent() + color('pending', '  - %s');
+        console.log(fmt, test.title);
     });
 
     runner.on('pass', function(test) {
-        passes++;
-        var fmt = color('checkmark', '  ' + Base.symbols.dot)
-                + color('pass', ' %s: ')
-                + color(test.speed, '%dms');
-        cursor.CR();
-        console.log(fmt, test.fullTitle(), test.duration);
-        failures++;
+        var fmt;
+        if (test.speed === 'fast') {
+            fmt = indent()
+                + color('checkmark', '  ' + Base.symbols.ok)
+                + color('pass', ' %s');
+            cursor.CR();
+            console.log(fmt, test.title);
+        } else {
+            fmt = indent()
+                + color('checkmark', '  ' + Base.symbols.ok)
+                + color('pass', ' %s')
+                + color(test.speed, ' (%dms)');
+            cursor.CR();
+            console.log(fmt, test.title, test.duration);
+        }
     });
 
     runner.on('fail', function(test) {
         cursor.CR();
-        console.log(color('fail', '  %d) %s'), ++n, test.fullTitle());
+        console.log(indent() + color('fail', '  %d) %s'), ++n, test.title);
     });
 
     runner.on('end', self.epilogue.bind(self));
