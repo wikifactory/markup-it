@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "export TESTING=true; mocha --inline-diffs --reporter spec ./test/all.js",
-    "test-fixture": "export TESTING=true; mocha --inline-diffs --reporter spec ./test/all.js --testOnlyFixture=$FIXTURE",
+    "test-fixture": "export TESTING=true; mocha --reporter spec ./test/all.js --testOnlyFixture=$FIXTURE",
     "test-overview": "export TESTING=true; mocha --reporter '../../../test/reporter-overview' ./test/all.js || true"
   },
   "repository": {

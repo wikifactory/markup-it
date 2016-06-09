@@ -1,6 +1,7 @@
 var fs = require('fs');
 var argv = require('yargs').argv;
 var path = require('path');
+var Immutable = require('immutable');
 var MarkupIt = require('../');
 var markdownSyntax = require('../syntaxes/markdown');
 var htmlSyntax = require('../syntaxes/html');
@@ -27,12 +28,8 @@ describe('Markdown', function() {
                     testMdToHtml(fixture);
                 });
 
-                it('HTML -> MD', function () {
-                    testHtmlToMd(fixture);
-                });
-
-                it('MD -> HTML -> MD', function () {
-                    testIdentityMd(fixture);
+                it('Content -> MD -> Content === id', function () {
+                    testMdIdempotence(fixture);
                 });
             });
         });
@@ -46,20 +43,14 @@ function testMdToHtml(fixture) {
     (resultHtml).should.be.html(fixture.sourceHtml);
 }
 
-function testHtmlToMd(fixture) {
-    var content = html.toContent(fixture.sourceHtml);
-    var resultMd = markdown.toText(content);
-    (resultMd).should.equal(fixture.sourceMd);
-}
+function testMdIdempotence(fixture) {
+    var content1 = markdown.toContent(fixture.sourceMd);
+    var backToMd = markdown.toText(content1);
+    var content2 = markdown.toContent(backToMd);
+    backToMd = markdown.toText(content2);
+    var content3 = markdown.toContent(backToMd);
 
-function testIdentityMd(fixture) {
-    // MD to HTML
-    var mdToContent = markdown.toContent(fixture.sourceMd);
-    var resultHtml = html.toText(mdToContent);
-    // HTML to MD
-    var htmlToContent = html.toContent(resultHtml);
-    var resultMd = markdown.toText(htmlToContent);
-    (resultMd).should.equal(fixture.sourceMd);
+    Immutable.is(content2, content3).should.be.true();
 }
 
 function readFixture(filename) {
