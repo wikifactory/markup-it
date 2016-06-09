@@ -20,13 +20,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     // 4 spaces / Tab
     .regExp(reBlock.code, function(match) {
         var inner = match[0];
-        var lines = utils.splitLines(inner);
 
         // Remove indentation
-        inner = lines.map(function(line) {
-            return line.replace(/^( {4}|\t)/, '');
-        })
-        .join('\n');
+        inner = inner.replace(/^( {4}|\t)/gm, '');
 
         return {
             text: inner,
