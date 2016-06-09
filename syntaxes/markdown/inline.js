@@ -10,7 +10,11 @@ var isHTMLBlock = require('./isHTMLBlock');
     @param {List<Token>} parents
     @return {Boolean}
 */
-function isInLink(parents) {
+function isInLink(parents, ctx) {
+    if (ctx.isLink) {
+        return true;
+    }
+
     return parents.find(function(tok) {
         if (tok.getType() === markup.ENTITIES.LINK) {
             return true;
@@ -90,7 +94,7 @@ var inlineRules = markup.RulesSet([
             };
         })
         .regExp(reInline.url, function(match, parents) {
-            if (isInLink(parents)) {
+            if (isInLink(parents, this)) {
                 return;
             }
 
@@ -222,9 +226,12 @@ var inlineRules = markup.RulesSet([
                 var inlineSyntax = markup.Syntax('markdown+html', {
                     inline: inlineRules
                 });
+                var oldIsLink = this.isLink;
+                this.isLink = this.isLink || (tagName.toLowerCase() === 'a');
                 innerTokens = markup.parseInline(inlineSyntax, innerText, this)
                     .getTokens()
                     .toArray();
+                this.isLink = oldIsLink;
             } else {
                 innerTokens = [
                     {
