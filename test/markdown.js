@@ -10,25 +10,39 @@ var FIXTURES = path.resolve(__dirname, 'fixtures/markdown');
 var markdown = new MarkupIt(markdownSyntax);
 var html = new MarkupIt(htmlSyntax);
 
-function toHTML(text) {
-    var content = markdown.toContent(text);
-    return html.toText(content);
-}
-
 var ONLY = argv.testOnlyFixture;
 
 describe('Markdown', function() {
 
     describe('Fixtures', function() {
-        function testFile(filename) {
+
+        function testToHTML(fixture) {
+            fixture = resultHTML(fixture);
+            // Our fixtures files all end with trailing newline
+            (fixture.resultHTML + '\n').should.equal(fixture.expectedHTML);
+            return fixture;
+        }
+
+        function testIdentity(fixture) {
+            resultHTML(fixture);
+            // Our fixtures files all end with trailing newline
+            (fixture.resultHTML + '\n').should.equal(fixture.expectedHTML);
+
+            fixture.resultHTML = resultHTML;
+            return fixture;
+        }
+
+        function readFixture(filename) {
             var htmlFilePath = path.basename(filename, '.md') + '.html';
 
             var sourceMD = fs.readFileSync(path.resolve(FIXTURES, filename), 'utf8');
             var expectedHTML = fs.readFileSync(path.resolve(FIXTURES, htmlFilePath), 'utf8');
 
-            // Our fixtures files all end with trailing newline
-            var resultHTML = toHTML(sourceMD)+'\n';
-            resultHTML.should.equal(expectedHTML);
+            return {
+                content: markdown.toContent(sourceMD),
+                sourceMD: sourceMD,
+                expectedHTML: expectedHTML
+            };
         }
 
         var files = fs.readdirSync(FIXTURES);
@@ -37,10 +51,17 @@ describe('Markdown', function() {
             if (ONLY && path.basename(file, '.md') !== ONLY) return;
 
             it(file, function() {
-                testFile(file);
+                var fixture = readFixture(file);
+                fixture = testToHTML(fixture);
+                // testIdentity(fixture);
             });
         });
     });
 });
 
-
+function resultHTML(fixture) {
+    if (!fixture.resultHTML) {
+        fixture.resultHTML = html.toText(fixture.content);
+    }
+    return fixture;
+}
