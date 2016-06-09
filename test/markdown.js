@@ -19,16 +19,7 @@ describe('Markdown', function() {
         function testToHTML(fixture) {
             fixture = resultHTML(fixture);
             // Our fixtures files all end with trailing newline
-            (fixture.resultHTML + '\n').should.equal(fixture.expectedHTML);
-            return fixture;
-        }
-
-        function testIdentity(fixture) {
-            resultHTML(fixture);
-            // Our fixtures files all end with trailing newline
-            (fixture.resultHTML + '\n').should.equal(fixture.expectedHTML);
-
-            fixture.resultHTML = resultHTML;
+            (fixture.resultHTML).should.be.html(fixture.expectedHTML);
             return fixture;
         }
 
@@ -53,7 +44,6 @@ describe('Markdown', function() {
             it(file, function() {
                 var fixture = readFixture(file);
                 fixture = testToHTML(fixture);
-                // testIdentity(fixture);
             });
         });
     });

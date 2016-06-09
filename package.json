@@ -28,7 +28,7 @@
     "eslint": "^2.4.0",
     "mocha": "^2.4.5",
     "should": "^8.2.2",
-    "should-html": "^1.0.0",
+    "should-html": ">=1.0.1",
     "util": "^0.10.3"
   },
   "dependencies": {
