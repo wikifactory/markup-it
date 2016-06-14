@@ -64,7 +64,7 @@ Backslashing should suppress \[this] and [this\].
 Here's one where the [link
 breaks] across lines.
 
-Here's another where the [link 
+Here's another where the [link
 breaks] across lines, but with a line-ending space.
 
 
