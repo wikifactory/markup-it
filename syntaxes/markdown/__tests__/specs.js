@@ -1,6 +1,5 @@
 var fs = require('fs');
 var path = require('path');
-var Immutable = require('immutable');
 
 var MarkupIt = require('../../..');
 var markdownSyntax = require('../');
