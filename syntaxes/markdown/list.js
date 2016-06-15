@@ -79,38 +79,25 @@ function listRule(type) {
         .toText(function(text, block) {
             // Determine which bullet to use
             var bullet = '*';
-            if (type == markup.BLOCKS.OL_ITEM) bullet = '1.';
+            if (type == markup.BLOCKS.OL_ITEM) {
+                bullet = '1.';
+            }
 
             var nextBlock = block.next? block.next.type : null;
 
-            // Determine end of line
-            var eol = '';
+            // Prepend text with spacing
+            var rows = utils.splitLines(text);
+            var head = rows[0];
+            var rest = utils.indent(rows.slice(1).join('\n'), '  ');
 
-            // We finish list if:
-            //    - Next block is not a list
-            //    - List from a different type with same depth
-            if (!isListItem(nextBlock)) {
-                eol = '\n';
+            var eol = rest? '' : '\n';
+            if (nextBlock && !isListItem(nextBlock)) {
+                eol += '\n';
             }
 
-            // Add bullet
-            text = bullet + ' ' + text;
+            var result = bullet + ' ' + head + (rest ? '\n' + rest : '') + eol;
 
-            // Prepend text with spacing
-            var lines = utils.splitLines(text);
-
-            text = lines
-                .map(function(line, i) {
-                    if (i === 0) return line;
-                    if (!line.trim()) return '';
-
-                    return '  ' + line;
-                })
-                .join('\n');
-
-            return (
-                text + eol
-            );
+            return result;
         });
 }
 

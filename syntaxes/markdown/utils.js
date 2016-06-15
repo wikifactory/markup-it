@@ -82,9 +82,29 @@ function replace(regex, opt) {
     };
 }
 
+/**
+ * Indent a text
+ * @param  {String} text
+ * @param  {String} prefix
+ * @return {String}
+ */
+function indent(text, prefix) {
+    prefix = prefix || '    ';
+
+    return splitLines(text)
+        .map(function(line) {
+            if (!line) {
+                return line;
+            }
+            return prefix + line;
+        })
+        .join('\n');
+}
+
 module.exports = {
     splitLines: splitLines,
     escape: escapeMarkdown,
     unescape: unescapeMarkdown,
-    replace: replace
+    replace: replace,
+    indent: indent
 };
