@@ -24,6 +24,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         // Remove indentation
         inner = inner.replace(/^( {4}|\t)/gm, '');
 
+        // No pedantic mode
+        inner = inner.replace(/\n+$/, '');
+
         return {
             text: inner,
             data: {
