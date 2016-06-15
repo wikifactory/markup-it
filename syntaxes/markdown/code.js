@@ -30,7 +30,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         return {
             text: inner,
             data: {
-                syntax: null
+                syntax: undefined
             }
         };
     })
