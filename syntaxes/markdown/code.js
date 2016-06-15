@@ -42,11 +42,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         // Use fences if syntax is set
         if (!hasFences) {
             return (
-                '```'
-                + (block.data.syntax || '')
-                + '\n'
+                '```' + (block.data.syntax || '') + '\n'
                 + text
-                + '\n```\n\n'
+                + '```\n\n'
             );
         }
 

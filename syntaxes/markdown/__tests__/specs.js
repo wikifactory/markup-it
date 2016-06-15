@@ -13,17 +13,23 @@ var html = new MarkupIt(htmlSyntax);
 describe('Markdown Specs', function() {
     var files = fs.readdirSync(FIXTURES);
 
-    files.forEach(function(file) {
-        if (path.extname(file) !== '.md') return;
+    describe('MD -> HTML', function() {
+        files.forEach(function(file) {
+            if (path.extname(file) !== '.md') return;
 
-        describe(file, function() {
-            var fixture = readFixture(file);
-
-            it('MD -> HTML', function () {
+            it(file, function () {
+                var fixture = readFixture(file);
                 testMdToHtml(fixture);
             });
+        });
+    });
 
-            it('Content -> MD -> Content === id', function () {
+    describe('MD -> MD', function() {
+        files.forEach(function(file) {
+            if (path.extname(file) !== '.md') return;
+
+            it(file, function () {
+                var fixture = readFixture(file);
                 testMdIdempotence(fixture);
             });
         });
@@ -47,7 +53,7 @@ function testMdIdempotence(fixture) {
     var jsonContent1 = MarkupIt.JSONUtils.encode(content1);
     var jsonContent2 = MarkupIt.JSONUtils.encode(content2);
 
-    //jsonContent2.should.deepEqual(jsonContent1);
+    jsonContent2.should.eql(jsonContent1);
 }
 
 function readFixture(filename) {

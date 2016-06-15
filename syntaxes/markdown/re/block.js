@@ -11,7 +11,7 @@ var block = {
     footnote: /^\[\^([^\]]+)\]: ([^\n]+)/,
     paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,
     text: /^[^\n]+/,
-    fences: /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?)\s*\1 *(?:\n|$)/,
+    fences: /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?[\s]*)\1 *(?:\n|$)/,
     yamlHeader: /^ *(?=```)/,
     list: {
         block: /^( *)(bullet) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1allbull )\n*|\s*$)/,

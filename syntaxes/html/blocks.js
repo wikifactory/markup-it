@@ -57,6 +57,6 @@ module.exports = [
                 attr = ' class="lang-' + token.data.syntax +'"';
             }
 
-            return '<pre><code' + attr + '>' + utils.escape(text) + '\n</code></pre>\n';
+            return '<pre><code' + attr + '>' + utils.escape(text) + '</code></pre>\n';
         })
 ];
