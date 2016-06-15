@@ -279,7 +279,9 @@ var inlineRules = markup.RulesSet([
                 text: utils.unescape(match[0])
             };
         })
-        .toText(utils.escape)
+        .toText(function(text) {
+            return utils.escape(text, false);
+        })
 ]);
 
 module.exports = inlineRules;

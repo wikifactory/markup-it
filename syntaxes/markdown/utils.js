@@ -31,18 +31,29 @@ function re(str) {
     return new RegExp(escapeStringRegexp(str), 'g');
 }
 
-// Escape markdown syntax
-// We escape only basic XML entities
-function escapeMarkdown(str) {
+/**
+ * Escape markdown syntax
+ * We escape only basic XML entities
+ *
+ * @param {String} str
+ * @param {Boolean} escapeXML
+ * @return {String}
+ */
+function escapeMarkdown(str, escapeXML) {
     str = replacements.reduce(function(text, repl) {
         return text.replace(re(repl[0]), repl[1]);
     }, str);
 
-    return xmlEntities.encode(str);
+    return escapeXML === false? str : xmlEntities.encode(str);
 }
 
-// Unescape markdown syntax
-// We unescape all entities (HTML + XML)
+/**
+ * Unescape markdown syntax
+ * We unescape all entities (HTML + XML)
+ *
+ * @param {String} str
+ * @return {String}
+ */
 function unescapeMarkdown(str) {
     str = replacements.reduce(function(text, repl) {
         return text.replace(re(repl[1]), repl[0]);
@@ -51,9 +62,17 @@ function unescapeMarkdown(str) {
     return htmlEntities.decode(str);
 }
 
+
+/**
+ * Create a function to replace content in a regex
+ * @param  {RegEx} regex
+ * @param  {String} opt
+ * @return {Function(String, String)}
+ */
 function replace(regex, opt) {
     regex = regex.source;
     opt = opt || '';
+
     return function self(name, val) {
         if (!name) return new RegExp(regex, opt);
         val = val.source || val;
