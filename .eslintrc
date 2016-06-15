@@ -15,5 +15,8 @@
         "mocha": true,
         "browser": false
     },
+    "globals": {
+        "mock": true
+    },
     "extends": "eslint:recommended"
 }

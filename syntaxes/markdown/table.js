@@ -122,7 +122,7 @@ var blockRule = markup.Rule(markup.BLOCKS.TABLE)
     })
 
     .toText(function(text) {
-        return text;
+        return text + '\n';
     });
 
 var headerRule = markup.Rule(markup.BLOCKS.TABLE_HEADER)
@@ -142,7 +142,7 @@ var rowRule = markup.Rule(markup.BLOCKS.TABLE_ROW)
 
 var cellRule = markup.Rule(markup.BLOCKS.TABLE_CELL)
     .toText(function(text) {
-        return ' ' + text + ' |';
+        return ' ' + text.trim() + ' |';
     });
 
 module.exports = {

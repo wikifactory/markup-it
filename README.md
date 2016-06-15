@@ -83,25 +83,3 @@ var mySyntax = markdownSyntax.addBlockRules(myRule);
 ```
 
 Checkout the [GitBook syntax](https://github.com/GitbookIO/draft-markup/blob/master/syntaxes/gitbook/index.js) as an example of custom rules extending a syntax.
-
-
-### Contributing
-
-#### Testing
-
-You can launch tests using `npm run test`.
-
-All `.md` files and their `.html` counterparts in the `test/fixtures/` folder are used to validate the parsing of the markdown syntax by comparing the generated HTML to the expected one.
-For now, a lot of them fail. If you want a clean overview of which fixtures fail, use the overview script:
-
-```
-npm run test-overview
-
-```
-
-You can also test a single fixture at a time. For example, to test the `simple_paragraph.md` fixture only, use:
-
-```
-FIXTURE=simple_paragraph npm run test-fixture
-```
-

@@ -1,36 +1,36 @@
 var fs = require('fs');
-var argv = require('yargs').argv;
 var path = require('path');
-var Immutable = require('immutable');
-var MarkupIt = require('../');
-var markdownSyntax = require('../syntaxes/markdown');
-var htmlSyntax = require('../syntaxes/html');
 
-var FIXTURES = path.resolve(__dirname, 'fixtures/markdown');
+var MarkupIt = require('../../..');
+var markdownSyntax = require('../');
+var htmlSyntax = require('../../html');
+
+var FIXTURES = path.resolve(__dirname, 'specs');
 
 var markdown = new MarkupIt(markdownSyntax);
 var html = new MarkupIt(htmlSyntax);
 
-var ONLY = argv.testOnlyFixture;
+describe('Markdown Specs', function() {
+    var files = fs.readdirSync(FIXTURES);
 
-describe('Markdown', function() {
-
-    describe('Fixtures', function() {
-        var files = fs.readdirSync(FIXTURES);
+    describe('MD -> HTML', function() {
         files.forEach(function(file) {
             if (path.extname(file) !== '.md') return;
-            if (ONLY && path.basename(file, '.md') !== ONLY) return;
 
-            describe(file, function() {
+            it(file, function () {
                 var fixture = readFixture(file);
+                testMdToHtml(fixture);
+            });
+        });
+    });
 
-                it('MD -> HTML', function () {
-                    testMdToHtml(fixture);
-                });
+    describe('MD -> MD', function() {
+        files.forEach(function(file) {
+            if (path.extname(file) !== '.md') return;
 
-                it('Content -> MD -> Content === id', function () {
-                    testMdIdempotence(fixture);
-                });
+            it(file, function () {
+                var fixture = readFixture(file);
+                testMdIdempotence(fixture);
             });
         });
     });
@@ -40,17 +40,24 @@ describe('Markdown', function() {
 function testMdToHtml(fixture) {
     var content = markdown.toContent(fixture.sourceMd);
     var resultHtml = html.toText(content);
+
     (resultHtml).should.be.html(fixture.sourceHtml);
 }
 
 function testMdIdempotence(fixture) {
     var content1 = markdown.toContent(fixture.sourceMd);
+
     var backToMd = markdown.toText(content1);
     var content2 = markdown.toContent(backToMd);
+
     backToMd = markdown.toText(content2);
     var content3 = markdown.toContent(backToMd);
 
-    Immutable.is(content2, content3).should.be.true();
+    var jsonContent1 = MarkupIt.JSONUtils.encode(content1);
+    var jsonContent2 = MarkupIt.JSONUtils.encode(content2);
+    var jsonContent3 = MarkupIt.JSONUtils.encode(content3);
+
+    jsonContent3.should.eql(jsonContent2);
 }
 
 function readFixture(filename) {
@@ -64,3 +71,4 @@ function readFixture(filename) {
         sourceHtml: sourceHtml
     };
 }
+

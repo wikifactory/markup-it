@@ -24,10 +24,13 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         // Remove indentation
         inner = inner.replace(/^( {4}|\t)/gm, '');
 
+        // No pedantic mode
+        inner = inner.replace(/\n+$/, '');
+
         return {
             text: inner,
             data: {
-                syntax: null
+                syntax: undefined
             }
         };
     })
@@ -39,11 +42,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         // Use fences if syntax is set
         if (!hasFences) {
             return (
-                '```'
-                + (block.data.syntax || '')
-                + '\n'
+                '```' + (block.data.syntax || '') + '\n'
                 + text
-                + '\n```\n\n'
+                + '```\n\n'
             );
         }
 

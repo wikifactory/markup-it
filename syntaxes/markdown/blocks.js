@@ -8,14 +8,16 @@ var table = require('./table');
 var utils = require('./utils');
 
 /**
-    Is top block check that a paragraph can be parsed
-
-    Paragraphs can exists only in loose list or blockquote.
-*/
+ * Is top block check that a paragraph can be parsed
+ * Paragraphs can exists only in loose list or blockquote.
+ *
+ * @param {List<Token>} parents
+ * @return {Boolean}
+ */
 function isTop(parents) {
     return parents.find(function(token) {
-        var isBlockquote = token.getType() === markup.BLOCKS.BLOCKQUOTE;
-        var isLooseList = token.isListItem() && token.getData().get('loose');
+        var isBlockquote = (token.getType() === markup.BLOCKS.BLOCKQUOTE);
+        var isLooseList = (token.isListItem() && token.getData().get('loose'));
 
         return (!isBlockquote && !isLooseList);
     }) === undefined;
@@ -63,14 +65,18 @@ module.exports = markup.RulesSet([
     markup.Rule(markup.BLOCKS.HR)
         .setOption('parse', false)
         .setOption('renderInner', false)
-        .regExp(reBlock.hr)
+        .regExp(reBlock.hr, function() {
+            return {
+                text: ''
+            };
+        })
         .toText('---\n\n'),
 
     // ---- BLOCKQUOTE ----
     markup.Rule(markup.BLOCKS.BLOCKQUOTE)
         .setOption('parse', 'block')
         .regExp(reBlock.blockquote, function(match) {
-            var inner = match[1].replace(/^ *> ?/gm, '').trim();
+            var inner = match[0].replace(/^ *> ?/gm, '').trim();
 
             return {
                 text: inner
@@ -99,7 +105,7 @@ module.exports = markup.RulesSet([
                 text: match[0]
             };
         })
-        .toText('%s\n\n'),
+        .toText('%s'),
 
     // ---- DEFINITION ----
     markup.Rule(markup.BLOCKS.DEFINITION)

@@ -5,11 +5,10 @@ var utils = require('./utils');
 var isHTMLBlock = require('./isHTMLBlock');
 
 /**
-    Test if we are parsing inside a link
-
-    @param {List<Token>} parents
-    @return {Boolean}
-*/
+ * Test if we are parsing inside a link
+ * @param {List<Token>} parents
+ * @return {Boolean}
+ */
 function isInLink(parents, ctx) {
     if (ctx.isLink) {
         return true;
@@ -25,12 +24,11 @@ function isInLink(parents, ctx) {
 }
 
 /**
-    Resolve a reflink
-
-    @param {Object} ctx
-    @param {String} text
-    @return {Object|null}
-*/
+ * Resolve a reflink
+ * @param {Object} ctx
+ * @param {String} text
+ * @return {Object|null}
+ */
 function resolveRefLink(ctx, text) {
     var refs = (ctx.refs || {});
 
@@ -65,13 +63,13 @@ var inlineRules = markup.RulesSet([
             return {
                 text: ' ',
                 data: {
-                    title: match[1],
+                    alt: match[1],
                     src: match[2]
                 }
             };
         })
         .toText(function(text, entity) {
-            return '![' + entity.data.title + '](' + entity.data.src + ')';
+            return '![' + entity.data.alt + '](' + entity.data.src + ')';
         }),
 
     // ---- LINK ----
@@ -166,7 +164,15 @@ var inlineRules = markup.RulesSet([
                 text: match[2]
             };
         })
-        .toText('`%s`'),
+        .toText(function(text) {
+            // We need to find the right separator not present in the content
+            var separator = '`';
+            while(text.indexOf(separator) >= 0) {
+                separator += '`';
+            }
+
+            return (separator + text + separator);
+        }),
 
     // ---- BOLD ----
     markup.Rule(markup.STYLES.BOLD)
@@ -279,7 +285,9 @@ var inlineRules = markup.RulesSet([
                 text: utils.unescape(match[0])
             };
         })
-        .toText(utils.escape)
+        .toText(function(text) {
+            return utils.escape(text, false);
+        })
 ]);
 
 module.exports = inlineRules;
