@@ -65,13 +65,13 @@ var inlineRules = markup.RulesSet([
             return {
                 text: ' ',
                 data: {
-                    title: match[1],
+                    alt: match[1],
                     src: match[2]
                 }
             };
         })
         .toText(function(text, entity) {
-            return '![' + entity.data.title + '](' + entity.data.src + ')';
+            return '![' + entity.data.alt + '](' + entity.data.src + ')';
         }),
 
     // ---- LINK ----
