@@ -6,13 +6,13 @@ var tableRow = require('./tableRow');
 // Create a table entity
 
 /**
-    Create a table entity from parsed header/rows
-
-    @param {Array} header
-    @param {Array<String>} align
-    @param {Array<Array>} rows
-    @rteturn {Object} tokenMatch
-*/
+ * Create a table entity from parsed header/rows
+ *
+ * @param {Array} header
+ * @param {Array<String>} align
+ * @param {Array<Array>} rows
+ * @rteturn {Object} tokenMatch
+ */
 function Table(header, align, rows) {
     var ctx = this;
 
@@ -47,11 +47,11 @@ function Table(header, align, rows) {
 }
 
 /**
-    Detect alignement per column
-
-    @param {Array<String>}
-    @return {Array<String|null>}
-*/
+ * Detect alignement per column
+ *
+ * @param {Array<String>}
+ * @return {Array<String|null>}
+ */
 function mapAlign(align) {
     return align.map(function(s) {
         if (reTable.alignRight.test(s)) {
@@ -67,11 +67,11 @@ function mapAlign(align) {
 }
 
 /**
-    Render align to text
-
-    @param {Array<String>} row
-    @return {String}
-*/
+ * Render align to text
+ *
+ * @param {Array<String>} row
+ * @return {String}
+ */
 function alignToText(row) {
     return '|' + row.map(function(align) {
         if (align == 'right') {
