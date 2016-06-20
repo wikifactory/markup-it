@@ -29,18 +29,21 @@ module.exports = markup.RulesSet([
 
     // ---- FOOTNOTES ----
     markup.Rule(markup.BLOCKS.FOOTNOTE)
-        .regExp(reBlock.footnote, function(match) {
+        .regExp(reBlock.footnote, function(state, match) {
             var text = match[2];
 
             return {
-                text: text,
+                tokens: state.parseAsInline(text),
                 data: {
                     id: match[1]
                 }
             };
         })
-        .toText(function(text, block) {
-            return '[^' + block.data.id + ']: ' + text + '\n\n';
+        .toText(function(state, token) {
+            var data = token.getData();
+            var innerContent = state.renderAsInline(token);
+
+            return '[^' + data.id + ']: ' + innerContent + '\n\n';
         }),
 
     // ---- HEADING ----
@@ -51,9 +54,6 @@ module.exports = markup.RulesSet([
     heading.rule(2),
     heading.rule(1),
 
-    heading.lrule(2),
-    heading.lrule(1),
-
     // ---- TABLE ----
     table.block,
     table.header,
@@ -63,34 +63,30 @@ module.exports = markup.RulesSet([
 
     // ---- HR ----
     markup.Rule(markup.BLOCKS.HR)
-        .setOption('parse', false)
-        .setOption('renderInner', false)
         .regExp(reBlock.hr, function() {
-            return {
-                text: ''
-            };
+            return {};
         })
         .toText('---\n\n'),
 
     // ---- BLOCKQUOTE ----
     markup.Rule(markup.BLOCKS.BLOCKQUOTE)
-        .setOption('parse', 'block')
-        .regExp(reBlock.blockquote, function(match) {
+        .regExp(reBlock.blockquote, function(state, match) {
             var inner = match[0].replace(/^ *> ?/gm, '').trim();
 
             return {
-                text: inner
+                tokens: state.parseAsBlock(inner)
             };
         })
 
-        .toText(function(text) {
-            var lines = utils.splitLines(text.trim());
+        .toText(function(state, token) {
+            var innerContent = state.renderAsBlock(token);
+            var lines = utils.splitLines(innerContent.trim());
 
             return lines
-            .map(function(line) {
-                return '> ' + line;
-            })
-            .join('\n') + '\n\n';
+                .map(function(line) {
+                    return '> ' + line;
+                })
+                .join('\n') + '\n\n';
         }),
 
     // ---- LISTS ----
@@ -99,7 +95,6 @@ module.exports = markup.RulesSet([
 
     // ---- HTML ----
     markup.Rule(markup.BLOCKS.HTML)
-        .setOption('parse', false)
         .regExp(reBlock.html, function(match) {
             return {
                 text: match[0]
@@ -108,7 +103,7 @@ module.exports = markup.RulesSet([
         .toText('%s'),
 
     // ---- DEFINITION ----
-    markup.Rule(markup.BLOCKS.DEFINITION)
+    markup.Rule()
         .regExp(reBlock.def, function(match, parents) {
             if (parents.size > 0) {
                 return null;
@@ -131,27 +126,26 @@ module.exports = markup.RulesSet([
 
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
-        .regExp(reBlock.paragraph, function(match, parents) {
+        .regExp(reBlock.paragraph, function(state, match) {
             if (!isTop(parents)) {
                 return;
             }
-
             var text = match[1].trim();
 
             return {
-                text: text
+                tokens: state.parseAsInline(text)
             };
         })
         .toText('%s\n\n'),
 
-    // ---- PARAGRAPH ----
+    // ---- TEXT ----
+    // Top-level should never reach here.
     markup.Rule(markup.BLOCKS.TEXT)
-        .regExp(reBlock.text, function(match, parents) {
-            // Top-level should never reach here.
+        .regExp(reBlock.text, function(state, match) {
             var text = match[0];
 
             return {
-                text: text
+                tokens: state.parseAsInline(text)
             };
         })
         .toText('%s\n')

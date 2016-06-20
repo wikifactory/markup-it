@@ -2,7 +2,7 @@ var reHeading = require('./re/heading');
 var markup = require('../../');
 
 // Parse inner text of header to extract ID entity
-function parseHeadingText(text) {
+function parseHeadingText(state, text) {
     var id, match;
 
     reHeading.id.lastIndex = 0;
@@ -17,7 +17,7 @@ function parseHeadingText(text) {
     }
 
     return {
-        text: text,
+        tokens: state.parseAsInline(text),
         data: {
             id: id
         }
@@ -29,32 +29,27 @@ function headingRule(level) {
     var prefix = Array(level + 1).join('#');
 
     return markup.Rule(markup.BLOCKS['HEADING_' + level])
-        .regExp(reHeading.normal, function(match) {
+        .regExp(reHeading.normal, function(state, match) {
             if (match[1].length != level) return null;
-            return parseHeadingText(match[2]);
+            return parseHeadingText(state, match[2]);
         })
-        .toText(function (text, block) {
-            if (block.data.id) {
-                text += ' {#' + block.data.id + '}';
-            }
-
-            return prefix + ' ' + text + '\n\n';
-        });
-}
-
-// Generator for HEADING_X rules for line heading
-// Since normal heading are listed first, onText is not required here
-function lheadingRule(level) {
-    return markup.Rule(markup.BLOCKS['HEADING_' + level])
-        .regExp(reHeading.line, function(match) {
+        .regExp(reHeading.line, function(state, match) {
             var matchLevel = (match[2] === '=')? 1 : 2;
             if (matchLevel != level) return null;
 
-            return parseHeadingText(match[1]);
+            return parseHeadingText(state, match[1]);
+        })
+        .toText(function (state, token) {
+            var data = token.getData();
+            var innerContent = state.renderAsInline(token);
+
+            if (data.id) {
+                innerContent += ' {#' + data.id + '}';
+            }
+
+            return prefix + ' ' + innerContent + '\n\n';
         });
 }
 
-module.exports = {
-    rule: headingRule,
-    lrule: lheadingRule
-};
+
+module.exports = headingRule;

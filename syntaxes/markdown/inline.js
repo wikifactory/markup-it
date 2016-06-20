@@ -50,48 +50,50 @@ var inlineRules = markup.RulesSet([
                 data: {}
             };
         })
-        .toText(function(text) {
-            return '[^' + text + ']';
+        .toText(function(state, token) {
+            return '[^' + token.getText() + ']';
         }),
 
     // ---- IMAGES ----
     markup.Rule(markup.ENTITIES.IMAGE)
         .regExp(reInline.link, function(match) {
             var isImage = match[0].charAt(0) === '!';
-            if (!isImage) return null;
+            if (!isImage) {
+                return;
+            }
 
             return {
-                text: ' ',
                 data: {
                     alt: match[1],
                     src: match[2]
                 }
             };
         })
-        .toText(function(text, entity) {
-            return '![' + entity.data.alt + '](' + entity.data.src + ')';
+        .toText(function(state, token) {
+            var data = token.getData();
+            return '![' + data.alt + '](' + data.src + ')';
         }),
 
     // ---- LINK ----
     markup.Rule(markup.ENTITIES.LINK)
-        .regExp(reInline.link, function(match) {
+        .regExp(reInline.link, function(state, match) {
             return {
-                text: match[1],
+                tokens: state.parseAsInline(match[1]),
                 data: {
                     href: match[2],
                     title: match[3]
                 }
             };
         })
-        .regExp(reInline.autolink, function(match) {
+        .regExp(reInline.autolink, function(state, match) {
             return {
-                text: match[1],
+                tokens: state.parseAsInline(match[1]),
                 data: {
                     href: match[1]
                 }
             };
         })
-        .regExp(reInline.url, function(match, parents) {
+        .regExp(reInline.url, function(state, match, parents) {
             if (isInLink(parents, this)) {
                 return;
             }
@@ -99,25 +101,17 @@ var inlineRules = markup.RulesSet([
             var uri = match[1];
 
             return {
-                text: uri,
+                tokens: state.parseAsInline(uri),
                 data: {
                     href: uri
                 }
             };
         })
-        .toText(function(text, entity) {
-            var title = entity.data.title? ' "' + entity.data.title + '"' : '';
-            return '[' + text + '](' + entity.data.href + title + ')';
-        }),
-
-    // ---- REF LINKS ----
-    // Doesn't render, but match and resolve reference
-    markup.Rule(markup.ENTITIES.LINK_REF)
-        .regExp(reInline.reflink, function(match) {
-            var ref = resolveRefLink(this, (match[2] || match[1]));
+        .regExp(reInline.reflink, function(state, match) {
+            var ref = resolveRefLink(state, (match[2] || match[1]));
 
             if (!ref) {
-                return null;
+                return;
             }
 
             return {
@@ -126,34 +120,37 @@ var inlineRules = markup.RulesSet([
                 data: ref
             };
         })
-        .regExp(reInline.nolink, function(match) {
-            var ref = resolveRefLink(this, (match[2] || match[1]));
+        .regExp(reInline.nolink, function(state, match) {
+            var ref = resolveRefLink(state, (match[2] || match[1]));
 
             if (!ref) {
-                return null;
+                return;
             }
 
             return {
                 type: markup.ENTITIES.LINK,
-                text: match[1],
+                tokens: state.parseAsInline(match[1]),
                 data: ref
             };
         })
-        .regExp(reInline.reffn, function(match) {
-            var ref = resolveRefLink(this, match[1]);
+        .regExp(reInline.reffn, function(state, match) {
+            var ref = resolveRefLink(state, match[1]);
 
             if (!ref) {
                 return null;
             }
 
             return {
-                text: match[1],
+                tokens: state.parseAsInline(match[1]),
                 data: ref
             };
         })
-        .toText(function(text, entity) {
-            var title = entity.data.title? ' "' + entity.data.title + '"' : '';
-            return '[' + text + '](' + entity.data.href + title + ')';
+        .toText(function(state, token) {
+            var data         = token.getData();
+            var title        = data.title? ' "' + data.title + '"' : '';
+            var innerContent = state.renderAsInline(token);
+
+            return '[' + innerContent + '](' + data.href + title + ')';
         }),
 
     // ---- CODE ----
@@ -164,10 +161,12 @@ var inlineRules = markup.RulesSet([
                 text: match[2]
             };
         })
-        .toText(function(text) {
-            // We need to find the right separator not present in the content
+        .toText(function(state, token) {
             var separator = '`';
-            while(text.indexOf(separator) >= 0) {
+            var text = token.getText();
+
+            // We need to find the right separator not present in the content
+            while (text.indexOf(separator) >= 0) {
                 separator += '`';
             }
 
@@ -176,27 +175,27 @@ var inlineRules = markup.RulesSet([
 
     // ---- BOLD ----
     markup.Rule(markup.STYLES.BOLD)
-        .regExp(reInline.strong, function(match) {
+        .regExp(reInline.strong, function(state, match) {
             return {
-                text: match[2] || match[1]
+                tokens: state.parseAsInline(match[2] || match[1])
             };
         })
         .toText('**%s**'),
 
     // ---- ITALIC ----
     markup.Rule(markup.STYLES.ITALIC)
-        .regExp(reInline.em, function(match) {
+        .regExp(reInline.em, function(state, match) {
             return {
-                text: match[2] || match[1]
+                tokens: state.parseAsInline(match[2] || match[1])
             };
         })
         .toText('_%s_'),
 
     // ---- STRIKETHROUGH ----
     markup.Rule(markup.STYLES.STRIKETHROUGH)
-        .regExp(reInline.del, function(match) {
+        .regExp(reInline.del, function(state, match) {
             return {
-                text: match[1]
+                text: state.parseAsInline(match[1])
             };
         })
         .toText('~~%s~~'),
@@ -219,12 +218,6 @@ var inlineRules = markup.RulesSet([
                 startTag = match[0];
                 endTag = '';
             }
-
-
-            // todo: handle link tags
-            /*if (tagName === 'a' && innerText) {
-
-            }*/
 
             var innerTokens = [];
 
@@ -268,24 +261,24 @@ var inlineRules = markup.RulesSet([
 
             return result;
         })
-        .toText(function(text, token) {
-            return text;
+        .toText(function(state, token) {
+            return token.getText();
         }),
 
     // ---- ESCAPED ----
     markup.Rule(markup.STYLES.TEXT)
-        .setOption('parse', false)
-        .regExp(reInline.escape, function(match) {
+        .regExp(reInline.escape, function(state, match) {
             return {
                 text: match[1]
             };
         })
-        .regExp(reInline.text, function(match) {
+        .regExp(reInline.text, function(state, match) {
             return {
                 text: utils.unescape(match[0])
             };
         })
-        .toText(function(text) {
+        .toText(function(state, token) {
+            var text = token.getText();
             return utils.escape(text, false);
         })
 ]);
