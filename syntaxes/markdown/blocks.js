@@ -89,15 +89,15 @@ module.exports = markup.RulesSet([
     // ---- DEFINITION ----
     markup.Rule()
         .regExp(reBlock.def, function(state, match) {
-            if (state.getDepth() > 0) {
+            if (state.getDepth() > 1) {
                 return;
             }
 
-            var id = match[1].toLowerCase();
-            var href = match[2];
+            var id    = match[1].toLowerCase();
+            var href  = match[2];
             var title = match[3];
 
-            state.refs = state.refs || {};
+            state.refs     = state.refs || {};
             state.refs[id] = {
                 href: href,
                 title: title

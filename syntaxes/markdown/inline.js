@@ -6,24 +6,6 @@ var MarkupIt = require('../../');
 var utils = require('./utils');
 var isHTMLBlock = require('./isHTMLBlock');
 
-/**
- * Resolve a reflink
- * @param {Object} ctx
- * @param {String} text
- * @return {Object|null}
- */
-function resolveRefLink(ctx, text) {
-    var refs = (ctx.refs || {});
-
-    // Normalize the refId
-    var refId = (text)
-        .replace(/\s+/g, ' ')
-        .toLowerCase();
-    var ref = refs[refId];
-
-    return (ref && ref.href)? ref : null;
-}
-
 var inlineRules = MarkupIt.RulesSet([
     // ---- FOOTNOTE REFS ----
     MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
@@ -96,46 +78,40 @@ var inlineRules = MarkupIt.RulesSet([
             };
         })
         .regExp(reInline.reflink, function(state, match) {
-            var ref = resolveRefLink(state, (match[2] || match[1]));
-
-            if (!ref) {
-                return;
-            }
+            var refId = (match[2] || match[1]);
 
             return state.toggle('link', function() {
                 return {
                     type: MarkupIt.ENTITIES.LINK,
                     text: match[1],
-                    data: ref
+                    data: {
+                        ref: refId
+                    }
                 };
             });
         })
         .regExp(reInline.nolink, function(state, match) {
-            var ref = resolveRefLink(state, (match[2] || match[1]));
-
-            if (!ref) {
-                return;
-            }
+            var refId = (match[2] || match[1]);
 
             return state.toggle('link', function() {
                 return {
                     type: MarkupIt.ENTITIES.LINK,
                     tokens: state.parseAsInline(match[1]),
-                    data: ref
+                    data: {
+                        ref: refId
+                    }
                 };
             });
         })
         .regExp(reInline.reffn, function(state, match) {
-            var ref = resolveRefLink(state, match[1]);
-
-            if (!ref) {
-                return null;
-            }
+            var refId = match[1];
 
             return state.toggle('link', function() {
                 return {
                     tokens: state.parseAsInline(match[1]),
-                    data: ref
+                    data: {
+                        ref: refId
+                    }
                 };
             });
         })

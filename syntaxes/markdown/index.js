@@ -1,7 +1,7 @@
 var MarkupIt = require('../../');
 
 module.exports = MarkupIt.Syntax('markdown', {
-    entry: require('./document'),
+    entryRule: require('./document'),
 
     // List of rules for parsing blocks
     inline: require('./inline'),

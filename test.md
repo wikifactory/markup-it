@@ -1,5 +1,3 @@
-* Hello
+Here's a [link] [1] with an ampersand in the URL.
 
-* World
-  * A
-  * B
+[1]: http://example.com/
