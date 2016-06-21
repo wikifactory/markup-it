@@ -1,24 +1,19 @@
 var reBlock = require('./re/block');
-var markup = require('../../');
+var MarkupIt = require('../../');
 var utils = require('./utils');
 
 var reList = reBlock.list;
 
-// Return true if block is a list
-function isListItem(type) {
-    return (type == markup.BLOCKS.UL_ITEM || type == markup.BLOCKS.OL_ITEM);
-}
-
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
-    return markup.Rule(type)
-        .regExp(reList.block, function(match) {
+    return MarkupIt.Rule(type)
+        .regExp(reList.block, function(state, match) {
             var rawList = match[0];
             var bull = match[2];
             var ordered = bull.length > 1;
 
-            if (ordered && type === markup.BLOCKS.UL_ITEM) return;
-            if (!ordered && type === markup.BLOCKS.OL_ITEM) return;
+            if (ordered && type === MarkupIt.BLOCKS.UL_LIST) return;
+            if (!ordered && type === MarkupIt.BLOCKS.OL_LIST) return;
 
             var item, loose, next = false;
 
@@ -62,45 +57,44 @@ function listRule(type) {
                     if (!loose) loose = next;
                 }
 
-                result.push({
-                    type: type,
-                    raw: rawItem,
-                    text: textItem,
-                    data:{
+                result.push(MarkupIt.Token.create(MarkupIt.BLOCKS.LIST_ITEM, {
+                    raw:  rawItem,
+                    tokens: state.parseAsBlock(textItem),
+                    data: {
                         loose: loose
                     }
-                });
+                }));
             }
 
-
-            return result;
+            return {
+                tokens: result
+            };
         })
-        .toText(function(text, block) {
-            // Determine which bullet to use
-            var bullet = '*';
-            if (type == markup.BLOCKS.OL_ITEM) {
-                bullet = '1.';
-            }
+        .toText(function(state, token) {
+            var listType = token.getType();
+            var items    = token.getTokens();
 
-            var nextBlock = block.next? block.next.type : null;
+            return items.reduce(function(text, item, i) {
+                // Determine which bullet to use
+                var bullet = '*';
+                if (listType == MarkupIt.BLOCKS.OL_LIST) {
+                    bullet = (i + 1) + '.';
+                }
 
-            // Prepend text with spacing
-            var rows = utils.splitLines(text);
-            var head = rows[0];
-            var rest = utils.indent(rows.slice(1).join('\n'), '  ');
+                // Prepend text with spacing
+                var innerText = state.renderAsBlock(item);
+                var rows = utils.splitLines(innerText);
+                var head = rows[0];
+                var rest = utils.indent(rows.slice(1).join('\n'), '  ');
+                var eol = rest? '' : '\n';
 
-            var eol = rest? '' : '\n';
-            if (nextBlock && !isListItem(nextBlock)) {
-                eol += '\n';
-            }
-
-            var result = bullet + ' ' + head + (rest ? '\n' + rest : '') + eol;
-
-            return result;
+                var itemText = bullet + ' ' + head + (rest ? '\n' + rest : '') + eol;
+                return text + itemText;
+            }, '') + '\n';
         });
 }
 
 module.exports = {
-    ul: listRule(markup.BLOCKS.UL_ITEM),
-    ol: listRule(markup.BLOCKS.OL_ITEM)
+    ul: listRule(MarkupIt.BLOCKS.UL_LIST),
+    ol: listRule(MarkupIt.BLOCKS.OL_LIST)
 };

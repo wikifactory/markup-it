@@ -104,7 +104,7 @@ module.exports = markup.RulesSet([
 
     // ---- DEFINITION ----
     markup.Rule()
-        .regExp(reBlock.def, function(match, parents) {
+        .regExp(reBlock.def, function(state, match) {
             if (parents.size > 0) {
                 return null;
             }
@@ -113,8 +113,8 @@ module.exports = markup.RulesSet([
             var href = match[2];
             var title = match[3];
 
-            this.refs = this.refs || {};
-            this.refs[id] = {
+            state.refs = state.refs || {};
+            state.refs[id] = {
                 href: href,
                 title: title
             };

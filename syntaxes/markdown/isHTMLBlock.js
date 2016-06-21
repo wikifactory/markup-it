@@ -68,11 +68,10 @@ var htmlBlocks = Immutable.List([
 ]);
 
 /**
-    Test if a tag name is a valid HTML block
-
-    @param {String} tag
-    @return {Boolean}
-*/
+ * Test if a tag name is a valid HTML block
+ * @param {String} tag
+ * @return {Boolean}
+ */
 function isHTMLBlock(tag) {
     tag = tag.toLowerCase();
     return htmlBlocks.includes(tag);

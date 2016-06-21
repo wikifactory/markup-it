@@ -41,20 +41,25 @@ function headingRule(level) {
 
         // Normal heading like
         .regExp(reHeading.normal, function(state, match) {
-            if (match[1].length != level) return null;
+            if (match[1].length != level) {
+                return;
+            }
+
             return parseHeadingText(state, match[2]);
         })
 
         // Line heading
         .regExp(reHeading.line, function(state, match) {
             var matchLevel = (match[2] === '=')? 1 : 2;
-            if (matchLevel != level) return null;
+            if (matchLevel != level) {
+                return;
+            }
 
             return parseHeadingText(state, match[1]);
         })
 
         .toText(function (state, token) {
-            var data = token.getData();
+            var data         = token.getData();
             var innerContent = state.renderAsInline(token);
 
             if (data.id) {
