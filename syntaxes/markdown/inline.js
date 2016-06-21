@@ -155,7 +155,6 @@ var inlineRules = markup.RulesSet([
 
     // ---- CODE ----
     markup.Rule(markup.STYLES.CODE)
-        .setOption('parse', false)
         .regExp(reInline.code, function(match) {
             return {
                 text: match[2]
@@ -202,8 +201,6 @@ var inlineRules = markup.RulesSet([
 
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
-        .setOption('parse', false)
-        .setOption('renderInline', false)
         .regExp(reInline.html, function(match, parents) {
             var tag = match[0];
             var tagName = match[1];

@@ -12,7 +12,6 @@ var CELL_SEPARATOR = 'cell';
 var rowRules = inlineRules
     .unshift(
         MarkupIt.Rule(CELL_SEPARATOR)
-            .setOption('parse', false)
             .regExp(reTable.cellSeparation, function(match) {
                 return {
                     text: match[0]
@@ -21,7 +20,6 @@ var rowRules = inlineRules
     )
     .replace(
         MarkupIt.Rule(MarkupIt.STYLES.TEXT)
-            .setOption('parse', false)
             .regExp(reTable.cellInlineEscape, function(match) {
                 return {
                     text: utils.unescape(match[0])

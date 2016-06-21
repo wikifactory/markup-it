@@ -12,7 +12,6 @@ function isListItem(type) {
 // Rule for lists, rBlock.list match the whole (multilines) list, we stop at the first item
 function listRule(type) {
     return markup.Rule(type)
-        .setOption('parse', 'block')
         .regExp(reList.block, function(match) {
             var rawList = match[0];
             var bull = match[2];

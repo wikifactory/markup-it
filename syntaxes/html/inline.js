@@ -6,7 +6,6 @@ var HTMLRule = require('./rule');
 module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
-        .setOption('parse', false)
         .toText(utils.escape),
 
     // ---- CODE ----

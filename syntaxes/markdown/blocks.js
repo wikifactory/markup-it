@@ -47,12 +47,12 @@ module.exports = markup.RulesSet([
         }),
 
     // ---- HEADING ----
-    heading.rule(6),
-    heading.rule(5),
-    heading.rule(4),
-    heading.rule(3),
-    heading.rule(2),
-    heading.rule(1),
+    heading(6),
+    heading(5),
+    heading(4),
+    heading(3),
+    heading(2),
+    heading(1),
 
     // ---- TABLE ----
     table.block,
