@@ -16,8 +16,6 @@ function headingRule(n) {
 
 module.exports = [
     tableRules.block,
-    tableRules.header,
-    tableRules.body,
     tableRules.row,
     tableRules.cell,
 
