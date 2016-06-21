@@ -17,7 +17,7 @@ describe('GitBook Markdown', function() {
             var content = markup.toContent('$$a = b$$');
             var p = content.getToken().getTokens().get(0);
 
-            p.getPlainText().should.equal('a = b');
+            p.getAsPlainText().should.equal('a = b');
             p.getType().should.equal(MarkupIt.BLOCKS.PARAGRAPH);
         });
 
@@ -25,7 +25,7 @@ describe('GitBook Markdown', function() {
             var content = markup.toContent('Here are some math $$a = b$$, awesome!');
             var p = content.getToken().getTokens().get(0);
 
-            p.getPlainText().should.equal('Here are some math a = b, awesome!');
+            p.getAsPlainText().should.equal('Here are some math a = b, awesome!');
             p.getType().should.equal(MarkupIt.BLOCKS.PARAGRAPH);
         });
     });

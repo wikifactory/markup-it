@@ -32,7 +32,7 @@ module.exports = [
     HTMLRule(markup.ENTITIES.LINK, 'a', function(data) {
         return {
             title: data.title? utils.escape(data.title) : undefined,
-            href: utils.escape(data.href || '')
+            href:  utils.escape(data.href || '')
         };
     }),
 

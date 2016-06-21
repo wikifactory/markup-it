@@ -127,7 +127,7 @@ module.exports = markup.RulesSet([
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            if (!state.get('blockquote') && state.getDepth() > 0) {
+            if (!state.get('blockquote') && state.getDepth() > 1) {
                 return;
             }
             var text = match[1].trim();
