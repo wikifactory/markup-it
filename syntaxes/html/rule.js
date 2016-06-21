@@ -1,15 +1,14 @@
 var is = require('is');
 
-var markup = require('../../');
+var MarkupIt = require('../../');
 var identity = require('../../lib/utils/identity');
 
 var SINGLE_TAG = ['img', 'hr'];
 
 /**
-    Convert a map of attributes into a string
-
-    @param {Object} attrs
-    @return {String}
+ * Convert a map of attributes into a string
+ * @param {Object} attrs
+ * @return {String}
 */
 function attrsToString(attrs) {
     var output = '', value;
@@ -25,20 +24,23 @@ function attrsToString(attrs) {
         } else {
             output += ' ' + key + '=' + JSON.stringify(value);
         }
-
-
     }
 
     return output;
 }
 
+
 function HTMLRule(type, tag, getAttrs) {
     getAttrs = getAttrs || identity;
     var isSingleTag = SINGLE_TAG.indexOf(tag) >= 0;
 
-    return markup.Rule(type)
-        .toText(function(text, token) {
-            var attrs = getAttrs(token.data, token);
+    return MarkupIt.Rule(type)
+        .toText(function(state, token) {
+            console.log('render', token);
+            var text   = state.render(token);
+            var data   = token.getData().toJS();
+            var attrs  = getAttrs(data, token);
+
             var output = '<' + tag + attrsToString(attrs) + (isSingleTag? '/>' : '>');
 
             if (!isSingleTag) {

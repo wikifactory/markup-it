@@ -27,7 +27,6 @@ function listRule(type) {
                 rawItem = rawList.slice(lastIndex, reList.item.lastIndex);
                 lastIndex = reList.item.lastIndex;
 
-
                 items.push([item, rawItem]);
             }
 

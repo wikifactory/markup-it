@@ -51,7 +51,7 @@ var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
     .toText(function(sttae, token) {
         var data = token.getData();
         var text = token.getText();
-        var type = data.type;
+        var type = data.get('type');
 
         if (type == 'expr') text = '{% ' + text + ' %}';
         else if (type == 'comment') text = '{# ' + text + ' #}';

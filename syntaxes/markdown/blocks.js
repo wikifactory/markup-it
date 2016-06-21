@@ -105,9 +105,9 @@ module.exports = markup.RulesSet([
     // ---- DEFINITION ----
     markup.Rule()
         .regExp(reBlock.def, function(state, match) {
-            if (parents.size > 0) {
+            /*if (parents.size > 0) {
                 return null;
-            }
+            }*/
 
             var id = match[1].toLowerCase();
             var href = match[2];
@@ -127,9 +127,9 @@ module.exports = markup.RulesSet([
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            if (!isTop(parents)) {
+            /*if (!isTop(parents)) {
                 return;
-            }
+            }*/
             var text = match[1].trim();
 
             return {

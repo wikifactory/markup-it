@@ -6,12 +6,14 @@ var HTMLRule = require('./rule');
 module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
-        .toText(utils.escape),
+        .toText(function(state, token) {
+            return utils.escape(token.getText());
+        }),
 
     // ---- CODE ----
     markup.Rule(markup.STYLES.CODE)
-        .toText(function(text, token) {
-            return '<code>' + utils.escape(text) + '</code>';
+        .toText(function(state, token) {
+            return '<code>' + utils.escape(token.getText()) + '</code>';
         }),
 
     // ---- BOLD ----
@@ -36,13 +38,14 @@ module.exports = [
 
     // ---- FOOTNOTE ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
-        .toText(function(refname, token) {
+        .toText(function(state, token) {
+            var refname = token.getText();
             return '<sup><a href="#fn_' + refname + '" id="reffn_' + refname + '">' + refname + '</a></sup>';
         }),
 
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
-        .toText(function(text, token) {
-            return text;
+        .toText(function(state, token) {
+            return token.getText();
         })
 ];

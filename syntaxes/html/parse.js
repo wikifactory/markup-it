@@ -1,38 +1,37 @@
 var Immutable = require('immutable');
 var htmlparser = require('htmlparser2');
-var markup = require('../../');
+var MarkupIt = require('../../');
 
 var TAGS_TO_TYPE = {
-    a:              markup.ENTITIES.LINK,
-    img:            markup.ENTITIES.IMAGE,
+    a:              MarkupIt.ENTITIES.LINK,
+    img:            MarkupIt.ENTITIES.IMAGE,
 
-    h1:             markup.BLOCKS.HEADING_1,
-    h2:             markup.BLOCKS.HEADING_2,
-    h3:             markup.BLOCKS.HEADING_3,
-    h4:             markup.BLOCKS.HEADING_4,
-    h5:             markup.BLOCKS.HEADING_5,
-    h6:             markup.BLOCKS.HEADING_6,
-    pre:            markup.BLOCKS.CODE,
-    blockquote:     markup.BLOCKS.BLOCKQUOTE,
-    p:              markup.BLOCKS.PARAGRAPH,
-    hr:             markup.BLOCKS.HR,
+    h1:             MarkupIt.BLOCKS.HEADING_1,
+    h2:             MarkupIt.BLOCKS.HEADING_2,
+    h3:             MarkupIt.BLOCKS.HEADING_3,
+    h4:             MarkupIt.BLOCKS.HEADING_4,
+    h5:             MarkupIt.BLOCKS.HEADING_5,
+    h6:             MarkupIt.BLOCKS.HEADING_6,
+    pre:            MarkupIt.BLOCKS.CODE,
+    blockquote:     MarkupIt.BLOCKS.BLOCKQUOTE,
+    p:              MarkupIt.BLOCKS.PARAGRAPH,
+    hr:             MarkupIt.BLOCKS.HR,
 
-    table:          markup.BLOCKS.TABLE,
-    tr:             markup.BLOCKS.TR_ROW,
-    td:             markup.BLOCKS.TABLE_CELL,
+    table:          MarkupIt.BLOCKS.TABLE,
+    tr:             MarkupIt.BLOCKS.TR_ROW,
+    td:             MarkupIt.BLOCKS.TABLE_CELL,
 
-    b:              markup.INLINES.BOLD,
-    strike:         markup.INLINES.STRIKETHROUGH,
-    em:             markup.INLINES.ITALIC,
-    code:           markup.INLINES.CODE
+    b:              MarkupIt.STYLES.BOLD,
+    strike:         MarkupIt.STYLES.STRIKETHROUGH,
+    em:             MarkupIt.STYLES.ITALIC,
+    code:           MarkupIt.STYLES.CODE
 };
 
 /**
-    Parse an HTML string into a token tree
-
-    @param {String} str
-    @return {List<Token>}
-*/
+ * Parse an HTML string into a token tree
+ * @param {String} str
+ * @return {List<Token>}
+ */
 function htmlToTokens(str) {
     var accuText = '';
     var result = [];
@@ -50,8 +49,7 @@ function htmlToTokens(str) {
                 return;
             }
 
-            var token = new markup.Token({
-                type: type,
+            var token = MarkupIt.Token.create(type, {
                 text: accuText
             });
 
