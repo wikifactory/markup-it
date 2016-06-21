@@ -7,22 +7,6 @@ var code = require('./code');
 var table = require('./table');
 var utils = require('./utils');
 
-/**
- * Is top block check that a paragraph can be parsed
- * Paragraphs can exists only in loose list or blockquote.
- *
- * @param {List<Token>} parents
- * @return {Boolean}
- */
-function isTop(parents) {
-    return parents.find(function(token) {
-        var isBlockquote = (token.getType() === markup.BLOCKS.BLOCKQUOTE);
-        var isLooseList = (token.isListItem() && token.getData().get('loose'));
-
-        return (!isBlockquote && !isLooseList);
-    }) === undefined;
-}
-
 module.exports = markup.RulesSet([
     // ---- CODE BLOCKS ----
     code.block,
@@ -127,7 +111,7 @@ module.exports = markup.RulesSet([
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            if (!state.get('blockquote') && state.getDepth() > 1) {
+            if (!state.get('blockquote') && state.get('list') !== 'loose' && state.getDepth() > 1) {
                 return;
             }
             var text = match[1].trim();

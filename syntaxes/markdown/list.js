@@ -56,13 +56,17 @@ function listRule(type) {
                     if (!loose) loose = next;
                 }
 
-                result.push(MarkupIt.Token.create(MarkupIt.BLOCKS.LIST_ITEM, {
-                    raw:  rawItem,
-                    tokens: state.parseAsBlock(textItem),
-                    data: {
-                        loose: loose
-                    }
-                }));
+                result.push(
+                    state.toggle('list', loose? 'loose' : 'normal', function() {
+                        return MarkupIt.Token.create(MarkupIt.BLOCKS.LIST_ITEM, {
+                            raw:  rawItem,
+                            tokens: state.parseAsBlock(textItem),
+                            data: {
+                                loose: loose
+                            }
+                        });
+                    })
+                );
             }
 
             return {

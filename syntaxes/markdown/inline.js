@@ -6,7 +6,6 @@ var MarkupIt = require('../../');
 var utils = require('./utils');
 var isHTMLBlock = require('./isHTMLBlock');
 
-
 /**
  * Resolve a reflink
  * @param {Object} ctx
@@ -30,8 +29,7 @@ var inlineRules = MarkupIt.RulesSet([
     MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(state, match) {
             return {
-                text: match[1],
-                data: {}
+                text: match[1]
             };
         })
         .toText(function(state, token) {
@@ -55,7 +53,10 @@ var inlineRules = MarkupIt.RulesSet([
         })
         .toText(function(state, token) {
             var data = token.getData();
-            return '![' + data.alt + '](' + data.src + ')';
+            var alt  = data.get('alt', '');
+            var src  = data.get('src', '');
+
+            return '![' + alt + '](' + src + ')';
         }),
 
     // ---- LINK ----
@@ -65,7 +66,7 @@ var inlineRules = MarkupIt.RulesSet([
                 return {
                     tokens: state.parseAsInline(match[1]),
                     data: {
-                        href: match[2],
+                        href:  match[2],
                         title: match[3]
                     }
                 }
