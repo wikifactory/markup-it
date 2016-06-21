@@ -36,7 +36,6 @@ function HTMLRule(type, tag, getAttrs) {
 
     return MarkupIt.Rule(type)
         .toText(function(state, token) {
-            console.log('render', token);
             var text   = state.render(token);
             var data   = token.getData().toJS();
             var attrs  = getAttrs(data, token);

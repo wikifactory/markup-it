@@ -61,9 +61,10 @@ function headingRule(level) {
         .toText(function (state, token) {
             var data         = token.getData();
             var innerContent = state.renderAsInline(token);
+            var id           = data.get('id');
 
-            if (data.id) {
-                innerContent += ' {#' + data.id + '}';
+            if (id) {
+                innerContent += ' {#' + id + '}';
             }
 
             return prefix + ' ' + innerContent + '\n\n';

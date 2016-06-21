@@ -36,7 +36,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     .toText(function(state, token) {
         var text      = token.getText();
         var data      = token.getData();
-        var syntax    = data.syntax || '';
+        var syntax    = data.get('syntax', '');
         var hasFences = text.indexOf('`') >= 0;
 
         // Use fences if syntax is set

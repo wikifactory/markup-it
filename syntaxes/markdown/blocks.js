@@ -56,8 +56,6 @@ module.exports = markup.RulesSet([
 
     // ---- TABLE ----
     table.block,
-    table.header,
-    table.body,
     table.row,
     table.cell,
 
