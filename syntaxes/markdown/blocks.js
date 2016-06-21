@@ -71,9 +71,11 @@ module.exports = markup.RulesSet([
         .regExp(reBlock.blockquote, function(state, match) {
             var inner = match[0].replace(/^ *> ?/gm, '').trim();
 
-            return {
-                tokens: state.parseAsBlock(inner)
-            };
+            return state.toggle('blockquote', function() {
+                return {
+                    tokens: state.parseAsBlock(inner)
+                };
+            });
         })
 
         .toText(function(state, token) {
@@ -103,9 +105,9 @@ module.exports = markup.RulesSet([
     // ---- DEFINITION ----
     markup.Rule()
         .regExp(reBlock.def, function(state, match) {
-            /*if (parents.size > 0) {
-                return null;
-            }*/
+            if (state.getDepth() > 0) {
+                return;
+            }
 
             var id = match[1].toLowerCase();
             var href = match[2];
@@ -125,9 +127,9 @@ module.exports = markup.RulesSet([
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            /*if (!isTop(parents)) {
+            if (!state.get('blockquote') && state.getDepth() > 0) {
                 return;
-            }*/
+            }
             var text = match[1].trim();
 
             return {
