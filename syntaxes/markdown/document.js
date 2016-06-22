@@ -1,3 +1,4 @@
+var Immutable = require('immutable');
 var MarkupIt = require('../../');
 
 /**
@@ -23,11 +24,15 @@ function cleanupText(src) {
  * @return {Token}
  */
 function resolveLink(state, token) {
-    if (token.getType() !== MarkupIt.ENTITIES.LINK) {
+    var tokenType = token.getType();
+    var data      = token.getData();
+
+    if (tokenType === 'definition') {
+        return false;
+    }
+    if (tokenType !== MarkupIt.ENTITIES.LINK) {
         return token;
     }
-
-    var data = token.getData();
 
     // Normal link
     if (!data.has('ref')) {
@@ -41,8 +46,24 @@ function resolveLink(state, token) {
         .toLowerCase();
     var ref = refs[refId];
 
-    data = data.merge(ref);
-    return token.setData(data);
+    // Parse reference as text
+    if (!ref) {
+        var rawText = token.getRaw();
+
+        var tokens = Immutable.List([
+            MarkupIt.Token.createInlineText(rawText[0])
+        ])
+        .concat(
+            state.parseAsInline(rawText.slice(1))
+        );
+
+        return MarkupIt.transform(tokens, resolveLink.bind(null, state));
+    }
+
+    // Update link attributes
+    return token.setData(
+        data.merge(ref)
+    );
 }
 
 var documentRule = MarkupIt.Rule(MarkupIt.BLOCKS.DOCUMENT)

@@ -24,10 +24,11 @@ module.exports = markup.RulesSet([
             };
         })
         .toText(function(state, token) {
-            var data = token.getData();
+            var data         = token.getData();
+            var id           = data.get('id');
             var innerContent = state.renderAsInline(token);
 
-            return '[^' + data.id + ']: ' + innerContent + '\n\n';
+            return '[^' + id + ']: ' + innerContent + '\n\n';
         }),
 
     // ---- HEADING ----
@@ -104,14 +105,18 @@ module.exports = markup.RulesSet([
             };
 
             return {
-                type: markup.BLOCKS.IGNORE
+                type: 'definition'
             };
         }),
 
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            if (!state.get('blockquote') && state.get('list') !== 'loose' && state.getDepth() > 1) {
+            var isInBlocquote = state.get('blockquote') === (state.getDepth() - 1);
+            var isInLooseList = state.get('list') === 'loose';
+            var isTop = state.getDepth() === 1;
+
+            if (!isTop && !isInBlocquote && !isInLooseList) {
                 return;
             }
             var text = match[1].trim();

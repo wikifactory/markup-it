@@ -1,3 +1,9 @@
-Here's a [link] [1] with an ampersand in the URL.
+## foo
 
-[1]: http://example.com/
+1. bar:
+
+    > - one
+        - two
+            - three
+            - four
+            - five

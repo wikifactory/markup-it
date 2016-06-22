@@ -51,7 +51,7 @@ var inlineRules = MarkupIt.RulesSet([
                         href:  match[2],
                         title: match[3]
                     }
-                }
+                };
             });
         })
         .regExp(reInline.autolink, function(state, match) {
@@ -61,7 +61,7 @@ var inlineRules = MarkupIt.RulesSet([
                     data: {
                         href: match[1]
                     }
-                }
+                };
             });
         })
         .regExp(reInline.url, function(state, match, parents) {
@@ -166,7 +166,7 @@ var inlineRules = MarkupIt.RulesSet([
     MarkupIt.Rule(MarkupIt.STYLES.STRIKETHROUGH)
         .regExp(reInline.del, function(state, match) {
             return {
-                text: state.parseAsInline(match[1])
+                tokens: state.parseAsInline(match[1])
             };
         })
         .toText('~~%s~~'),

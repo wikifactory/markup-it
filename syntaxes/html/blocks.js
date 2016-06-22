@@ -36,7 +36,7 @@ module.exports = [
     MarkupIt.Rule(MarkupIt.BLOCKS.FOOTNOTE)
         .toText(function(state, token) {
             var data    = token.getData();
-            var text    = token.getText();
+            var text    = state.renderAsInline(token);
             var refname = data.get('id');
 
             return '<blockquote id="fn_' + refname + '">\n'
