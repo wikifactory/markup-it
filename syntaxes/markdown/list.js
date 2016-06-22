@@ -56,16 +56,19 @@ function listRule(type) {
                     if (!loose) loose = next;
                 }
 
+                var parse = function() {
+                    return MarkupIt.Token.create(MarkupIt.BLOCKS.LIST_ITEM, {
+                        raw:  rawItem,
+                        tokens: state.parseAsBlock(textItem),
+                        data: {
+                            loose: loose
+                        }
+                    });
+                };
+
+
                 result.push(
-                    state.toggle('list', loose? 'loose' : 'normal', function() {
-                        return MarkupIt.Token.create(MarkupIt.BLOCKS.LIST_ITEM, {
-                            raw:  rawItem,
-                            tokens: state.parseAsBlock(textItem),
-                            data: {
-                                loose: loose
-                            }
-                        });
-                    })
+                    loose? state.toggle('looseList', parse) : parse()
                 );
             }
 
@@ -90,6 +93,11 @@ function listRule(type) {
                 var head = rows[0];
                 var rest = utils.indent(rows.slice(1).join('\n'), '  ');
                 var eol = rest? '' : '\n';
+                var isLoose = item.getTokens()
+                    .find(function(p) {
+                        return p.getType() === MarkupIt.BLOCKS.PARAGRAPH;
+                    }) !== undefined;
+                //if (isLoose) eol += '\n';
 
                 var itemText = bullet + ' ' + head + (rest ? '\n' + rest : '') + eol;
                 return text + itemText;

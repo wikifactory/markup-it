@@ -112,9 +112,9 @@ module.exports = markup.RulesSet([
     // ---- PARAGRAPH ----
     markup.Rule(markup.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            var isInBlocquote = state.get('blockquote') === (state.getDepth() - 1);
-            var isInLooseList = state.get('list') === 'loose';
-            var isTop = state.getDepth() === 1;
+            var isInBlocquote = (state.get('blockquote') === state.getParentDepth());
+            var isInLooseList = (state.get('looseList') === state.getParentDepth());
+            var isTop = (state.getDepth() === 1);
 
             if (!isTop && !isInBlocquote && !isInLooseList) {
                 return;
