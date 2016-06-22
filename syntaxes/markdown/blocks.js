@@ -80,7 +80,7 @@ module.exports = markup.RulesSet([
 
     // ---- HTML ----
     markup.Rule(markup.BLOCKS.HTML)
-        .regExp(reBlock.html, function(match) {
+        .regExp(reBlock.html, function(state, match) {
             return {
                 text: match[0]
             };
