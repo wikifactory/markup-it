@@ -53,7 +53,7 @@ module.exports = [
         .toText(function(state, token) {
             var attr   = '';
             var data   = token.getData();
-            var text   = token.getText();
+            var text   = token.getAsPlainText();
             var syntax = data.get('syntax');
 
             if (syntax) {

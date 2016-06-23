@@ -1,13 +1,17 @@
 var reBlock = require('./re/block');
-var markup = require('../../');
+var MarkupIt = require('../../');
 var utils = require('./utils');
 
 // Rule for parsing code blocks
-var blockRule = markup.Rule(markup.BLOCKS.CODE)
+var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
     // Fences
     .regExp(reBlock.fences, function(state, match) {
+        var inner = match[3];
+
         return {
-            text: match[3],
+            tokens: [
+                MarkupIt.Token.createInlineText(inner)
+            ],
             data: {
                 syntax: match[2]
             }
@@ -25,7 +29,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         inner = inner.replace(/\n+$/, '');
 
         return {
-            text: inner,
+            tokens: [
+                MarkupIt.Token.createInlineText(inner)
+            ],
             data: {
                 syntax: undefined
             }
@@ -34,9 +40,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
 
     // Output code blocks
     .toText(function(state, token) {
-        var text      = token.getText();
+        var text      = token.getAsPlainText();
         var data      = token.getData();
-        var syntax    = data.get('syntax', '');
+        var syntax    = data.get('syntax') || '';
         var hasFences = text.indexOf('`') >= 0;
 
         // Use fences if syntax is set
