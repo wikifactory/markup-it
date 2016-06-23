@@ -13,7 +13,7 @@ module.exports = [
     // ---- CODE ----
     markup.Rule(markup.STYLES.CODE)
         .toText(function(state, token) {
-            return '<code>' + utils.escape(token.getText()) + '</code>';
+            return '<code>' + utils.escape(token.getAsPlainText()) + '</code>';
         }),
 
     // ---- BOLD ----
@@ -39,13 +39,13 @@ module.exports = [
     // ---- FOOTNOTE ----
     markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
         .toText(function(state, token) {
-            var refname = token.getText();
+            var refname = token.getAsPlainText();
             return '<sup><a href="#fn_' + refname + '" id="reffn_' + refname + '">' + refname + '</a></sup>';
         }),
 
     // ---- HTML ----
     markup.Rule(markup.STYLES.HTML)
         .toText(function(state, token) {
-            return token.getText();
+            return token.getAsPlainText();
         })
 ];

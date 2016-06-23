@@ -11,11 +11,13 @@ var inlineRules = MarkupIt.RulesSet([
     MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(state, match) {
             return {
-                text: match[1]
+                tokens: [
+                    MarkupIt.Token.createText(match[1])
+                ]
             };
         })
         .toText(function(state, token) {
-            return '[^' + token.getText() + ']';
+            return '[^' + token.getAsPlainText() + ']';
         }),
 
     // ---- IMAGES ----
@@ -71,22 +73,27 @@ var inlineRules = MarkupIt.RulesSet([
             var uri = match[1];
 
             return {
-                text: uri,
                 data: {
                     href: uri
-                }
+                },
+                tokens: [
+                    MarkupIt.Token.createText(uri)
+                ]
             };
         })
         .regExp(reInline.reflink, function(state, match) {
-            var refId = (match[2] || match[1]);
+            var refId     = (match[2] || match[1]);
+            var innerText = match[1];
 
             return state.toggle('link', function() {
                 return {
                     type: MarkupIt.ENTITIES.LINK,
-                    text: match[1],
                     data: {
                         ref: refId
-                    }
+                    },
+                    tokens: [
+                        MarkupIt.Token.createText(innerText)
+                    ]
                 };
             });
         })
@@ -129,12 +136,14 @@ var inlineRules = MarkupIt.RulesSet([
     MarkupIt.Rule(MarkupIt.STYLES.CODE)
         .regExp(reInline.code, function(state, match) {
             return {
-                text: match[2]
+                tokens: [
+                    MarkupIt.Token.createText(match[2])
+                ]
             };
         })
         .toText(function(state, token) {
             var separator = '`';
-            var text = token.getText();
+            var text = token.getAsPlainText();
 
             // We need to find the right separator not present in the content
             while (text.indexOf(separator) >= 0) {
@@ -199,7 +208,7 @@ var inlineRules = MarkupIt.RulesSet([
                     {
                         type: MarkupIt.STYLES.HTML,
                         text: innerText,
-                        raw: innerText
+                        raw:  innerText
                     }
                 ];
             }
@@ -208,7 +217,7 @@ var inlineRules = MarkupIt.RulesSet([
                 .push({
                     type: MarkupIt.STYLES.HTML,
                     text: startTag,
-                    raw: startTag
+                    raw:  startTag
                 });
 
             result = result.concat(innerTokens);
@@ -217,7 +226,7 @@ var inlineRules = MarkupIt.RulesSet([
                 result = result.push({
                     type: MarkupIt.STYLES.HTML,
                     text: endTag,
-                    raw: endTag
+                    raw:  endTag
                 });
             }
 

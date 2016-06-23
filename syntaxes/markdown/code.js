@@ -10,7 +10,7 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
 
         return {
             tokens: [
-                MarkupIt.Token.createInlineText(inner)
+                MarkupIt.Token.createText(inner)
             ],
             data: {
                 syntax: match[2]
@@ -30,7 +30,7 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
 
         return {
             tokens: [
-                MarkupIt.Token.createInlineText(inner)
+                MarkupIt.Token.createText(inner)
             ],
             data: {
                 syntax: undefined

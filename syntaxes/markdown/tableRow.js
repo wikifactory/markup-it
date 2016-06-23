@@ -14,21 +14,19 @@ var rowRules = inlineRules
         MarkupIt.Rule(CELL_SEPARATOR)
             .regExp(reTable.cellSeparation, function(match) {
                 return {
-                    text: match[0]
+                    raw: match[0]
                 };
             })
     )
     .replace(
         MarkupIt.Rule(MarkupIt.STYLES.TEXT)
             .regExp(reTable.cellInlineEscape, function(state, match) {
-                return {
-                    text: utils.unescape(match[0])
-                };
+                var text = utils.unescape(match[0]);
+                return { text: text };
             })
             .regExp(reTable.cellInlineText, function(state, match) {
-                return {
-                    text: utils.unescape(match[0])
-                };
+                var text = utils.unescape(match[0]);
+                return { text: text };
             })
             .toText(utils.escape)
     );

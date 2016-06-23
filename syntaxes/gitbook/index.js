@@ -49,15 +49,17 @@ var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
         else if (type == '{') type = 'var';
 
         return {
-            text: text,
             data: {
                 type: type
-            }
+            },
+            tokens: [
+                MarkupIt.Token.createText(text)
+            ]
         };
     })
     .toText(function(sttae, token) {
         var data = token.getData();
-        var text = token.getText();
+        var text = token.getAsPlainText();
         var type = data.get('type');
 
         if (type == 'expr') text = '{% ' + text + ' %}';

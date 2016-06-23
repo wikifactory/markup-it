@@ -1,5 +1,5 @@
 var reBlock = require('./re/block');
-var markup = require('../../');
+var MarkupIt = require('../../');
 
 var heading = require('./heading');
 var list = require('./list');
@@ -7,12 +7,12 @@ var code = require('./code');
 var table = require('./table');
 var utils = require('./utils');
 
-module.exports = markup.RulesSet([
+module.exports = MarkupIt.RulesSet([
     // ---- CODE BLOCKS ----
     code.block,
 
     // ---- FOOTNOTES ----
-    markup.Rule(markup.BLOCKS.FOOTNOTE)
+    MarkupIt.Rule(MarkupIt.BLOCKS.FOOTNOTE)
         .regExp(reBlock.footnote, function(state, match) {
             var text = match[2];
 
@@ -45,14 +45,14 @@ module.exports = markup.RulesSet([
     table.cell,
 
     // ---- HR ----
-    markup.Rule(markup.BLOCKS.HR)
+    MarkupIt.Rule(MarkupIt.BLOCKS.HR)
         .regExp(reBlock.hr, function() {
             return {};
         })
         .toText('---\n\n'),
 
     // ---- BLOCKQUOTE ----
-    markup.Rule(markup.BLOCKS.BLOCKQUOTE)
+    MarkupIt.Rule(MarkupIt.BLOCKS.BLOCKQUOTE)
         .regExp(reBlock.blockquote, function(state, match) {
             var inner = match[0].replace(/^ *> ?/gm, '').trim();
 
@@ -79,7 +79,7 @@ module.exports = markup.RulesSet([
     list.ol,
 
     // ---- HTML ----
-    markup.Rule(markup.BLOCKS.HTML)
+    MarkupIt.Rule(MarkupIt.BLOCKS.HTML)
         .regExp(reBlock.html, function(state, match) {
             return {
                 text: match[0]
@@ -88,7 +88,7 @@ module.exports = markup.RulesSet([
         .toText('%s'),
 
     // ---- DEFINITION ----
-    markup.Rule()
+    MarkupIt.Rule()
         .regExp(reBlock.def, function(state, match) {
             if (state.getDepth() > 1) {
                 return;
@@ -110,7 +110,7 @@ module.exports = markup.RulesSet([
         }),
 
     // ---- PARAGRAPH ----
-    markup.Rule(markup.BLOCKS.PARAGRAPH)
+    MarkupIt.Rule(MarkupIt.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
             var isInBlocquote = (state.get('blockquote') === state.getParentDepth());
             var isInLooseList = (state.get('looseList') === state.getParentDepth());
@@ -129,7 +129,7 @@ module.exports = markup.RulesSet([
 
     // ---- TEXT ----
     // Top-level should never reach here.
-    markup.Rule(markup.BLOCKS.TEXT)
+    MarkupIt.Rule(MarkupIt.BLOCKS.TEXT)
         .regExp(reBlock.text, function(state, match) {
             var text = match[0];
 

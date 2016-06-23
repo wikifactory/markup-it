@@ -51,7 +51,7 @@ function resolveLink(state, token) {
         var rawText = token.getRaw();
 
         var tokens = Immutable.List([
-            MarkupIt.Token.createInlineText(rawText[0])
+            MarkupIt.Token.createText(rawText[0])
         ])
         .concat(
             state.parseAsInline(rawText.slice(1))
