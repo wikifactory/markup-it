@@ -8,28 +8,35 @@ var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
 var inlineMathRule = markup.Rule(markup.ENTITIES.MATH)
     .regExp(reMathInline, function(state, match) {
         var text = match[1];
-        if (text.trim().length == 0) return;
+        if (text.trim().length == 0) {
+            return;
+        }
 
         return {
-            text: text,
-            data: {}
+            data: {
+                tex: text
+            }
         };
     })
     .toText(function(state, token) {
-        return '$$' + token.getText() + '$$';
+        return '$$' + token.getData().get('tex') + '$$';
     });
 
 var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
     .regExp(reMathBlock, function(state, match) {
         var text = match[1];
-        if (text.trim().length == 0) return;
+        if (text.trim().length == 0) {
+            return;
+        }
 
         return {
-            text: text
+            data: {
+                tex: text
+            }
         };
     })
     .toText(function(state, token) {
-        return '$$\n' + token.getText() + '\n$$\n\n';
+        return '$$\n' + token.getData().get('tex') + '\n$$\n\n';
     });
 
 var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
