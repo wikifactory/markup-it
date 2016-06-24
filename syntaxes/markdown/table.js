@@ -4,6 +4,11 @@ var MarkupIt = require('../../');
 var reTable = require('./re/table');
 var tableRow = require('./tableRow');
 
+var ALIGN = {
+    LEFT:   'left',
+    RIGHT:  'right',
+    CENTER: 'center'
+};
 
 /**
  * Create a table entity from parsed header/rows
@@ -37,11 +42,11 @@ function Table(state, header, align, rows) {
 function mapAlign(align) {
     return align.map(function(s) {
         if (reTable.alignRight.test(s)) {
-            return 'right';
+            return ALIGN.RIGHT;
         } else if (reTable.alignCenter.test(s)) {
-            return 'center';
+            return ALIGN.CENTER;
         } else if (reTable.alignLeft.test(s)) {
-            return 'left';
+            return ALIGN.LEFT;
         } else {
             return null;
         }
@@ -110,6 +115,15 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
 
         var headerRows = rows.slice(0, 1);
         var bodyRows   = rows.slice(1);
+        var headerRow  = headerRows.get(0);
+        var countCells = headerRow.getTokens().size;
+
+        align = align || [];
+        align = Array
+            .apply(null, Array(countCells))
+            .map(function(v, i){
+                return align[i] || ALIGN.LEFT;
+            });
 
         var headerText = state.render(headerRows);
         var bodyText   = state.render(bodyRows);
