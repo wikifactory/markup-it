@@ -233,7 +233,7 @@ var inlineRules = MarkupIt.RulesSet([
             return result;
         })
         .toText(function(state, token) {
-            return token.getText();
+            return token.getAsPlainText();
         }),
 
     // ---- ESCAPED ----
@@ -249,7 +249,7 @@ var inlineRules = MarkupIt.RulesSet([
             };
         })
         .toText(function(state, token) {
-            var text = token.getText();
+            var text = token.getAsPlainText();
             return utils.escape(text, false);
         })
 ]);

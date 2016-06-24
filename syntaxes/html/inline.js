@@ -7,7 +7,7 @@ module.exports = [
     // ---- TEXT ----
     markup.Rule(markup.STYLES.TEXT)
         .toText(function(state, token) {
-            return utils.escape(token.getText());
+            return utils.escape(token.getAsPlainText());
         }),
 
     // ---- CODE ----
