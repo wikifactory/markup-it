@@ -1,4 +1,4 @@
-# markup-it [![Build Status](https://travis-ci.org/GitbookIO/markup-it.png?branch=master)](https://travis-ci.org/GitbookIO/markup-it) [![NPM version](https://badge.fury.io/js/markup-it.svg)](http://badge.fury.io/js/markup-it)
+# markup-it [![Build Status](https://travis-ci.org/GitbookIO/markup-it.svg?branch=master)](https://travis-ci.org/GitbookIO/markup-it) [![NPM version](https://badge.fury.io/js/markup-it.svg)](http://badge.fury.io/js/markup-it)
 
 `markup-it` is a JavaScript library to parse and modify markuped content (for example Markdown) using an intermediate format backed by an immutable model.
 
