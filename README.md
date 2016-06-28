@@ -38,27 +38,33 @@ var textMd = markdown.toText(content);
 var textHtml = html.toText(content);
 ```
 
-#### Usage with Draft.js
+#### Usage with ProseMirror
 
-`markup-it` can integrates with [Draft-js](https://facebook.github.io/draft-js/) for rich text editing.
 
-Generate a [ContentState](https://facebook.github.io/draft-js/docs/api-reference-content-state.html#content) blocks list for `draft-js` using `DraftUtils.encode`:
+`markup-it` can integrates with [Prosemirror](http://prosemirror.net) for rich text editing.
+
+Generate a doc [Node](https://prosemirror.net/guide/doc.html#nodes) using `ProseMirrorUtils.encode`:
 
 ```js
-var rawContent = MarkupIt.DraftUtils.encode(content);
+var Node = require('prosemirror/dist/model/node').Node;
 
-var blocks = draft.convertFromRaw(rawContent);
-var content = draft.ContentState.createFromBlockArray(blocks);
+var docJson = MarkupIt.ProseMirrorUtils.encode(content);
+
+var doc = Node.fromJSON(schema, docJson);
 ```
 
-And output markdown from a ContentState using `DraftUtils.decode`:
+And output markdown from a Doc using `ProseMirrorUtils.decode`:
 
 ```js
-var rawContent = draft.convertToRaw(content);
-var content = MarkupIt.DraftUtils.decode(rawContent);
+var docJson = pm.getDoc().toJSON();
+var content = MarkupIt.ProseMirrorUtils.decode(docJson);
 
 var text = markdown.toText(content);
 ```
+
+#### Usage with Draft.js
+
+> Coming soon!
 
 ### Extend Syntax
 
