@@ -1,173 +1,152 @@
+var Immutable = require('immutable');
+
 var reInline = require('./re/inline');
-var markup = require('../../');
+var MarkupIt = require('../../');
 
 var utils = require('./utils');
 var isHTMLBlock = require('./isHTMLBlock');
 
-/**
- * Test if we are parsing inside a link
- * @param {List<Token>} parents
- * @return {Boolean}
- */
-function isInLink(parents, ctx) {
-    if (ctx.isLink) {
-        return true;
-    }
-
-    return parents.find(function(tok) {
-        if (tok.getType() === markup.ENTITIES.LINK) {
-            return true;
-        }
-
-        return false;
-    }) !== undefined;
-}
-
-/**
- * Resolve a reflink
- * @param {Object} ctx
- * @param {String} text
- * @return {Object|null}
- */
-function resolveRefLink(ctx, text) {
-    var refs = (ctx.refs || {});
-
-    // Normalize the refId
-    var refId = (text)
-        .replace(/\s+/g, ' ')
-        .toLowerCase();
-    var ref = refs[refId];
-
-    return (ref && ref.href)? ref : null;
-}
-
-var inlineRules = markup.RulesSet([
+var inlineRules = MarkupIt.RulesSet([
     // ---- FOOTNOTE REFS ----
-    markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
-        .regExp(reInline.reffn, function(match) {
+    MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
+        .regExp(reInline.reffn, function(state, match) {
             return {
-                text: match[1],
-                data: {}
+                tokens: [
+                    MarkupIt.Token.createText(match[1])
+                ]
             };
         })
-        .toText(function(text) {
-            return '[^' + text + ']';
+        .toText(function(state, token) {
+            return '[^' + token.getAsPlainText() + ']';
         }),
 
     // ---- IMAGES ----
-    markup.Rule(markup.ENTITIES.IMAGE)
-        .regExp(reInline.link, function(match) {
+    MarkupIt.Rule(MarkupIt.ENTITIES.IMAGE)
+        .regExp(reInline.link, function(state, match) {
             var isImage = match[0].charAt(0) === '!';
-            if (!isImage) return null;
+            if (!isImage) {
+                return;
+            }
 
             return {
-                text: ' ',
                 data: {
                     alt: match[1],
                     src: match[2]
                 }
             };
         })
-        .toText(function(text, entity) {
-            return '![' + entity.data.alt + '](' + entity.data.src + ')';
+        .toText(function(state, token) {
+            var data = token.getData();
+            var alt  = data.get('alt', '');
+            var src  = data.get('src', '');
+
+            return '![' + alt + '](' + src + ')';
         }),
 
     // ---- LINK ----
-    markup.Rule(markup.ENTITIES.LINK)
-        .regExp(reInline.link, function(match) {
-            return {
-                text: match[1],
-                data: {
-                    href: match[2],
-                    title: match[3]
-                }
-            };
+    MarkupIt.Rule(MarkupIt.ENTITIES.LINK)
+        .regExp(reInline.link, function(state, match) {
+            return state.toggle('link', function() {
+                return {
+                    tokens: state.parseAsInline(match[1]),
+                    data: {
+                        href:  match[2],
+                        title: match[3]
+                    }
+                };
+            });
         })
-        .regExp(reInline.autolink, function(match) {
-            return {
-                text: match[1],
-                data: {
-                    href: match[1]
-                }
-            };
+        .regExp(reInline.autolink, function(state, match) {
+            return state.toggle('link', function() {
+                return {
+                    tokens: state.parseAsInline(match[1]),
+                    data: {
+                        href: match[1]
+                    }
+                };
+            });
         })
-        .regExp(reInline.url, function(match, parents) {
-            if (isInLink(parents, this)) {
+        .regExp(reInline.url, function(state, match, parents) {
+            if (state.get('link')) {
                 return;
             }
-
             var uri = match[1];
 
             return {
-                text: uri,
                 data: {
                     href: uri
-                }
+                },
+                tokens: [
+                    MarkupIt.Token.createText(uri)
+                ]
             };
         })
-        .toText(function(text, entity) {
-            var title = entity.data.title? ' "' + entity.data.title + '"' : '';
-            return '[' + text + '](' + entity.data.href + title + ')';
-        }),
+        .regExp(reInline.reflink, function(state, match) {
+            var refId     = (match[2] || match[1]);
+            var innerText = match[1];
 
-    // ---- REF LINKS ----
-    // Doesn't render, but match and resolve reference
-    markup.Rule(markup.ENTITIES.LINK_REF)
-        .regExp(reInline.reflink, function(match) {
-            var ref = resolveRefLink(this, (match[2] || match[1]));
-
-            if (!ref) {
-                return null;
-            }
-
-            return {
-                type: markup.ENTITIES.LINK,
-                text: match[1],
-                data: ref
-            };
+            return state.toggle('link', function() {
+                return {
+                    type: MarkupIt.ENTITIES.LINK,
+                    data: {
+                        ref: refId
+                    },
+                    tokens: [
+                        MarkupIt.Token.createText(innerText)
+                    ]
+                };
+            });
         })
-        .regExp(reInline.nolink, function(match) {
-            var ref = resolveRefLink(this, (match[2] || match[1]));
+        .regExp(reInline.nolink, function(state, match) {
+            var refId = (match[2] || match[1]);
 
-            if (!ref) {
-                return null;
-            }
-
-            return {
-                type: markup.ENTITIES.LINK,
-                text: match[1],
-                data: ref
-            };
+            return state.toggle('link', function() {
+                return {
+                    type: MarkupIt.ENTITIES.LINK,
+                    tokens: state.parseAsInline(match[1]),
+                    data: {
+                        ref: refId
+                    }
+                };
+            });
         })
-        .regExp(reInline.reffn, function(match) {
-            var ref = resolveRefLink(this, match[1]);
+        .regExp(reInline.reffn, function(state, match) {
+            var refId = match[1];
 
-            if (!ref) {
-                return null;
-            }
-
-            return {
-                text: match[1],
-                data: ref
-            };
+            return state.toggle('link', function() {
+                return {
+                    tokens: state.parseAsInline(match[1]),
+                    data: {
+                        ref: refId
+                    }
+                };
+            });
         })
-        .toText(function(text, entity) {
-            var title = entity.data.title? ' "' + entity.data.title + '"' : '';
-            return '[' + text + '](' + entity.data.href + title + ')';
+        .toText(function(state, token) {
+            var data         = token.getData();
+            var title        = data.get('title');
+            var href         = data.get('href');
+            var innerContent = state.renderAsInline(token);
+            title            = title? ' "' + title + '"' : '';
+
+            return '[' + innerContent + '](' + href + title + ')';
         }),
 
     // ---- CODE ----
-    markup.Rule(markup.STYLES.CODE)
-        .setOption('parse', false)
-        .regExp(reInline.code, function(match) {
+    MarkupIt.Rule(MarkupIt.STYLES.CODE)
+        .regExp(reInline.code, function(state, match) {
             return {
-                text: match[2]
+                tokens: [
+                    MarkupIt.Token.createText(match[2])
+                ]
             };
         })
-        .toText(function(text) {
-            // We need to find the right separator not present in the content
+        .toText(function(state, token) {
             var separator = '`';
-            while(text.indexOf(separator) >= 0) {
+            var text = token.getAsPlainText();
+
+            // We need to find the right separator not present in the content
+            while (text.indexOf(separator) >= 0) {
                 separator += '`';
             }
 
@@ -175,117 +154,102 @@ var inlineRules = markup.RulesSet([
         }),
 
     // ---- BOLD ----
-    markup.Rule(markup.STYLES.BOLD)
-        .regExp(reInline.strong, function(match) {
+    MarkupIt.Rule(MarkupIt.STYLES.BOLD)
+        .regExp(reInline.strong, function(state, match) {
             return {
-                text: match[2] || match[1]
+                tokens: state.parseAsInline(match[2] || match[1])
             };
         })
         .toText('**%s**'),
 
     // ---- ITALIC ----
-    markup.Rule(markup.STYLES.ITALIC)
-        .regExp(reInline.em, function(match) {
+    MarkupIt.Rule(MarkupIt.STYLES.ITALIC)
+        .regExp(reInline.em, function(state, match) {
             return {
-                text: match[2] || match[1]
+                tokens: state.parseAsInline(match[2] || match[1])
             };
         })
         .toText('_%s_'),
 
     // ---- STRIKETHROUGH ----
-    markup.Rule(markup.STYLES.STRIKETHROUGH)
-        .regExp(reInline.del, function(match) {
+    MarkupIt.Rule(MarkupIt.STYLES.STRIKETHROUGH)
+        .regExp(reInline.del, function(state, match) {
             return {
-                text: match[1]
+                tokens: state.parseAsInline(match[1])
             };
         })
         .toText('~~%s~~'),
 
     // ---- HTML ----
-    markup.Rule(markup.STYLES.HTML)
-        .setOption('parse', false)
-        .setOption('renderInline', false)
-        .regExp(reInline.html, function(match, parents) {
-            var tag = match[0];
-            var tagName = match[1];
+    MarkupIt.Rule(MarkupIt.STYLES.HTML)
+        .regExp(reInline.html, function(state, match) {
+            var tag       = match[0];
+            var tagName   = match[1];
             var innerText = match[2] || '';
-
             var startTag, endTag;
+            var innerTokens = [];
 
             if (innerText) {
                 startTag = tag.substring(0, tag.indexOf(innerText));
-                endTag = tag.substring(tag.indexOf(innerText) + innerText.length);
+                endTag   = tag.substring(tag.indexOf(innerText) + innerText.length);
             } else {
                 startTag = match[0];
-                endTag = '';
+                endTag   = '';
             }
 
-
-            // todo: handle link tags
-            /*if (tagName === 'a' && innerText) {
-
-            }*/
-
-            var innerTokens = [];
-
             if (tagName && !isHTMLBlock(tagName) && innerText) {
-                var inlineSyntax = markup.Syntax('markdown+html', {
-                    inline: inlineRules
+                var isLink = (tagName.toLowerCase() === 'a');
+
+                innerTokens = state.toggle(isLink? 'link' : 'html', function() {
+                    return state.parseAsInline(innerText);
                 });
-                var oldIsLink = this.isLink;
-                this.isLink = this.isLink || (tagName.toLowerCase() === 'a');
-                innerTokens = markup.parseInline(inlineSyntax, innerText, this)
-                    .getTokens()
-                    .toArray();
-                this.isLink = oldIsLink;
             } else {
                 innerTokens = [
                     {
-                        type: markup.STYLES.HTML,
+                        type: MarkupIt.STYLES.HTML,
                         text: innerText,
-                        raw: innerText
+                        raw:  innerText
                     }
                 ];
             }
 
-            var result = [];
-
-            result.push({
-                type: markup.STYLES.HTML,
-                text: startTag,
-                raw: startTag
-            });
+            var result = Immutable.List()
+                .push({
+                    type: MarkupIt.STYLES.HTML,
+                    text: startTag,
+                    raw:  startTag
+                });
 
             result = result.concat(innerTokens);
 
             if (endTag) {
-                result.push({
-                    type: markup.STYLES.HTML,
+                result = result.push({
+                    type: MarkupIt.STYLES.HTML,
                     text: endTag,
-                    raw: endTag
+                    raw:  endTag
                 });
             }
 
             return result;
         })
-        .toText(function(text, token) {
-            return text;
+        .toText(function(state, token) {
+            return token.getAsPlainText();
         }),
 
     // ---- ESCAPED ----
-    markup.Rule(markup.STYLES.TEXT)
-        .setOption('parse', false)
-        .regExp(reInline.escape, function(match) {
+    MarkupIt.Rule(MarkupIt.STYLES.TEXT)
+        .regExp(reInline.escape, function(state, match) {
             return {
                 text: match[1]
             };
         })
-        .regExp(reInline.text, function(match) {
+        .regExp(reInline.text, function(state, match) {
             return {
                 text: utils.unescape(match[0])
             };
         })
-        .toText(function(text) {
+        .toText(function(state, token) {
+            var text = token.getAsPlainText();
             return utils.escape(text, false);
         })
 ]);

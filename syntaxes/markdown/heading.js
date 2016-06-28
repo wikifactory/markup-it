@@ -1,8 +1,13 @@
 var reHeading = require('./re/heading');
 var markup = require('../../');
 
-// Parse inner text of header to extract ID entity
-function parseHeadingText(text) {
+/**
+ * Parse inner text of header to extract ID entity
+ * @param  {ParsingState} state
+ * @param  {String} text
+ * @return {TokenLike}
+ */
+function parseHeadingText(state, text) {
     var id, match;
 
     reHeading.id.lastIndex = 0;
@@ -17,44 +22,54 @@ function parseHeadingText(text) {
     }
 
     return {
-        text: text,
+        tokens: state.parseAsInline(text),
         data: {
             id: id
         }
     };
 }
 
-// Generator for HEADING_X rules
+/**
+ * Generator for HEADING_X rules
+ * @param  {Number} level
+ * @return {Rule}
+ */
 function headingRule(level) {
     var prefix = Array(level + 1).join('#');
 
     return markup.Rule(markup.BLOCKS['HEADING_' + level])
-        .regExp(reHeading.normal, function(match) {
-            if (match[1].length != level) return null;
-            return parseHeadingText(match[2]);
-        })
-        .toText(function (text, block) {
-            if (block.data.id) {
-                text += ' {#' + block.data.id + '}';
+
+        // Normal heading like
+        .regExp(reHeading.normal, function(state, match) {
+            if (match[1].length != level) {
+                return;
             }
 
-            return prefix + ' ' + text + '\n\n';
-        });
-}
+            return parseHeadingText(state, match[2]);
+        })
 
-// Generator for HEADING_X rules for line heading
-// Since normal heading are listed first, onText is not required here
-function lheadingRule(level) {
-    return markup.Rule(markup.BLOCKS['HEADING_' + level])
-        .regExp(reHeading.line, function(match) {
+        // Line heading
+        .regExp(reHeading.line, function(state, match) {
             var matchLevel = (match[2] === '=')? 1 : 2;
-            if (matchLevel != level) return null;
+            if (matchLevel != level) {
+                return;
+            }
 
-            return parseHeadingText(match[1]);
+            return parseHeadingText(state, match[1]);
+        })
+
+        .toText(function (state, token) {
+            var data         = token.getData();
+            var innerContent = state.renderAsInline(token);
+            var id           = data.get('id');
+
+            if (id) {
+                innerContent += ' {#' + id + '}';
+            }
+
+            return prefix + ' ' + innerContent + '\n\n';
         });
 }
 
-module.exports = {
-    rule: headingRule,
-    lrule: lheadingRule
-};
+
+module.exports = headingRule;

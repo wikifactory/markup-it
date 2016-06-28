@@ -60,21 +60,25 @@ var content = MarkupIt.DraftUtils.decode(rawContent);
 var text = markdown.toText(content);
 ```
 
-#### Custom Syntax
+### Extend Syntax
 
 This module contains the [markdown syntax](./syntaxes/markdown), but you can write your custom syntax or extend the existing ones.
 
+#### Create rules
+
 ```js
 var myRule = MarkupIt.Rule(DraftMarkup.BLOCKS.HEADING_1)
-    .regExp(/^<h1>(\S+)<\/h1>/, function(match) {
+    .regExp(/^<h1>(\S+)<\/h1>/, function(state, match) {
         return {
-            text: match[1]
+            tokens: state.parseAsInline(match[1])
         };
     })
-    .toText(function(innerText) {
-        return '<h1>' + innerText+ '</h1>';
+    .toText(function(state, token) {
+        return '<h1>' + state.renderAsInline(token) + '</h1>';
     });
 ```
+
+#### Custom Syntax
 
 Create a new syntax inherited from the markdown one:
 

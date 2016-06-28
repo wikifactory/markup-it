@@ -32,6 +32,16 @@ var helloWorld = MarkupIt.Token({
 });
 
 module.exports = {
-    paragraph: MarkupIt.Content.createFromTokens('mysyntax', [helloWorld]),
-    titleParagraph: MarkupIt.Content.createFromTokens('mysyntax', [helloTitle, helloWorld])
+    paragraph: MarkupIt.Content.createFromToken(
+        'mysyntax',
+        MarkupIt.Token.create(MarkupIt.BLOCKS.DOCUMENT, {
+            tokens: [helloWorld]
+        })
+    ),
+    titleParagraph: MarkupIt.Content.createFromToken(
+        'mysyntax',
+        MarkupIt.Token.create(MarkupIt.BLOCKS.DOCUMENT, {
+            tokens: [helloTitle, helloWorld]
+        })
+    )
 };

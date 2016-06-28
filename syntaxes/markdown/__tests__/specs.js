@@ -53,11 +53,10 @@ function testMdIdempotence(fixture) {
     backToMd = markdown.toText(content2);
     var content3 = markdown.toContent(backToMd);
 
-    var jsonContent1 = MarkupIt.JSONUtils.encode(content1);
-    var jsonContent2 = MarkupIt.JSONUtils.encode(content2);
-    var jsonContent3 = MarkupIt.JSONUtils.encode(content3);
+    var resultHtml2 = html.toText(content2);
+    var resultHtml3 = html.toText(content3);
 
-    jsonContent3.should.eql(jsonContent2);
+    (resultHtml2).should.be.html(resultHtml3);
 }
 
 function readFixture(filename) {

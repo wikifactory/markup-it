@@ -1,5 +1,5 @@
 var reBlock = require('./re/block');
-var markup = require('../../');
+var MarkupIt = require('../../');
 
 var heading = require('./heading');
 var list = require('./list');
@@ -7,90 +7,71 @@ var code = require('./code');
 var table = require('./table');
 var utils = require('./utils');
 
-/**
- * Is top block check that a paragraph can be parsed
- * Paragraphs can exists only in loose list or blockquote.
- *
- * @param {List<Token>} parents
- * @return {Boolean}
- */
-function isTop(parents) {
-    return parents.find(function(token) {
-        var isBlockquote = (token.getType() === markup.BLOCKS.BLOCKQUOTE);
-        var isLooseList = (token.isListItem() && token.getData().get('loose'));
-
-        return (!isBlockquote && !isLooseList);
-    }) === undefined;
-}
-
-module.exports = markup.RulesSet([
+module.exports = MarkupIt.RulesSet([
     // ---- CODE BLOCKS ----
     code.block,
 
     // ---- FOOTNOTES ----
-    markup.Rule(markup.BLOCKS.FOOTNOTE)
-        .regExp(reBlock.footnote, function(match) {
+    MarkupIt.Rule(MarkupIt.BLOCKS.FOOTNOTE)
+        .regExp(reBlock.footnote, function(state, match) {
             var text = match[2];
 
             return {
-                text: text,
+                tokens: state.parseAsInline(text),
                 data: {
                     id: match[1]
                 }
             };
         })
-        .toText(function(text, block) {
-            return '[^' + block.data.id + ']: ' + text + '\n\n';
+        .toText(function(state, token) {
+            var data         = token.getData();
+            var id           = data.get('id');
+            var innerContent = state.renderAsInline(token);
+
+            return '[^' + id + ']: ' + innerContent + '\n\n';
         }),
 
     // ---- HEADING ----
-    heading.rule(6),
-    heading.rule(5),
-    heading.rule(4),
-    heading.rule(3),
-    heading.rule(2),
-    heading.rule(1),
-
-    heading.lrule(2),
-    heading.lrule(1),
+    heading(6),
+    heading(5),
+    heading(4),
+    heading(3),
+    heading(2),
+    heading(1),
 
     // ---- TABLE ----
     table.block,
-    table.header,
-    table.body,
     table.row,
     table.cell,
 
     // ---- HR ----
-    markup.Rule(markup.BLOCKS.HR)
-        .setOption('parse', false)
-        .setOption('renderInner', false)
+    MarkupIt.Rule(MarkupIt.BLOCKS.HR)
         .regExp(reBlock.hr, function() {
-            return {
-                text: ''
-            };
+            return {};
         })
         .toText('---\n\n'),
 
     // ---- BLOCKQUOTE ----
-    markup.Rule(markup.BLOCKS.BLOCKQUOTE)
-        .setOption('parse', 'block')
-        .regExp(reBlock.blockquote, function(match) {
+    MarkupIt.Rule(MarkupIt.BLOCKS.BLOCKQUOTE)
+        .regExp(reBlock.blockquote, function(state, match) {
             var inner = match[0].replace(/^ *> ?/gm, '').trim();
 
-            return {
-                text: inner
-            };
+            return state.toggle('blockquote', function() {
+                return {
+                    tokens: state.parseAsBlock(inner)
+                };
+            });
         })
 
-        .toText(function(text) {
-            var lines = utils.splitLines(text.trim());
+        .toText(function(state, token) {
+            var innerContent = state.renderAsBlock(token);
+            var lines = utils.splitLines(innerContent.trim());
 
             return lines
-            .map(function(line) {
-                return '> ' + line;
-            })
-            .join('\n') + '\n\n';
+                .map(function(line) {
+                    return '> ' + line;
+                })
+                .join('\n') + '\n\n';
         }),
 
     // ---- LISTS ----
@@ -98,9 +79,8 @@ module.exports = markup.RulesSet([
     list.ol,
 
     // ---- HTML ----
-    markup.Rule(markup.BLOCKS.HTML)
-        .setOption('parse', false)
-        .regExp(reBlock.html, function(match) {
+    MarkupIt.Rule(MarkupIt.BLOCKS.HTML)
+        .regExp(reBlock.html, function(state, match) {
             return {
                 text: match[0]
             };
@@ -108,50 +88,53 @@ module.exports = markup.RulesSet([
         .toText('%s'),
 
     // ---- DEFINITION ----
-    markup.Rule(markup.BLOCKS.DEFINITION)
-        .regExp(reBlock.def, function(match, parents) {
-            if (parents.size > 0) {
-                return null;
+    MarkupIt.Rule()
+        .regExp(reBlock.def, function(state, match) {
+            if (state.getDepth() > 1) {
+                return;
             }
 
-            var id = match[1].toLowerCase();
-            var href = match[2];
+            var id    = match[1].toLowerCase();
+            var href  = match[2];
             var title = match[3];
 
-            this.refs = this.refs || {};
-            this.refs[id] = {
+            state.refs     = state.refs || {};
+            state.refs[id] = {
                 href: href,
                 title: title
             };
 
             return {
-                type: markup.BLOCKS.IGNORE
+                type: 'definition'
             };
         }),
 
     // ---- PARAGRAPH ----
-    markup.Rule(markup.BLOCKS.PARAGRAPH)
-        .regExp(reBlock.paragraph, function(match, parents) {
-            if (!isTop(parents)) {
+    MarkupIt.Rule(MarkupIt.BLOCKS.PARAGRAPH)
+        .regExp(reBlock.paragraph, function(state, match) {
+            var isInBlocquote = (state.get('blockquote') === state.getParentDepth());
+            var isInLooseList = (state.get('looseList') === state.getParentDepth());
+            var isTop = (state.getDepth() === 1);
+
+            if (!isTop && !isInBlocquote && !isInLooseList) {
                 return;
             }
-
             var text = match[1].trim();
 
             return {
-                text: text
+                tokens: state.parseAsInline(text)
             };
         })
         .toText('%s\n\n'),
 
-    // ---- PARAGRAPH ----
-    markup.Rule(markup.BLOCKS.TEXT)
-        .regExp(reBlock.text, function(match, parents) {
-            // Top-level should never reach here.
+    // ---- TEXT ----
+    // Top-level should never reach here.
+    MarkupIt.Rule(MarkupIt.BLOCKS.TEXT)
+        .regExp(reBlock.text, function(state, match) {
             var text = match[0];
 
             return {
-                text: text
+                tokens: state.parseAsInline(text)
             };
         })
         .toText('%s\n')

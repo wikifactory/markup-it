@@ -1,16 +1,17 @@
 var reBlock = require('./re/block');
-var markup = require('../../');
+var MarkupIt = require('../../');
 var utils = require('./utils');
 
 // Rule for parsing code blocks
-var blockRule = markup.Rule(markup.BLOCKS.CODE)
-    .setOption('parse', false)
-    .setOption('renderInner', false)
-
+var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
     // Fences
-    .regExp(reBlock.fences, function(match) {
+    .regExp(reBlock.fences, function(state, match) {
+        var inner = match[3];
+
         return {
-            text: match[3],
+            tokens: [
+                MarkupIt.Token.createText(inner)
+            ],
             data: {
                 syntax: match[2]
             }
@@ -18,7 +19,7 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     })
 
     // 4 spaces / Tab
-    .regExp(reBlock.code, function(match) {
+    .regExp(reBlock.code, function(state, match) {
         var inner = match[0];
 
         // Remove indentation
@@ -28,7 +29,9 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
         inner = inner.replace(/\n+$/, '');
 
         return {
-            text: inner,
+            tokens: [
+                MarkupIt.Token.createText(inner)
+            ],
             data: {
                 syntax: undefined
             }
@@ -36,13 +39,16 @@ var blockRule = markup.Rule(markup.BLOCKS.CODE)
     })
 
     // Output code blocks
-    .toText(function(text, block) {
+    .toText(function(state, token) {
+        var text      = token.getAsPlainText();
+        var data      = token.getData();
+        var syntax    = data.get('syntax') || '';
         var hasFences = text.indexOf('`') >= 0;
 
         // Use fences if syntax is set
-        if (!hasFences) {
+        if (!hasFences || syntax) {
             return (
-                '```' + (block.data.syntax || '') + '\n'
+                '```' + syntax + '\n'
                 + text
                 + '```\n\n'
             );

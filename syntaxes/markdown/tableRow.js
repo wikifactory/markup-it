@@ -7,61 +7,49 @@ var utils = require('./utils');
 var CELL_SEPARATOR = 'cell';
 
 /*
-    Custom inline syntax to parse each row with custom cell separator tokens
-*/
+ * Custom inline syntax to parse each row with custom cell separator tokens
+ */
 var rowRules = inlineRules
     .unshift(
         MarkupIt.Rule(CELL_SEPARATOR)
-            .setOption('parse', false)
             .regExp(reTable.cellSeparation, function(match) {
                 return {
-                    text: match[0]
+                    raw: match[0]
                 };
             })
     )
     .replace(
         MarkupIt.Rule(MarkupIt.STYLES.TEXT)
-            .setOption('parse', false)
-            .regExp(reTable.cellInlineEscape, function(match) {
-                return {
-                    text: utils.unescape(match[0])
-                };
+            .regExp(reTable.cellInlineEscape, function(state, match) {
+                var text = utils.unescape(match[0]);
+                return { text: text };
             })
-            .regExp(reTable.cellInlineText, function(match) {
-                return {
-                    text: utils.unescape(match[0])
-                };
+            .regExp(reTable.cellInlineText, function(state, match) {
+                var text = utils.unescape(match[0]);
+                return { text: text };
             })
             .toText(utils.escape)
     );
 
-var rowSyntax = MarkupIt.Syntax('markdown+row', {
-    inline: rowRules
-});
-
-/*
-    Parse a row from a table
-
-    @param {String} text
-    @param {Object} ctx
-    @param {Array<String>} align
-
-    @return {Token}
-*/
-function parseRow(text, ctx, align) {
+/**
+ * Parse a row from a table
+ *
+ * @param {ParsingState} state
+ * @param {String} text
+ * @return {Token}
+ */
+function parseRow(state, text) {
     var cells = [];
     var accu = [];
-    var content = MarkupIt.parseInline(rowSyntax, text, ctx);
-    var tokens = content.getTokens();
+    var tokens = state.parse(rowRules, true, text);
 
     function pushCell() {
-        if (accu.length == 0) return;
+        if (accu.length == 0) {
+            return;
+        }
 
         var cell = MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_CELL, {
-            tokens: accu,
-            data: {
-                align: align[cells.length]
-            }
+            tokens: accu
         });
 
         cells.push(cell);
@@ -75,7 +63,6 @@ function parseRow(text, ctx, align) {
             accu.push(token);
         }
     });
-
     pushCell();
 
     return MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_ROW, {

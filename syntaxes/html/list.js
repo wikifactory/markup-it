@@ -1,43 +1,28 @@
 var MarkupIt = require('../../');
 
-/*
-    Render a list item
+/**
+ * Render a list item
+ *
+ * @param {String} text
+ * @param {Token} token
+ * @return {String}
+ */
+function renderListItem(state, token) {
+    var isOrdered = (token.type == MarkupIt.BLOCKS.OL_LIST);
+    var listTag   = isOrdered? 'ol' : 'ul';
+    var items     = token.getTokens();
 
-    @param {String} text
-    @param {Token} token
-    @return {String}
-*/
-function renderListItem(text, token) {
-    var isOrdered = token.type == MarkupIt.BLOCKS.OL_ITEM;
-    var listTag = isOrdered? 'ol' : 'ul';
-    var depth = token.data.depth;
-
-    var prevToken = token.prev? token.prev.type : null;
-    var nextToken = token.next? token.next.type : null;
-
-    var prevTokenDepth = token.prev? token.prev.data.depth : 0;
-    var nextTokenDepth = token.next? token.next.data.depth : 0;
-
-    var output = '';
-
-    if (prevToken != token.type || prevTokenDepth < depth) {
-        output += '<' + listTag + '>\n';
-    }
-
-    output += '<li>' + text + '</li>\n';
-
-    if (nextToken != token.type || nextTokenDepth < depth) {
-        output += '</' + listTag + '>\n';
-    }
-
-    return output;
+    return '<' + listTag + '>' +
+        items.map(function(item) {
+            return '<li>' + state.render(item) + '</li>';
+        }).join('\n')
+    + '</' + listTag + '>\n';
 }
 
-
-var ruleOL = MarkupIt.Rule(MarkupIt.BLOCKS.OL_ITEM)
+var ruleOL = MarkupIt.Rule(MarkupIt.BLOCKS.OL_LIST)
     .toText(renderListItem);
 
-var ruleUL = MarkupIt.Rule(MarkupIt.BLOCKS.UL_ITEM)
+var ruleUL = MarkupIt.Rule(MarkupIt.BLOCKS.UL_LIST)
     .toText(renderListItem);
 
 module.exports = {

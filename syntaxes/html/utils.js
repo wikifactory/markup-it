@@ -1,14 +1,20 @@
 var entities = require('html-entities');
 var htmlEntities = new entities.AllHtmlEntities();
 
-// Escape markdown syntax
-// We escape only basic XML entities
+/**
+ * Escape all entities (HTML + XML)
+ * @param  {String} str
+ * @return {String}
+ */
 function escape(str) {
     return htmlEntities.encode(str);
 }
 
-// Unescape markdown syntax
-// We unescape all entities (HTML + XML)
+/**
+ * Unescape all entities (HTML + XML)
+ * @param  {String} str
+ * @return {String}
+ */
 function unescape(str) {
     return htmlEntities.decode(str);
 }

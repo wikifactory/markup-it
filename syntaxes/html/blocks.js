@@ -7,17 +7,15 @@ var listRules = require('./list');
 var utils = require('./utils');
 
 /*
-    Generate an heading rule for a specific level
-*/
+ * Generate an heading rule for a specific level
+ */
 function headingRule(n) {
     var type = MarkupIt.BLOCKS['HEADING_' + n];
-    return HTMLRule(type, 'h'+n);
+    return HTMLRule(type, 'h' + n);
 }
 
 module.exports = [
     tableRules.block,
-    tableRules.header,
-    tableRules.body,
     tableRules.row,
     tableRules.cell,
 
@@ -36,8 +34,10 @@ module.exports = [
     HTMLRule(MarkupIt.BLOCKS.BLOCKQUOTE, 'blockquote'),
 
     MarkupIt.Rule(MarkupIt.BLOCKS.FOOTNOTE)
-        .toText(function(text, token) {
-            var refname = token.data.id;
+        .toText(function(state, token) {
+            var data    = token.getData();
+            var text    = state.renderAsInline(token);
+            var refname = data.get('id');
 
             return '<blockquote id="fn_' + refname + '">\n'
                 + '<sup>' + refname + '</sup>. '
@@ -50,11 +50,14 @@ module.exports = [
         .toText('%s\n\n'),
 
     MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
-        .toText(function(text, token) {
-            var attr = '';
+        .toText(function(state, token) {
+            var attr   = '';
+            var data   = token.getData();
+            var text   = token.getAsPlainText();
+            var syntax = data.get('syntax');
 
-            if (token.data.syntax) {
-                attr = ' class="lang-' + token.data.syntax +'"';
+            if (syntax) {
+                attr = ' class="lang-' + syntax +'"';
             }
 
             return '<pre><code' + attr + '>' + utils.escape(text) + '</code></pre>\n';

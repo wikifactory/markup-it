@@ -6,39 +6,41 @@ var reMathBlock = /^\$\$\n([^$]+)\n\$\$/;
 var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
 
 var inlineMathRule = markup.Rule(markup.ENTITIES.MATH)
-    .setOption('parse', false)
-    .setOption('renderInner', false)
-    .regExp(reMathInline, function(match) {
+    .regExp(reMathInline, function(state, match) {
         var text = match[1];
-        if (text.trim().length == 0) return;
+        if (text.trim().length == 0) {
+            return;
+        }
 
         return {
-            text: text,
-            data: {}
+            data: {
+                tex: text
+            }
         };
     })
-    .toText(function(text, block) {
-        return '$$' + text + '$$';
+    .toText(function(state, token) {
+        return '$$' + token.getData().get('tex') + '$$';
     });
 
 var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
-    .setOption('parse', false)
-    .setOption('renderInner', false)
-    .regExp(reMathBlock, function(match) {
+    .regExp(reMathBlock, function(state, match) {
         var text = match[1];
-        if (text.trim().length == 0) return;
+        if (text.trim().length == 0) {
+            return;
+        }
 
         return {
-            text: text
+            data: {
+                tex: text
+            }
         };
     })
-    .toText(function(text, block) {
-        return '$$\n' + text + '\n$$\n\n';
+    .toText(function(state, token) {
+        return '$$\n' + token.getData().get('tex') + '\n$$\n\n';
     });
 
 var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
-    .setOption('parse', false)
-    .regExp(reTpl, function(match) {
+    .regExp(reTpl, function(state, match) {
         var type = match[0];
         var text = match[2];
 
@@ -47,14 +49,18 @@ var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
         else if (type == '{') type = 'var';
 
         return {
-            text: text,
             data: {
                 type: type
-            }
+            },
+            tokens: [
+                MarkupIt.Token.createText(text)
+            ]
         };
     })
-    .toText(function(text, block) {
-        var type = block.data.type;
+    .toText(function(sttae, token) {
+        var data = token.getData();
+        var text = token.getAsPlainText();
+        var type = data.get('type');
 
         if (type == 'expr') text = '{% ' + text + ' %}';
         else if (type == 'comment') text = '{# ' + text + ' #}';
