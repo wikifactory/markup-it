@@ -112,11 +112,11 @@ module.exports = MarkupIt.RulesSet([
     // ---- PARAGRAPH ----
     MarkupIt.Rule(MarkupIt.BLOCKS.PARAGRAPH)
         .regExp(reBlock.paragraph, function(state, match) {
-            var isInBlocquote = (state.get('blockquote') === state.getParentDepth());
+            var isInBlockquote = (state.get('blockquote') === state.getParentDepth());
             var isInLooseList = (state.get('looseList') === state.getParentDepth());
             var isTop = (state.getDepth() === 1);
 
-            if (!isTop && !isInBlocquote && !isInLooseList) {
+            if (!isTop && !isInBlockquote && !isInLooseList) {
                 return;
             }
             var text = match[1].trim();
