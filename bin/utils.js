@@ -1,16 +1,14 @@
 /* eslint-disable no-console */
-var argv = require('yargs').argv;
 var fs = require('fs');
 var path = require('path');
 
 var DraftMarkup = require('../');
 
 var markdownSyntax = require('../syntaxes/markdown');
-var gitbookSyntax = require('../syntaxes/gitbook');
 var htmlSyntax = require('../syntaxes/html');
 
 var EXT_TO_SYNTAX = {
-    '.md': argv.gitbook? gitbookSyntax : markdownSyntax,
+    '.md':   markdownSyntax,
     '.html': htmlSyntax
 };
 
@@ -44,7 +42,10 @@ function command(fn) {
     var text = fs.readFileSync(filename, 'utf8');
     var markup = new DraftMarkup(syntax);
 
-    var content = markup.toContent(text);
+    var content = markup.toContent(text, {
+        math:     true,
+        template: true
+    });
 
     fn(content, markup);
 }

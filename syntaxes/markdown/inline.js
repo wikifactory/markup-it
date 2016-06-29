@@ -236,6 +236,60 @@ var inlineRules = MarkupIt.RulesSet([
             return token.getAsPlainText();
         }),
 
+    // ---- MATH ----
+    MarkupIt.Rule(MarkupIt.ENTITIES.MATH)
+        .regExp(reInline.math, function(state, match) {
+            var text = match[1];
+
+            if (state.getOption('math') !== true || text.trim().length === 0) {
+                return;
+            }
+
+            return {
+                data: {
+                    tex: text
+                }
+            };
+        })
+        .toText(function(state, token) {
+            return '$$' + token.getData().get('tex') + '$$';
+        }),
+
+    MarkupIt.Rule(MarkupIt.ENTITIES.TEMPLATE)
+        .regExp(reInline.template, function(state, match) {
+            if (state.getOption('template') !== true) {
+                return;
+            }
+
+            var type = match[1];
+            var text = match[2];
+
+            if (type == '%') type = 'expr';
+            else if (type == '#') type = 'comment';
+            else if (type == '{') type = 'var';
+
+            return {
+                text: '',
+                data: {
+                    type: type
+                },
+                tokens: [
+                    MarkupIt.Token.createText(text)
+                ]
+            };
+        })
+        .toText(function(state, token) {
+            var data = token.getData();
+            var text = token.getAsPlainText();
+            var type = data.get('type');
+
+            if (type == 'expr') text = '{% ' + text + ' %}';
+            else if (type == 'comment') text = '{# ' + text + ' #}';
+            else if (type == 'var') text = '{{ ' + text + ' }}';
+
+            return text;
+        }),
+
     // ---- ESCAPED ----
     MarkupIt.Rule(MarkupIt.STYLES.TEXT)
         .regExp(reInline.escape, function(state, match) {

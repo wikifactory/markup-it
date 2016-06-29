@@ -111,6 +111,19 @@ module.exports = MarkupIt.RulesSet([
 
     // ---- PARAGRAPH ----
     MarkupIt.Rule(MarkupIt.BLOCKS.PARAGRAPH)
+        .regExp(reBlock.math, function(state, match) {
+            var text = match[2];
+
+            return {
+                tokens: [
+                    MarkupIt.Token.create(MarkupIt.ENTITIES.MATH, {
+                        data: {
+                            tex: text
+                        }
+                    })
+                ]
+            };
+        })
         .regExp(reBlock.paragraph, function(state, match) {
             var isInBlockquote = (state.get('blockquote') === state.getParentDepth());
             var isInLooseList = (state.get('looseList') === state.getParentDepth());

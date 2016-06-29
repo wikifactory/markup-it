@@ -2,22 +2,22 @@ var replace = require('../utils').replace;
 var heading = require('./heading');
 
 var block = {
-    newline: /^\n+/,
-    code: /^((?: {4}|\t)[^\n]+\n*)+/,
-    hr: /^( *[-*_]){3,} *(?:\n|$)/,
+    newline:    /^\n+/,
+    code:       /^((?: {4}|\t)[^\n]+\n*)+/,
+    hr:         /^( *[-*_]){3,} *(?:\n|$)/,
     blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
-    html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
-    def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n|$)/,
-    footnote: /^\[\^([^\]]+)\]: ([^\n]+)/,
-    paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,
-    text: /^[^\n]+/,
-    fences: /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?[\s]*)\1 *(?:\n|$)/,
+    html:       /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
+    def:        /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n|$)/,
+    footnote:   /^\[\^([^\]]+)\]: ([^\n]+)/,
+    paragraph:  /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def|math))+)\n*/,
+    text:       /^[^\n]+/,
+    fences:     /^ *(`{3,}|~{3,}) *(\S+)? *\n([\s\S]+?[\s]*)\1 *(?:\n|$)/,
     yamlHeader: /^ *(?=```)/,
-    list: {
-        block: /^( *)(bullet) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1allbull )\n*|\s*$)/,
-        item: /^( *)(bullet) [^\n]*(?:\n(?!\1allbull )[^\n]*)*/,
-
-        bullet: /(?:[*+-]|\d+\.)/,
+    math:       /^ *(\${2,}) *([\s\S]+?)\s*\1 *(?:\n|$)/,
+    list:       {
+        block:     /^( *)(bullet) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1allbull )\n*|\s*$)/,
+        item:      /^( *)(bullet) [^\n]*(?:\n(?!\1allbull )[^\n]*)*/,
+        bullet:    /(?:[*+-]|\d+\.)/,
         bullet_ul: /(?:\d+\.)/,
         bullet_ol: /(?:[*+-])/,
 
@@ -70,6 +70,7 @@ block.paragraph = replace(block.paragraph)
     ('blockquote', block.blockquote)
     ('tag', '<' + _tag)
     ('def', block.def)
+    ('math', block.math)
     ();
 
 block.paragraph = replace(block.paragraph)('(?!', '(?!'
