@@ -1,11 +1,11 @@
-var markup = require('../../');
+var MarkupIt = require('../../');
 var markdown = require('../markdown');
 
 var reMathInline = /^\$\$([^$\n]+)\$\$/;
-var reMathBlock = /^\$\$\n([^$]+)\n\$\$/;
-var reTpl = /^{([#%{])\s*(.*?)\s*(?=[#%}]})}}/;
+var reMathBlock  = /^\$\$\n([^$]+)\n\$\$/;
+var reTpl        = /^{([#%{])\s*(.*?)\s*( ?= [#%}]})}}/;
 
-var inlineMathRule = markup.Rule(markup.ENTITIES.MATH)
+var inlineMathRule = MarkupIt.Rule(MarkupIt.ENTITIES.MATH)
     .regExp(reMathInline, function(state, match) {
         var text = match[1];
         if (text.trim().length == 0) {
@@ -22,7 +22,7 @@ var inlineMathRule = markup.Rule(markup.ENTITIES.MATH)
         return '$$' + token.getData().get('tex') + '$$';
     });
 
-var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
+var blockMathRule = MarkupIt.Rule(MarkupIt.BLOCKS.MATH)
     .regExp(reMathBlock, function(state, match) {
         var text = match[1];
         if (text.trim().length == 0) {
@@ -39,7 +39,7 @@ var blockMathRule = markup.Rule(markup.BLOCKS.MATH)
         return '$$\n' + token.getData().get('tex') + '\n$$\n\n';
     });
 
-var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
+var tplExpr = MarkupIt.Rule(MarkupIt.STYLES.TEMPLATE)
     .regExp(reTpl, function(state, match) {
         var type = match[0];
         var text = match[2];
@@ -57,7 +57,7 @@ var tplExpr = markup.Rule(markup.STYLES.TEMPLATE)
             ]
         };
     })
-    .toText(function(sttae, token) {
+    .toText(function(state, token) {
         var data = token.getData();
         var text = token.getAsPlainText();
         var type = data.get('type');
@@ -79,7 +79,7 @@ blockRules = blockRules
     .unshift(blockMathRule);
 
 
-module.exports = markup.Syntax('gitbook+markdown', {
+module.exports = MarkupIt.Syntax('gitbook+markdown', {
     inline: inlineRules,
     blocks: blockRules
 });
