@@ -114,6 +114,10 @@ module.exports = MarkupIt.RulesSet([
         .regExp(reBlock.math, function(state, match) {
             var text = match[2];
 
+            if (state.getOption('math') !== true || text.trim().length === 0) {
+                return;
+            }
+
             return {
                 tokens: [
                     MarkupIt.Token.create(MarkupIt.ENTITIES.MATH, {

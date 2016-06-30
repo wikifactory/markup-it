@@ -22,7 +22,7 @@ function normalizeTeX(content, isInline) {
     content = rtrim(content, '\n');
 
     if (!isInline) {
-        content = '\n' + content;
+        content = '\n' + content + '\n';
     }
 
     return content;
