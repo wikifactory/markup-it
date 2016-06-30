@@ -20,7 +20,7 @@ var inline = {
 };
 
 
-inline._inside = /(?:\[[^\]]*\]|[^\[\]]|\]( ?= [^\[]*\]))*/;
+inline._inside = /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;
 inline._href   = /\s*<?([\s\S]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;
 
 inline.link = replace(inline.link)
