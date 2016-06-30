@@ -5,6 +5,7 @@ var MarkupIt = require('../../');
 
 var utils = require('./utils');
 var isHTMLBlock = require('./isHTMLBlock');
+var math = require('./math');
 
 var inlineRules = MarkupIt.RulesSet([
     // ---- FOOTNOTE REFS ----
@@ -237,23 +238,7 @@ var inlineRules = MarkupIt.RulesSet([
         }),
 
     // ---- MATH ----
-    MarkupIt.Rule(MarkupIt.ENTITIES.MATH)
-        .regExp(reInline.math, function(state, match) {
-            var text = match[1];
-
-            if (state.getOption('math') !== true || text.trim().length === 0) {
-                return;
-            }
-
-            return {
-                data: {
-                    tex: text
-                }
-            };
-        })
-        .toText(function(state, token) {
-            return '$$' + token.getData().get('tex') + '$$';
-        }),
+    math,
 
     MarkupIt.Rule(MarkupIt.ENTITIES.TEMPLATE)
         .regExp(reInline.template, function(state, match) {

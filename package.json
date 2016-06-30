@@ -36,8 +36,10 @@
     "htmlparser2": "^3.9.0",
     "immutable": "^3.7.6",
     "is": "^3.1.0",
+    "ltrim": "0.0.3",
     "object-values": "^1.0.0",
     "range-utils": "^1.1.0",
+    "rtrim": "0.0.3",
     "yargs": "^4.7.1"
   },
   "bin": {
