@@ -49,7 +49,7 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.CODE)
         if (!hasFences || syntax) {
             return (
                 '```' + syntax + '\n'
-                + text
+                + text + '\n'
                 + '```\n\n'
             );
         }
