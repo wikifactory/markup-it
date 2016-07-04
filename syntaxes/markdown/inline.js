@@ -12,9 +12,7 @@ var inlineRules = MarkupIt.RulesSet([
     MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
         .regExp(reInline.reffn, function(state, match) {
             return {
-                tokens: [
-                    MarkupIt.Token.createText(match[1])
-                ]
+                text: match[1]
             };
         })
         .toText(function(state, token) {
