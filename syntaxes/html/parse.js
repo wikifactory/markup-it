@@ -31,6 +31,12 @@ var TAGS_TO_TYPE = {
     code:           MarkupIt.STYLES.CODE
 };
 
+function resolveHeadingAttrs(attribs) {
+    return {
+        id: attribs.id
+    };
+}
+
 var TAGS_TO_DATA = {
     a: function(attribs) {
         return {
@@ -43,7 +49,13 @@ var TAGS_TO_DATA = {
             src: attribs.src,
             title: attribs.alt || ''
         };
-    }
+    },
+    h1: resolveHeadingAttrs,
+    h2: resolveHeadingAttrs,
+    h3: resolveHeadingAttrs,
+    h4: resolveHeadingAttrs,
+    h5: resolveHeadingAttrs,
+    h6: resolveHeadingAttrs
 };
 
 /**
