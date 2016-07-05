@@ -18,7 +18,7 @@ var TAGS_TO_TYPE = {
     hr:             MarkupIt.BLOCKS.HR,
 
     table:          MarkupIt.BLOCKS.TABLE,
-    tr:             MarkupIt.BLOCKS.TR_ROW,
+    tr:             MarkupIt.BLOCKS.TABLE_ROW,
     td:             MarkupIt.BLOCKS.TABLE_CELL,
 
     ul:             MarkupIt.BLOCKS.UL_LIST,
