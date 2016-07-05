@@ -38,6 +38,13 @@ var textMd = markdown.toText(content);
 var textHtml = html.toText(content);
 ```
 
+#### Convert HTML into Markdown
+
+```js
+var content = html.toContent('Hello <b>World</b>');
+var textMd = markdown.toText(content);
+```
+
 #### Usage with ProseMirror
 
 

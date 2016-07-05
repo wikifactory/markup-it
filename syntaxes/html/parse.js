@@ -31,6 +31,21 @@ var TAGS_TO_TYPE = {
     code:           MarkupIt.STYLES.CODE
 };
 
+var TAGS_TO_DATA = {
+    a: function(attribs) {
+        return {
+            href: attribs.href,
+            title: attribs.alt || ''
+        };
+    },
+    img: function(attribs) {
+        return {
+            src: attribs.src,
+            title: attribs.alt || ''
+        };
+    }
+};
+
 /**
  * Parse an HTML string into a token tree
  * @param {String} str
@@ -51,12 +66,14 @@ function htmlToTokens(str) {
     var parser = new htmlparser.Parser({
         onopentag: function(tagName, attribs) {
             var type = TAGS_TO_TYPE[tagName];
+            var dataResolver = TAGS_TO_DATA[tagName];
+
             if (!type) {
                 return;
             }
 
             var token = MarkupIt.Token.create(type, {
-                data: {}
+                data: dataResolver? dataResolver(attribs) : {}
             });
 
             stack.push(token);
