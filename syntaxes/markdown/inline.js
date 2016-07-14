@@ -27,19 +27,30 @@ var inlineRules = MarkupIt.RulesSet([
                 return;
             }
 
+            var imgData = {
+                alt: match[1],
+                src: match[2]
+            };
+
+            var title = match[3];
+            if(typeof title !== 'undefined' && title !== '') {
+              imgData.title = title;
+            }
+
             return {
-                data: {
-                    alt: match[1],
-                    src: match[2]
-                }
+              data: imgData
             };
         })
         .toText(function(state, token) {
             var data = token.getData();
             var alt  = data.get('alt', '');
             var src  = data.get('src', '');
-
-            return '![' + alt + '](' + src + ')';
+            var title = data.get('title', '');
+            if(title !== '') {
+                return '![' + alt + '](' + src + ' "' + title + '")';
+            } else {
+                return '![' + alt + '](' + src + ')';
+            }
         }),
 
     // ---- LINK ----
