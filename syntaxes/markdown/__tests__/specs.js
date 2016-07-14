@@ -46,17 +46,12 @@ function testMdToHtml(fixture) {
 
 function testMdIdempotence(fixture) {
     var content1 = markdown.toContent(fixture.sourceMd);
-
     var backToMd = markdown.toText(content1);
     var content2 = markdown.toContent(backToMd);
 
-    backToMd = markdown.toText(content2);
-    var content3 = markdown.toContent(backToMd);
-
+    var resultHtml1 = html.toText(content1);
     var resultHtml2 = html.toText(content2);
-    var resultHtml3 = html.toText(content3);
-
-    (resultHtml2).should.be.html(resultHtml3);
+    (resultHtml1).should.be.html(resultHtml2);
 }
 
 function readFixture(filename) {
