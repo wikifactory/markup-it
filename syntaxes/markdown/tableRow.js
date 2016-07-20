@@ -43,7 +43,7 @@ function parseRow(state, text) {
     var cells = rowToCells(text);
     // Tokenize each cell
     var tokenizedCells = cells.map(function(cellStr) {
-        var tokens = state.parse(rowRules, true, cellStr);
+        var tokens = state.parse(rowRules, true, cellStr.trim());
         return MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_CELL, {
             tokens: tokens
         });
