@@ -70,6 +70,34 @@ function parseRow(state, text) {
     });
 }
 
+function rowToCells(rowStr) {
+    var cells = [];
+    var trimmed = rowStr.trim();
+
+    var lastSep = 0;
+    for(var i = 0; i < trimmed.length; i++) {
+        var prevIdx = i === 0 ? 0 : i-1;
+        var isSep = trimmed[i] === '|';
+        var isNotEscaped = (trimmed[prevIdx] !== '\\');
+
+        if(isSep && isNotEscaped) {
+            // New cell
+            if(i > 0 && i < trimmed.length) {
+                cells.push(trimmed.slice(lastSep, i));
+            }
+            lastSep = i+1;
+        }
+    }
+    // Last cell
+    if(lastSep < trimmed.length) {
+        cells.push(trimmed.slice(lastSep));
+    }
+
+    return cells;
+}
+
+
 module.exports = {
-    parse: parseRow
+    parse: parseRow,
+    rowToCells: rowToCells
 };
