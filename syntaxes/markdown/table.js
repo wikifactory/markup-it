@@ -78,12 +78,10 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
     // Table no leading pipe (gfm)
     .regExp(reTable.nptable, function(state, match) {
         var header = match[1];
-        var align = match[2]
-            .replace(reTable.trailingPipeAlign, '')
-            .split(reTable.cell);
+        var align = tableRow.rowToCells(match[2]);
         var rows = match[3]
-            .replace(/\n$/, '')
-            .split('\n');
+            .split('\n')
+            .filter(Boolean);
 
         // Align for columns
         align = mapAlign(align);
@@ -94,13 +92,10 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
     // Normal table
     .regExp(reTable.normal, function(state, match) {
         var header =  match[1];
-        var align = match[2]
-            .replace(reTable.trailingPipeAlign, '')
-            .split(reTable.cell);
+        var align = tableRow.rowToCells(match[2]);
         var rows = match[3]
-            .replace(reTable.trailingPipeCell, '')
-            .replace(/\n$/, '')
-            .split('\n');
+            .split('\n')
+            .filter(Boolean);
 
         // Align for columns
         align = mapAlign(align);

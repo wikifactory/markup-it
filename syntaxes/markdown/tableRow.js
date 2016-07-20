@@ -39,34 +39,18 @@ var rowRules = inlineRules
  * @return {Token}
  */
 function parseRow(state, text) {
-    var cells = [];
-    var accu = [];
-    var tokens = state.parse(rowRules, true, text);
-
-    function pushCell() {
-        if (accu.length == 0) {
-            return;
-        }
-
-        var cell = MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_CELL, {
-            tokens: accu
+    // Split into cells
+    var cells = rowToCells(text);
+    // Tokenize each cell
+    var tokenizedCells = cells.map(function(cellStr) {
+        var tokens = state.parse(rowRules, true, cellStr);
+        return MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_CELL, {
+            tokens: tokens
         });
-
-        cells.push(cell);
-        accu = [];
-    }
-
-    tokens.forEach(function(token) {
-        if (token.getType() == CELL_SEPARATOR) {
-            pushCell();
-        } else {
-            accu.push(token);
-        }
     });
-    pushCell();
 
     return MarkupIt.Token.create(MarkupIt.BLOCKS.TABLE_ROW, {
-        tokens: cells
+        tokens: tokenizedCells
     });
 }
 
