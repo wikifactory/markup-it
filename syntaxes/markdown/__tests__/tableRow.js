@@ -58,6 +58,15 @@ describe('Markdown table rowToCells', function() {
             {
                 text: 'abc',
                 expected: ['abc']
+            },
+            // Rows with escaped pipes
+            {
+                text: '| P(a\\|b) | 0.5 |',
+                expected: [' P(a\\|b) ', ' 0.5 ']
+            },
+            {
+                text: '| \\|\\|\\| | abc |',
+                expected: [' \\|\\|\\| ', ' abc ']
             }
         ];
 
