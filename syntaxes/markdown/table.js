@@ -14,16 +14,23 @@ var ALIGN = {
  * Create a table entity from parsed header/rows
  *
  * @param {ParsingState} state
- * @param {Array} header
- * @param {Array<String>} align
- * @param {Array<Array>} rows
+ * @param {String} headerStr
+ * @param {String} alignStr
+ * @param {Array<String>} rowStrs
  * @rteturn {Object} tokenMatch
  */
-function Table(state, header, align, rows) {
-    var headerRow = tableRow.parse(state, header);
-    var rowTokens = rows.map(function(row) {
-        return tableRow.parse(state, row);
+function Table(state, headerStr, alignStr, rowStrs) {
+    // Header
+    var headerRow = tableRow.parse(state, headerStr);
+
+    // Rows
+    var rowTokens = rowStrs.map(function(rowStr) {
+        return tableRow.parse(state, rowStr);
     });
+
+    // Align for columns
+    var alignCells = tableRow.rowToCells(alignStr);
+    var align = mapAlign(alignCells);
 
     return {
         data: {
@@ -80,11 +87,8 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
         // Get all non empty lines
         var lines = match[0].split('\n').filter(Boolean);
         var header = lines[0];
-        var align = tableRow.rowToCells(lines[1]);
+        var align = lines[1];
         var rows = lines.slice(2);
-
-        // Align for columns
-        align = mapAlign(align);
 
         return Table(state, header, align, rows);
     })
@@ -94,11 +98,8 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
         // Get all non empty lines
         var lines = match[0].split('\n').filter(Boolean);
         var header = lines[0];
-        var align = tableRow.rowToCells(lines[1]);
+        var align = lines[1];
         var rows = lines.slice(2);
-
-        // Align for columns
-        align = mapAlign(align);
 
         return Table(state, header, align, rows);
     })
