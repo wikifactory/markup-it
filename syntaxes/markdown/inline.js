@@ -34,11 +34,11 @@ var inlineRules = MarkupIt.RulesSet([
 
             var title = match[3];
             if(typeof title !== 'undefined' && title !== '') {
-              imgData.title = title;
+                imgData.title = title;
             }
 
             return {
-              data: imgData
+                data: imgData
             };
         })
         .toText(function(state, token) {
@@ -189,6 +189,15 @@ var inlineRules = MarkupIt.RulesSet([
             };
         })
         .toText('~~%s~~'),
+
+    // ---- HARD BREAKS
+    MarkupIt.Rule(MarkupIt.ENTITIES.HARD_BREAK)
+        .regExp(reInline.br, function(state, match) {
+            return {};
+        })
+        .toText(function(state, token) {
+            return '\n\n';
+        }),
 
     // ---- HTML ----
     MarkupIt.Rule(MarkupIt.STYLES.HTML)

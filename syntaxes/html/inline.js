@@ -1,35 +1,41 @@
-var markup = require('../../');
+var MarkupIt = require('../../');
 var utils = require('./utils');
 
 var HTMLRule = require('./rule');
 
 module.exports = [
+    // ---- HARD BREAKS
+    MarkupIt.Rule(MarkupIt.ENTITIES.HARD_BREAK)
+        .toText(function(state, token) {
+            return '<br />';
+        }),
+
     // ---- TEXT ----
-    markup.Rule(markup.STYLES.TEXT)
+    MarkupIt.Rule(MarkupIt.STYLES.TEXT)
         .toText(function(state, token) {
             return utils.escape(token.getAsPlainText());
         }),
 
     // ---- CODE ----
-    markup.Rule(markup.STYLES.CODE)
+    MarkupIt.Rule(MarkupIt.STYLES.CODE)
         .toText(function(state, token) {
             return '<code>' + utils.escape(token.getAsPlainText()) + '</code>';
         }),
 
     // ---- BOLD ----
-    HTMLRule(markup.STYLES.BOLD, 'strong'),
+    HTMLRule(MarkupIt.STYLES.BOLD, 'strong'),
 
     // ---- ITALIC ----
-    HTMLRule(markup.STYLES.ITALIC, 'em'),
+    HTMLRule(MarkupIt.STYLES.ITALIC, 'em'),
 
     // ---- STRIKETHROUGH ----
-    HTMLRule(markup.STYLES.STRIKETHROUGH, 'del'),
+    HTMLRule(MarkupIt.STYLES.STRIKETHROUGH, 'del'),
 
     // ---- IMAGES ----
-    HTMLRule(markup.ENTITIES.IMAGE, 'img'),
+    HTMLRule(MarkupIt.ENTITIES.IMAGE, 'img'),
 
     // ---- LINK ----
-    HTMLRule(markup.ENTITIES.LINK, 'a', function(data) {
+    HTMLRule(MarkupIt.ENTITIES.LINK, 'a', function(data) {
         return {
             title: data.title? utils.escape(data.title) : undefined,
             href:  utils.escape(data.href || '')
@@ -37,14 +43,14 @@ module.exports = [
     }),
 
     // ---- FOOTNOTE ----
-    markup.Rule(markup.ENTITIES.FOOTNOTE_REF)
+    MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
         .toText(function(state, token) {
             var refname = token.getAsPlainText();
             return '<sup><a href="#fn_' + refname + '" id="reffn_' + refname + '">' + refname + '</a></sup>';
         }),
 
     // ---- HTML ----
-    markup.Rule(markup.STYLES.HTML)
+    MarkupIt.Rule(MarkupIt.STYLES.HTML)
         .toText(function(state, token) {
             return token.getAsPlainText();
         })
