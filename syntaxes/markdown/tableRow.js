@@ -54,6 +54,12 @@ function parseRow(state, text) {
     });
 }
 
+/**
+ * Split a row up into its individual cells
+ *
+ * @param {String} rowStr
+ * @return {Array<String>}
+ */
 function rowToCells(rowStr) {
     var cells = [];
     var trimmed = rowStr.trim();
