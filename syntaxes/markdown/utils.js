@@ -101,10 +101,19 @@ function indent(text, prefix) {
         .join('\n');
 }
 
+/**
+ * @param {Number} n
+ * @return {String} n spaces string
+ */
+function spaces(n) {
+    return Array(n+1).join(' ');
+}
+
 module.exports = {
     splitLines: splitLines,
     escape: escapeMarkdown,
     unescape: unescapeMarkdown,
     replace: replace,
+    spaces: spaces,
     indent: indent
 };

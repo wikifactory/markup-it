@@ -82,16 +82,17 @@ function listRule(type) {
 
             return items.reduce(function(text, item, i) {
                 // Determine which bullet to use
-                var bullet = '*';
+                var bullet = '* ';
                 if (listType == MarkupIt.BLOCKS.OL_LIST) {
-                    bullet = (i + 1) + '.';
+                    bullet = (i + 1) + '. ';
                 }
 
                 // Prepend text with spacing
                 var innerText = state.renderAsBlock(item);
                 var rows = utils.splitLines(innerText);
                 var head = rows[0];
-                var rest = utils.indent(rows.slice(1).join('\n'), '  ');
+                var indent = utils.spaces(bullet.length);
+                var rest = utils.indent(rows.slice(1).join('\n'), indent);
                 var eol = rest? '' : '\n';
                 var isLoose = item.getTokens()
                     .find(function(p) {
@@ -99,7 +100,7 @@ function listRule(type) {
                     }) !== undefined;
                 //if (isLoose) eol += '\n';
 
-                var itemText = bullet + ' ' + head + (rest ? '\n' + rest : '') + eol;
+                var itemText = bullet + head + (rest ? '\n' + rest : '') + eol;
                 return text + itemText;
             }, '') + '\n';
         });
