@@ -17,7 +17,7 @@ function cleanupText(src) {
 }
 
 /**
- * Resolve definition links
+ * Resolve definition links/images
  *
  * @param {ParsingState} state
  * @param {Token} token
@@ -30,7 +30,7 @@ function resolveLink(state, token) {
     if (tokenType === 'definition') {
         return false;
     }
-    if (tokenType !== MarkupIt.ENTITIES.LINK) {
+    if (tokenType !== MarkupIt.ENTITIES.LINK && tokenType !== MarkupIt.ENTITIES.IMAGE) {
         return token;
     }
 
@@ -60,9 +60,15 @@ function resolveLink(state, token) {
         return MarkupIt.transform(tokens, resolveLink.bind(null, state));
     }
 
+    // For image, the attribute is "src"
+    if (tokenType === MarkupIt.ENTITIES.IMAGE) {
+        ref.src = ref.href;
+        delete ref.href;
+    }
+
     // Update link attributes
     return token.setData(
-        data.merge(ref)
+        data.delete('ref').merge(ref)
     );
 }
 
