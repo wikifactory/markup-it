@@ -70,11 +70,10 @@ function alignToText(row) {
     return '|' + row.map(function(align) {
         if (align == 'right') {
             return ' ---: |';
-        } else if (align == 'left') {
-            return ' :--- |';
         } else if (align == 'center') {
             return ' :---: |';
-        } else  {
+        } else {
+            // for left alignment
             return ' --- |';
         }
     }).join('');
