@@ -36,15 +36,11 @@ var inlineRules = MarkupIt.RulesSet([
                 return;
             }
 
-            var imgData = {
-                alt: match[1],
-                src: match[2]
-            };
-
-            var title = match[3];
-            if(typeof title !== 'undefined' && title !== '') {
-                imgData.title = title;
-            }
+            var imgData = Immutable.Map({
+                alt:   match[1],
+                src:   match[2],
+                title: match[3]
+            }).filter(Boolean);
 
             return {
                 data: imgData
@@ -56,7 +52,6 @@ var inlineRules = MarkupIt.RulesSet([
             }
 
             var refId = (match[2] || match[1]);
-
             return {
                 data: { ref: refId }
             };
@@ -67,7 +62,6 @@ var inlineRules = MarkupIt.RulesSet([
             }
 
             var refId = (match[2] || match[1]);
-
             return {
                 data: { ref: refId }
             };
@@ -78,17 +72,17 @@ var inlineRules = MarkupIt.RulesSet([
             }
 
             var refId = match[1];
-
             return {
                 data: { ref: refId }
             };
         })
         .toText(function(state, token) {
-            var data = token.getData();
-            var alt  = data.get('alt', '');
-            var src  = data.get('src', '');
+            var data  = token.getData();
+            var alt   = data.get('alt', '');
+            var src   = data.get('src', '');
             var title = data.get('title', '');
-            if(title !== '') {
+
+            if (title) {
                 return '![' + alt + '](' + src + ' "' + title + '")';
             } else {
                 return '![' + alt + '](' + src + ')';
