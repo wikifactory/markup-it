@@ -7,6 +7,16 @@ var utils = require('./utils');
 var isHTMLBlock = require('./isHTMLBlock');
 var math = require('./math');
 
+/**
+ * Test if a link input is an image
+ * @param {String} raw
+ * @return {Boolean}
+ */
+function isImage(raw) {
+    return raw.charAt(0) === '!';
+}
+
+
 var inlineRules = MarkupIt.RulesSet([
     // ---- FOOTNOTE REFS ----
     MarkupIt.Rule(MarkupIt.ENTITIES.FOOTNOTE_REF)
@@ -22,8 +32,7 @@ var inlineRules = MarkupIt.RulesSet([
     // ---- IMAGES ----
     MarkupIt.Rule(MarkupIt.ENTITIES.IMAGE)
         .regExp(reInline.link, function(state, match) {
-            var isImage = match[0].charAt(0) === '!';
-            if (!isImage) {
+            if (!isImage(match[0])) {
                 return;
             }
 
@@ -39,6 +48,39 @@ var inlineRules = MarkupIt.RulesSet([
 
             return {
                 data: imgData
+            };
+        })
+        .regExp(reInline.reflink, function(state, match) {
+            if (!isImage(match[0])) {
+                return;
+            }
+
+            var refId = (match[2] || match[1]);
+
+            return {
+                data: { ref: refId }
+            };
+        })
+        .regExp(reInline.nolink, function(state, match) {
+            if (!isImage(match[0])) {
+                return;
+            }
+
+            var refId = (match[2] || match[1]);
+
+            return {
+                data: { ref: refId }
+            };
+        })
+        .regExp(reInline.reffn, function(state, match) {
+            if (!isImage(match[0])) {
+                return;
+            }
+
+            var refId = match[1];
+
+            return {
+                data: { ref: refId }
             };
         })
         .toText(function(state, token) {
