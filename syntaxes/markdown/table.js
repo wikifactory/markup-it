@@ -72,8 +72,9 @@ function alignToText(row) {
             return ' ---: |';
         } else if (align == 'center') {
             return ' :---: |';
+        } else if (align == 'left') {
+            return ' :--- |';
         } else {
-            // for left alignment
             return ' --- |';
         }
     }).join('');
@@ -117,7 +118,7 @@ var blockRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE)
         align = Array
             .apply(null, Array(countCells))
             .map(function(v, i){
-                return align[i] || ALIGN.LEFT;
+                return align[i];
             });
 
         var headerText = state.render(headerRows);

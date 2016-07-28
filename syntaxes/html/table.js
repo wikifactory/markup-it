@@ -38,7 +38,7 @@ var cellRule = MarkupIt.Rule(MarkupIt.BLOCKS.TABLE_CELL)
         var innerHTML = state.render(token);
 
         var type = isHeader ? 'th' : 'td';
-        var tag = (align && align !== 'left')
+        var tag = (align)
         ? '<' + type + ' style="text-align:' + align + '">'
         : '<' + type + '>';
 
