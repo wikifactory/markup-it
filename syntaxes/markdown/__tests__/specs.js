@@ -45,12 +45,20 @@ function testMdToHtml(fixture) {
 }
 
 function testMdIdempotence(fixture) {
+    // Parse markdown to json
     var content1 = markdown.toContent(fixture.sourceMd);
+
+    // Render json as markdown
     var backToMd = markdown.toText(content1);
+
+    // Parse it back as markdown
     var content2 = markdown.toContent(backToMd);
 
+    // Render the both to html
     var resultHtml1 = html.toText(content1);
     var resultHtml2 = html.toText(content2);
+
+    // Compare the html
     (resultHtml1).should.be.html(resultHtml2);
 }
 
@@ -65,4 +73,3 @@ function readFixture(filename) {
         sourceHtml: sourceHtml
     };
 }
-
