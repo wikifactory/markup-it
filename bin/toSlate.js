@@ -7,7 +7,7 @@ var utils = require('./utils');
 utils.command(function(content) {
     console.log(
         JSON.stringify(
-            MarkupIt.ProseMirrorUtils.encode(content),
+            MarkupIt.SlateUtils.encode(content),
             null, 4
         )
     );

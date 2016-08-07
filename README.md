@@ -45,33 +45,23 @@ var content = html.toContent('Hello <b>World</b>');
 var textMd = markdown.toText(content);
 ```
 
-#### Usage with ProseMirror
-
-
-`markup-it` can integrates with [Prosemirror](http://prosemirror.net) for rich text editing.
-
-Generate a doc [Node](https://prosemirror.net/guide/doc.html#nodes) using `ProseMirrorUtils.encode`:
+#### Usage with [Slate](https://github.com/ianstormtaylor/slate)
 
 ```js
-var Node = require('prosemirror/dist/model/node').Node;
+const Slate = require('slate');
 
-var docJson = MarkupIt.ProseMirrorUtils.encode(content);
-
-var doc = Node.fromJSON(schema, docJson);
+var rawJson = MarkupIt.SlateUtils.encode(content);
+var state = Slate.Raw.deserialize(rawJson);
 ```
 
-And output markdown from a Doc using `ProseMirrorUtils.decode`:
+And output markdown from a State using `SlateUtils.decode`:
 
 ```js
-var docJson = pm.getDoc().toJSON();
-var content = MarkupIt.ProseMirrorUtils.decode(docJson);
+var rawJson = Slate.Raw.serialize(state);
+var content = MarkupIt.SlateUtils.decode(rawJson);
 
 var text = markdown.toText(content);
 ```
-
-#### Usage with Draft.js
-
-> Coming soon!
 
 ### Extend Syntax
 
