@@ -1,4 +1,3 @@
-syntax: slate
 token:
     type: doc
     tokens:
