@@ -26,6 +26,7 @@
   "devDependencies": {
     "eslint": "^2.4.0",
     "mocha": "^2.4.5",
+    "read-metadata": "^1.0.0",
     "should": "^8.2.2",
     "should-html": ">=1.0.2",
     "util": "^0.10.3"
