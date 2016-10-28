@@ -1,5 +1,7 @@
+const { Block, Inline, Text, Mark } = require('slate');
 const State = require('./models/state');
-const Node = require('./models/node');
+const Deserializer = require('./models/deserializer');
+const Serializer = require('./models/serializer');
 
 const MARKS = require('./constants/marks');
 const BLOCKS = require('./constants/blocks');
@@ -7,8 +9,12 @@ const INLINES = require('./constants/inlines');
 
 module.exports = {
     State,
-    Node,
+    Serializer,
+    Deserializer,
+    // Constants
     MARKS,
     BLOCKS,
-    INLINES
-}
+    INLINES,
+    // Slate exports
+    Block, Inline, Text, Mark
+};

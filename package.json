@@ -33,7 +33,6 @@
     "read-metadata": "^1.0.0"
   },
   "dependencies": {
-    "slate": "^0.14.16",
     "escape-string-regexp": "^1.0.5",
     "html-entities": "^1.2.0",
     "htmlparser2": "^3.9.0",
@@ -43,6 +42,9 @@
     "object-values": "^1.0.0",
     "range-utils": "^1.1.0",
     "rtrim": "0.0.3",
+    "slate": "^0.14.16",
+    "split-lines": "^1.1.0",
+    "type-of": "^2.0.1",
     "yargs": "^4.7.1"
   },
   "bin": {

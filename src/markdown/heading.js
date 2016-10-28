@@ -1,8 +1,4 @@
-const BLOCKS = require('../constants/blocks');
-const Serializer = require('../models/serializer');
-const Deserializer = require('../models/deserializer');
-const Node = require('../models/node');
-
+const { Serializer, Deserializer, Block, BLOCKS } = require('../');
 const reHeading = require('./re/heading');
 
 const TYPES = [
@@ -22,9 +18,9 @@ const serialize = Serializer()
     .matchType(TYPES)
     .then((state, node) => {
         const { type, data } = node;
-        const { id } = data;
-        const depth = TYPES.indexOf(type)
-        const prefix = Array(depth + 2).join('#')
+        const id = data.get('id');
+        const depth = TYPES.indexOf(type);
+        const prefix = Array(depth + 2).join('#');
         let inner = state.serialize(node.nodes);
         if (id) inner = `${inner} {#${id}}`;
 
@@ -42,7 +38,7 @@ const deserialize = Deserializer()
         return parseHeadingText(state, level, match[2]);
     })
     .matchRegExp(reHeading.line, (state, match) => {
-        const level = (match[2] === '=')? 1 : 2;
+        const level = (match[2] === '=') ? 1 : 2;
         return parseHeadingText(state, level, match[1]);
     });
 
@@ -55,11 +51,9 @@ const deserialize = Deserializer()
  * @return {Node}
  */
 function parseHeadingText(state, level, text) {
-    var id, match;
-
     reHeading.id.lastIndex = 0;
-    match = reHeading.id.exec(text);
-    id = match? match[2] : null;
+    const match = reHeading.id.exec(text);
+    const id = match ? match[2] : null;
 
     if (id) {
         // Remove ID from text
@@ -68,12 +62,10 @@ function parseHeadingText(state, level, text) {
         text = text.trim();
     }
 
-    return Node.create({
-        type:
+    return Block.create({
+        type: TYPES[level],
         nodes: state.deserialize(text),
-        data: {
-            id: id
-        }
+        data: { id }
     });
 }
 
