@@ -1,4 +1,5 @@
 const { Block, Inline, Text, Mark } = require('slate');
+
 const State = require('./models/state');
 const Deserializer = require('./models/deserializer');
 const Serializer = require('./models/serializer');

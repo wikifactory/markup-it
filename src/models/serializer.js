@@ -1,11 +1,7 @@
 const typeOf = require('type-of');
-const { Record, List } = require('immutable');
+const RuleFunction = require('./rule-function');
 
-const DEFAULTS = {
-    stacks: List()
-};
-
-class Serializer extends Record(DEFAULTS) {
+class Serializer extends RuleFunction {
 
     /**
      * Limit execution of the serializer to a set of node types
@@ -15,41 +11,41 @@ class Serializer extends Record(DEFAULTS) {
     matchType(matcher) {
         matcher = normalizeMatcher(matcher);
 
-        return this.then((state, node, next) => {
+        return this.filter((state, node) => {
             const { type } = node;
-            if (!matcher(type)) {
-                return;
-            }
-
-            return next(state, node);
+            return matcher(type);
         });
     }
 
     /**
-     * Create the serializing function from the stack
-     * @param  {Function} fn
+     * Limit execution of the serializer to a kind of node
+     * @param {Function || Array || String} matcher
      * @return {Serializer}
      */
-    then(fn) {
-        let { stack } = this;
-        stack = stack.push(fn);
-        return this.merge({ stack });
+    matchKind(matcher) {
+        matcher = normalizeMatcher(matcher);
+
+        return this.filter((state, node) => {
+            const { kind } = node;
+            return matcher(kind);
+        });
     }
 
     /**
-     * Apply
+     * Limit execution of the serializer to range containing a certain mark
+     * @param {Function || Array || String} matcher
+     * @return {Serializer}
      */
-    apply(state, value) {
-        const { stack } = this;
+    matchMark(matcher) {
+        matcher = normalizeMatcher(matcher);
 
-        return stack.reduce(
-            (v, fn) => {
-                
-            },
-            value
-        );
+        return this
+        .matchKind('range')
+        .filter((state, range) => {
+            const { marks } = range;
+            return marks.some(mark => matcher(mark.type));
+        });
     }
-
 }
 
 /**

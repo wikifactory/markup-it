@@ -1,5 +1,12 @@
+const { Record, List } = require('immutable');
 
-class State {
+const DEFAULTS = {
+    rules: List(),
+    marks: List(),
+    depth: 0
+};
+
+class State extends Record(DEFAULTS) {
 
     /**
      * Create a new state from a set of rules.
@@ -7,10 +14,21 @@ class State {
      * @return {State} state
      */
     create(rules = []) {
-        const state = new State();
-        state.rules = rules;
+        return new State({
+            rules: List(rules)
+        });
+    }
 
-        return state;
+    /**
+     * Push an active mark
+     * @param {Mark} mark
+     * @return {State} state
+     */
+    pushMark(mark) {
+        let { marks } = this;
+        marks = marks.push(mark);
+
+        return this.merge({ marks });
     }
 
     /**
@@ -28,7 +46,22 @@ class State {
      * @return {String} text
      */
     serialize(node) {
+        const { rules } = this;
+        let result;
 
+        rules.forEach(rule => {
+            if (!rule.serialize) {
+                return;
+            }
+
+            result = rule.serialize(this, node);
+
+            if (result) {
+                return false;
+            }
+        });
+
+        return result;
     }
 }
 
