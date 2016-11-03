@@ -1,49 +1,62 @@
-const { Record, List } = require('immutable');
+const { Record } = require('immutable');
 
 const DEFAULTS = {
-    stack: List()
+    transform: (state, value) => value
 };
 
 class RuleFunction extends Record(DEFAULTS) {
 
     /**
-     * Create the serializing function from the stack
-     * @param  {Function} fn
-     * @return {Serializer}
+     * Add a composition to the transform function
+     * @param  {Function} composer
+     * @return {RuleFunction}
      */
-    then(fn) {
-        let { stack } = this;
-        stack = stack.push(fn);
-        return this.merge({ stack });
+    compose(composer) {
+        let { transform } = this;
+
+        transform = composer(transform);
+        return this.merge({ transform });
     }
 
     /**
-     * Push a filter to the stack.
-     * @param {Function} match
-     * @return {Serializer}
+     * Create the serializing function from the stack
+     * @param  {Function} fn
+     * @return {RuleFunction}
      */
-    filter(match) {
-        return this.then((state, arg, next) => {
-            if (!match(state, arg)) {
-                return;
-            }
-
-            return next(state, arg);
+    then(fn) {
+        return this.compose((next) => {
+            return (state, value) => {
+                value = fn(state, value);
+                return next(state, value);
+            };
         });
     }
 
     /**
-     * Apply
+     * Prevent applying the transform function if <match> is false
+     * @param  {Function} match
+     * @return {RuleFunction}
      */
-    apply(state, value) {
-        const { stack } = this;
+    filter(match) {
+        return this.compose((next) => {
+            return (state, value) => {
+                if (!match(state, value)) {
+                    return;
+                }
 
-        return stack.reduce(
-            (v, fn) => {
+                return next(state, value);
+            };
+        });
+    }
 
-            },
-            value
-        );
+    /**
+     * Execute the transform function on an input
+     * @param  {State} state
+     * @param  {Object} value
+     * @return {Object}
+     */
+    exec(state, value) {
+        return this.transform(state, value);
     }
 
 }
