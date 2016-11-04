@@ -9,8 +9,11 @@ class Deserializer extends RuleFunction {
      * @return {Deserializer}
      */
     matchRegExp(re, callback) {
-        return this.then((state, text, next) => {
-
+        return this.filter((state, text) => {
+            return re.test(text);
+        })
+        .then((state, text) => {
+            return callback(state, re.exec(text));
         });
     }
 
