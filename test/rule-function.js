@@ -46,6 +46,19 @@ describe('RuleFunction', () => {
             expect(result).toBe(3);
         });
 
+        it('should execute the functions in the right order', () => {
+            const result = ruleFunction
+                .then((state, arr) => {
+                    return arr.map(value => value + 1);
+                })
+                .then((state, arr) => {
+                    return arr.map(value => value * 2);
+                })
+                .exec({}, [ 0, 1, 2 ]);
+
+            expect(result).toEqual([ 2, 4, 6 ]);
+        });
+
         it('should always pass the same state instance', () => {
             let passedState;
             let isSameState = false;
