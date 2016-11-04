@@ -23,10 +23,14 @@ class RuleFunction extends Record(DEFAULTS) {
      * @param  {Function} fn
      * @return {RuleFunction}
      */
-    then(fn) {
-        return this.compose((next) => {
+    then(next) {
+        return this.compose((transform) => {
             return (state, value) => {
-                value = fn(state, value);
+                value = transform(state, value);
+                if (typeof value == 'undefined') {
+                    return;
+                }
+
                 return next(state, value);
             };
         });
@@ -38,13 +42,13 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     filter(match) {
-        return this.compose((next) => {
+        return this.compose((transform) => {
             return (state, value) => {
                 if (!match(state, value)) {
                     return;
                 }
 
-                return next(state, value);
+                return transform(state, value);
             };
         });
     }

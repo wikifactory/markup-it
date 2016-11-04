@@ -2,7 +2,7 @@ const expect       = require('expect');
 const RuleFunction = require('../src/models/rule-function');
 
 describe('RuleFunction', () => {
-    describe('compose()', () => {
+    describe('.compose()', () => {
         it('should return a new RuleFunction', () => {
             const ruleFunction = new RuleFunction();
             const composed = ruleFunction
@@ -13,7 +13,7 @@ describe('RuleFunction', () => {
         });
     });
 
-    describe('then()', () => {
+    describe('.then()', () => {
         const ruleFunction = new RuleFunction();
 
         it('should return a new RuleFunction', () => {
@@ -48,12 +48,8 @@ describe('RuleFunction', () => {
 
         it('should execute the functions in the right order', () => {
             const result = ruleFunction
-                .then((state, arr) => {
-                    return arr.map(value => value + 1);
-                })
-                .then((state, arr) => {
-                    return arr.map(value => value * 2);
-                })
+                .then((state, arr) => arr.map(value => value + 1))
+                .then((state, arr) => arr.map(value => value * 2))
                 .exec({}, [ 0, 1, 2 ]);
 
             expect(result).toEqual([ 2, 4, 6 ]);
@@ -87,7 +83,7 @@ describe('RuleFunction', () => {
         });
     });
 
-    describe('filter()', () => {
+    describe('.filter()', () => {
         const ruleFunction = new RuleFunction();
         const initialState = { matchCriterion: true };
         const valueAdder   = (state, value) => value + 1;
