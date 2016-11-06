@@ -13,16 +13,28 @@ const serialize = Serializer()
     });
 
 /**
+ * Deserialize escaped text.
+ * @type {Deserializer}
+ */
+const deserializeEscaped = Deserializer()
+    .matchRegExp(reInline.escape)
+    .then((state, match) => {
+        return Text.createFromString(match[1], state.marks);
+    });
+
+/**
  * Deserialize text.
  * @type {Deserializer}
  */
-const deserialize = Deserializer()
-    .matchRegExp(reInline.escape, (state, match) => {
-        return Text.createFromString(match[1], state.marks);
-    })
-    .matchRegExp(reInline.text, (state, match) => {
+const deserializeText = Deserializer()
+    .matchRegExp(reInline.text)
+    .then((state, match) => {
         const text = utils.unescape(match[0]);
         return Text.createFromString(text, state.marks);
     });
+
+const deserialize = Deserializer()
+    .use(deserializeEscaped)
+    .use(deserializeText);
 
 module.exports = { serialize, deserialize };

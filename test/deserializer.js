@@ -6,9 +6,9 @@ describe('Deserializer', () => {
         it('should return undefined when the regexp does not match', () => {
             const result = Deserializer()
                 .matchRegExp(
-                    /abc/,
-                    () => true
+                    /abc/
                 )
+                .then(() => true)
                 .exec({}, 'xyz');
 
             expect(result).toBe(undefined);
@@ -17,9 +17,9 @@ describe('Deserializer', () => {
         it('should return the value of the callback when the regexp matches', () => {
             const result = Deserializer()
                 .matchRegExp(
-                    /.*(abc).*/,
-                    (state, match) => match[1]
+                    /.*(abc).*/
                 )
+                .then((state, match) => match[1])
                 .exec({}, 'abcdefgh');
 
             expect(result).toBe('abc');

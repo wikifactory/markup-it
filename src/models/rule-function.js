@@ -19,7 +19,7 @@ class RuleFunction extends Record(DEFAULTS) {
     }
 
     /**
-     * Create the serializing function from the stack
+     * Push a transformation to the stack of execution.
      * @param  {Function} fn
      * @return {RuleFunction}
      */

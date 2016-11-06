@@ -24,7 +24,8 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reInline.code, (state, match) => {
+    .matchRegExp(reInline.code)
+    .then((state, match) => {
         const text = match[2];
         const mark = Mark.create({ type: MARKS.CODE });
 

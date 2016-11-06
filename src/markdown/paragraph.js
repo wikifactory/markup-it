@@ -17,7 +17,8 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reBlock.paragraph, (state, match) => {
+    .matchRegExp(reBlock.paragraph)
+    .then((state, match) => {
         const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
         const isInLooseList = (state.get('looseList') === state.getParentDepth());
         const isTop = (state.getDepth() === 1);

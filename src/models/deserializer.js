@@ -5,15 +5,14 @@ class Deserializer extends RuleFunction {
     /**
      * Match text using a regexp
      * @param {RegExp} re
-     * @param {Function} callback
      * @return {Deserializer}
      */
-    matchRegExp(re, callback) {
+    matchRegExp(re) {
         return this.filter((state, text) => {
             return re.test(text);
         })
         .then((state, text) => {
-            return callback(state, re.exec(text));
+            return re.exec(text);
         });
     }
 
