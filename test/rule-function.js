@@ -83,6 +83,18 @@ describe('RuleFunction', () => {
         });
     });
 
+    describe('.use()', () => {
+        it('should call the alternatives', () => {
+            const ruleFunction = new RuleFunction();
+            const fn = ruleFunction
+                .use((state, value) => (value > 5) ? 'hello' : undefined)
+                .use((state, value) => (value <= 5) ? 'world' : undefined);
+
+            expect(fn.exec({}, 0)).toBe('world');
+            expect(fn.exec({}, 10)).toBe('hello');
+        });
+    });
+
     describe('.filter()', () => {
         const ruleFunction = new RuleFunction();
         const initialState = { matchCriterion: true };

@@ -20,7 +20,7 @@ class RuleFunction extends Record(DEFAULTS) {
 
     /**
      * Push a transformation to the stack of execution.
-     * @param  {Function} fn
+     * @param  {Function} next
      * @return {RuleFunction}
      */
     then(next) {
@@ -29,6 +29,27 @@ class RuleFunction extends Record(DEFAULTS) {
                 value = transform(state, value);
                 if (typeof value == 'undefined') {
                     return;
+                }
+
+                return next(state, value);
+            };
+        });
+    }
+
+    /**
+     * Push an alternative to the stack
+     * @param  {Function} next
+     * @return {RuleFunction}
+     */
+    use(fn) {
+        fn = fn instanceof RuleFunction ? fn.exec : fn;
+        return this.compose((next) => {
+            return (state, value) => {
+                const newValue = fn(state, value);
+
+                // We exit if
+                if (typeof newValue != 'undefined') {
+                    return newValue;
                 }
 
                 return next(state, value);
