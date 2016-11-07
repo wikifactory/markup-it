@@ -19,7 +19,7 @@ function readFileInput(filePath) {
     switch (ext) {
     case '.md':
         const parser = MarkupIt.State.create(markdown);
-        const doc = parser.deserialize(content);
+        const doc = parser.deserializeToDocument(content);
         const state = Slate.State.create(doc);
         return Slate.Raw.serialize(state, { terse: true });
     case '.yaml':

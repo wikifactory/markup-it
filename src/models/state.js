@@ -1,4 +1,5 @@
 const { Record, List, Stack } = require('immutable');
+const { Text } = require('slate');
 const { Document } = require('slate');
 
 /*
@@ -106,15 +107,53 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
+     * Parse current text buffer
+     * @return {State} state
+     */
+    lex(rest = '') {
+        const state = this;
+        let newState;
+        const { text, rules } = state;
+
+        if (!text) {
+            if (rest) {
+                const node = Text.createFromString(rest);
+                return this.push(node);
+            }
+
+            return this;
+        }
+
+        rules.forEach(rule => {
+            newState = rule.deserialize.exec(state);
+            if (newState) {
+                return false;
+            }
+        });
+
+        if (newState && rest) {
+            const node = Text.createFromString(rest);
+            newState = newState.merge({
+                nodes: newState.nodes.insert(state.nodes.size, node)
+            });
+        } else if (!newState) {
+            rest += text[0];
+            newState = state.skip(1);
+        }
+
+        return newState.lex(rest);
+    }
+
+    /**
      * Deserialize a text into a Node.
      * @param  {String} text
      * @return {List<Node>} nodes
      */
     deserialize(text) {
-        let state = this
+        const state = this
             .down()
-            .merge({ text });
-        // todo
+            .merge({ text, nodes: List() })
+            .lex();
 
         return state.nodes;
     }
@@ -126,7 +165,19 @@ class State extends Record(DEFAULTS) {
      */
     deserializeToDocument(text) {
         const nodes = this.deserialize(text);
+        console.log(nodes.toJS());
         return new Document({ nodes });
+    }
+
+    /**
+     * Serialize nodes into text
+     * @param  {List<Node>} nodes
+     * @return {String} text
+     */
+    serialize(nodes) {
+        let state = this
+            .down()
+            .merge({ text: '', nodes });
     }
 }
 

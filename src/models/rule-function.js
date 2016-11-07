@@ -42,7 +42,7 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     use(fn) {
-        fn = fn instanceof RuleFunction ? fn.exec : fn;
+        fn = fn instanceof RuleFunction ? fn.exec.bind(fn) : fn;
         return this.compose((next) => {
             return (state, value) => {
                 const newValue = fn(state, value);

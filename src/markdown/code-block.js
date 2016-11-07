@@ -8,7 +8,8 @@ const reBlock = require('./re/block');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.CODE)
-    .then((state, node) => {
+    .then((state) => {
+        const node = state.peek();
         const { text, data } = node;
         const syntax = data.get('syntax');
         const hasFences = text.indexOf('`') >= 0;
@@ -23,14 +24,16 @@ const serialize = Serializer()
         }
 
         const lines = splitLines(text);
-        const text = lines
+        const output = lines
             .map((line) => {
                 if (!line.trim()) return '';
                 return '    ' + line;
             })
             .join('\n') + '\n\n';
 
-        return state.write(text);
+        return state
+            .unshift()
+            .write(output);
     });
 
 /**
@@ -38,8 +41,7 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reBlock.paragraph)
-    .then((state, match) => {
+    .matchRegExp(reBlock.paragraph, (state, match) => {
         const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
         const isInLooseList = (state.get('looseList') === state.getParentDepth());
         const isTop = (state.getDepth() === 1);

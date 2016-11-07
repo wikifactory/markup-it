@@ -33,8 +33,7 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserializeNormal = Deserializer()
-    .matchRegExp(reHeading.normal)
-    .then((state, match) => {
+    .matchRegExp(reHeading.normal, (state, match) => {
         const level = match[1].length;
         return parseHeadingText(state, level, match[2]);
     });
@@ -44,8 +43,7 @@ const deserializeNormal = Deserializer()
  * @type {Deserializer}
  */
 const deserializeLine = Deserializer()
-    .matchRegExp(reHeading.line)
-    .then((state, match) => {
+    .matchRegExp(reHeading.line, (state, match) => {
         const level = (match[2] === '=') ? 1 : 2;
         return parseHeadingText(state, level, match[1]);
     });
@@ -59,7 +57,7 @@ const deserialize = Deserializer()
  * @param  {State} state
  * @param  {Number} level
  * @param  {String} text
- * @return {Node}
+ * @return {State}
  */
 function parseHeadingText(state, level, text) {
     reHeading.id.lastIndex = 0;
