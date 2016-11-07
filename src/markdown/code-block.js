@@ -23,12 +23,14 @@ const serialize = Serializer()
         }
 
         const lines = splitLines(text);
-        return lines
+        const text = lines
             .map((line) => {
                 if (!line.trim()) return '';
                 return '    ' + line;
             })
             .join('\n') + '\n\n';
+
+        return state.write(text);
     });
 
 /**
@@ -46,11 +48,12 @@ const deserialize = Deserializer()
             return;
         }
         const text = match[1].trim();
-
-        return Block.create({
+        const node = Block.create({
             type: BLOCKS.PARAGRAPH,
             nodes: state.deserialize(text)
         });
+
+        return state.push(node);
     });
 
 module.exports = { serialize, deserialize };

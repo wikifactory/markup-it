@@ -9,7 +9,7 @@ const serialize = Serializer()
     .matchType(BLOCKS.PARAGRAPH)
     .then((state, node) => {
         const inner = state.serialize(node.nodes);
-        return `${inner}\n\n`;
+        return state.write(`${inner}\n\n`);
     });
 
 /**
@@ -27,11 +27,12 @@ const deserialize = Deserializer()
             return;
         }
         const text = match[1].trim();
-
-        return Block.create({
+        const node = Block.create({
             type: BLOCKS.PARAGRAPH,
             nodes: state.deserialize(text)
         });
+
+        return state.push(node);
     });
 
 module.exports = { serialize, deserialize };

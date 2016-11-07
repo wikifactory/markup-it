@@ -24,7 +24,7 @@ const serialize = Serializer()
         let inner = state.serialize(node.nodes);
         if (id) inner = `${inner} {#${id}}`;
 
-        return `${prefix} ${inner}\n\n`;
+        return state.write(`${prefix} ${inner}\n\n`);
     });
 
 /**
@@ -73,11 +73,13 @@ function parseHeadingText(state, level, text) {
         text = text.trim();
     }
 
-    return Block.create({
+    const node = Block.create({
         type: TYPES[level],
         nodes: state.deserialize(text),
         data: { id }
     });
+
+    return state.push(node);
 }
 
 module.exports = { serialize, deserialize };

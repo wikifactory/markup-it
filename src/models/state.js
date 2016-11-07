@@ -1,8 +1,14 @@
-const { Record, List } = require('immutable');
+const { Record, List, Stack } = require('immutable');
+const { Document } = require('slate');
+
+/*
+    State stores the global state when serializing a document or deseriaizing a text.
+ */
 
 const DEFAULTS = {
+    text:  '',
+    nodes: Stack(),
     rules: List(),
-    marks: List(),
     depth: 0
 };
 
@@ -13,55 +19,114 @@ class State extends Record(DEFAULTS) {
      * @param  {Array} rules
      * @return {State} state
      */
-    create(rules = []) {
+    static create(rules = []) {
         return new State({
             rules: List(rules)
         });
     }
 
     /**
-     * Push an active mark
-     * @param {Mark} mark
+     * Write a string. This method can be used when serializing nodes into text.
+     *
+     * @param  {String} string
      * @return {State} state
      */
-    pushMark(mark) {
-        let { marks } = this;
-        marks = marks.push(mark);
+    write(string) {
+        let { text } = this;
+        text += string;
+        return this.merge({ text });
+    }
 
-        return this.merge({ marks });
+    /**
+     * Peek the first node in the stack
+     *
+     * @return {Node} node
+     */
+    peek() {
+        return this.nodes.peek();
+    }
+
+    /**
+     * Unshift the first node from the stack
+     *
+     * @return {State} state
+     */
+    unshift() {
+        let { nodes } = this;
+        nodes = nodes.unshift();
+        return this.merge({ nodes });
+    }
+
+    /**
+     * Move this state to a upper level
+     *
+     * @param  {Number} string
+     * @return {State} state
+     */
+    up() {
+        let { depth } = this;
+        depth--;
+        return this.merge({ depth });
+    }
+
+    /**
+     * Move this state to a lower level
+     *
+     * @param  {Number} string
+     * @return {State} state
+     */
+    down() {
+        let { depth } = this;
+        depth++;
+        return this.merge({ depth });
+    }
+
+    /**
+     * Push a new node to the stack. This method can be used when deserializing
+     * a text into a set of nodes.
+     *
+     * @param  {Node} node
+     * @return {State} state
+     */
+    push(node) {
+        let { nodes } = this;
+        nodes = nodes.push(node);
+        return this.merge({ nodes });
+    }
+
+    /**
+     * Skip "n" characters in the text.
+     * @param  {Number} n
+     * @return {State} state
+     */
+    skip(n) {
+        let { text } = this;
+        text = text.slice(n);
+        return this.merge({ text });
     }
 
     /**
      * Deserialize a text into a Node.
      * @param  {String} text
-     * @return {Node} node
+     * @return {List<Node>} nodes
      */
     deserialize(text) {
+        let state = this
+            .down()
+            .merge({ text });
+        // todo
 
+        return state.nodes;
     }
 
     /**
-     * Serialize a node to text
-     * @param  {Node} node
-     * @return {String} text
+     * Deserialize a text into a Document
+     * @param  {String} text
+     * @return {Document} document
      */
-    serialize(node) {
-        const { rules } = this;
-        let result;
-
-        rules.forEach(rule => {
-            if (!rule.serialize) {
-                return;
-            }
-
-            result = rule.serialize(this, node);
-
-            if (result) {
-                return false;
-            }
-        });
-
-        return result;
+    deserializeToDocument(text) {
+        const nodes = this.deserialize(text);
+        return new Document({ nodes });
     }
 }
 
