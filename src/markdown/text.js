@@ -17,9 +17,9 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserializeEscaped = Deserializer()
-    .matchRegExp(reInline.escape)
-    .then((state, match) => {
-        return Text.createFromString(match[1], state.marks);
+    .matchRegExp(reInline.escape, (state, match) => {
+        const node = Text.createFromString(match[1], state.marks);
+        return state.push(node);
     });
 
 /**
@@ -27,10 +27,10 @@ const deserializeEscaped = Deserializer()
  * @type {Deserializer}
  */
 const deserializeText = Deserializer()
-    .matchRegExp(reInline.text)
-    .then((state, match) => {
+    .matchRegExp(reInline.text, (state, match) => {
         const text = utils.unescape(match[0]);
-        return Text.createFromString(text, state.marks);
+        const node = Text.createFromString(text, state.marks);
+        return state.push(node);
     });
 
 const deserialize = Deserializer()

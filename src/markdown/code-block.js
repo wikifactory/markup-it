@@ -41,18 +41,30 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reBlock.paragraph, (state, match) => {
-        const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
-        const isInLooseList = (state.get('looseList') === state.getParentDepth());
-        const isTop = (state.getDepth() === 1);
+    .matchRegExp(reBlock.fences, (state, match) => {
+        // const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
+        // const isInLooseList = (state.get('looseList') === state.getParentDepth());
+        // const isTop = (state.getDepth() === 1);
+        //
+        // if (!isTop && !isInBlockquote && !isInLooseList) {
+        //     return;
+        // }
 
-        if (!isTop && !isInBlockquote && !isInLooseList) {
-            return;
+        // Extract code block text
+        const text = match[3].trim();
+
+        // Extract language syntax
+        let data;
+        if (Boolean(match[2])) {
+            data = {
+                syntax: match[2].trim()
+            };
         }
-        const text = match[1].trim();
+
         const node = Block.create({
-            type: BLOCKS.PARAGRAPH,
-            nodes: state.deserialize(text)
+            type: BLOCKS.CODE,
+            nodes: state.deserialize(text),
+            data
         });
 
         return state.push(node);

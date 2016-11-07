@@ -17,15 +17,14 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reBlock.paragraph)
-    .then((state, match) => {
-        const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
-        const isInLooseList = (state.get('looseList') === state.getParentDepth());
-        const isTop = (state.getDepth() === 1);
-
-        if (!isTop && !isInBlockquote && !isInLooseList) {
-            return;
-        }
+    .matchRegExp(reBlock.paragraph, (state, match) => {
+        // const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
+        // const isInLooseList = (state.get('looseList') === state.getParentDepth());
+        // const isTop = (state.getDepth() === 1);
+        //
+        // if (!isTop && !isInBlockquote && !isInLooseList) {
+        //     return;
+        // }
         const text = match[1].trim();
         const node = Block.create({
             type: BLOCKS.PARAGRAPH,

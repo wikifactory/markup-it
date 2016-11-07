@@ -17,8 +17,7 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reInline.del)
-    .then((state, match) => {
+    .matchRegExp(reInline.del, (state, match) => {
         const text = match[1];
         const mark = Mark.create({ type: MARKS.STRIKETHROUGH });
 

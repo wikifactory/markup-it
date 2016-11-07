@@ -16,8 +16,7 @@ const serialize = Serializer()
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
-    .matchRegExp(reInline.strong)
-    .then((state, match) => {
+    .matchRegExp(reInline.strong, (state, match) => {
         const text = match[2] || match[1];
         const mark = Mark.create({ type: MARKS.ITALIC });
 
