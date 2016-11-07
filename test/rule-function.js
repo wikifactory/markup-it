@@ -1,5 +1,6 @@
 const expect       = require('expect');
 const RuleFunction = require('../src/models/rule-function');
+const State        = require('../src/models/state');
 
 describe('RuleFunction', () => {
     describe('.compose()', () => {
@@ -34,52 +35,26 @@ describe('RuleFunction', () => {
             expect(composed).toBeA(RuleFunction);
         });
 
-        it('should allow to modify a value', () => {
-            const valueAdder = (state, value) => value + 1;
+        it('should allow to modify the state', () => {
+            const letterAdder = state => state.set('text', state.text + 'a');
 
             const result = ruleFunction
-                .then(valueAdder)
-                .then(valueAdder)
-                .then(valueAdder)
-                .exec({}, 0);
+                .then(letterAdder)
+                .then(letterAdder)
+                .then(letterAdder)
+                .exec(new State());
 
-            expect(result).toBe(3);
+            expect(result.text).toEqual('aaa');
         });
 
         it('should execute the functions in the right order', () => {
             const result = ruleFunction
-                .then((state, arr) => arr.map(value => value + 1))
-                .then((state, arr) => arr.map(value => value * 2))
-                .exec({}, [ 0, 1, 2 ]);
+                .then(state => state.set('text', state.text + 'a'))
+                .then(state => state.set('text', state.text + 'b'))
+                .then(state => state.set('text', state.text + 'c'))
+                .exec(new State());
 
-            expect(result).toEqual([ 2, 4, 6 ]);
-        });
-
-        it('should always pass the same state instance', () => {
-            let passedState;
-            let isSameState = false;
-
-            const valueAdder = (state, value) => {
-                // Set first passed state
-                if (!passedState) {
-                    passedState = state;
-                }
-                else {
-                    // Compare first state and received state objects
-                    isSameState = (passedState === state);
-                }
-
-                return value + 1;
-            };
-
-            const result = ruleFunction
-                .then(valueAdder)
-                .then(valueAdder)
-                .then(valueAdder)
-                .exec({}, 0);
-
-            expect(result).toBe(3);
-            expect(isSameState).toBe(true);
+            expect(result.text).toEqual('abc');
         });
     });
 
@@ -87,33 +62,33 @@ describe('RuleFunction', () => {
         it('should call the alternatives', () => {
             const ruleFunction = new RuleFunction();
             const fn = ruleFunction
-                .use((state, value) => (value > 5) ? 'hello' : undefined)
-                .use((state, value) => (value <= 5) ? 'world' : undefined);
+                .use(state => state.text.length > 0 ? state.set('text', 'rule-1') : undefined)
+                .use(state => state.text.length == 0 ? state.set('text', 'rule-2') : undefined);
 
-            expect(fn.exec({}, 0)).toBe('world');
-            expect(fn.exec({}, 10)).toBe('hello');
+            expect(fn.exec(new State({ text: 'Hello World' })).text).toEqual('rule-1');
+            expect(fn.exec(new State({ text: '' })).text).toEqual('rule-2');
         });
     });
 
     describe('.filter()', () => {
         const ruleFunction = new RuleFunction();
-        const initialState = { matchCriterion: true };
-        const valueAdder   = (state, value) => value + 1;
+        const initialState = new State({ text: '' });
+        const letterAdder  = state => state.set('text', state.text + 'a');
 
         it('should not stop the execution when match is correct', () => {
             const result = ruleFunction
-                .filter((state, value) => state.matchCriterion)
-                .then(valueAdder)
-                .exec(initialState, 0);
+                .filter(state => !state.text.length)
+                .then(letterAdder)
+                .exec(initialState);
 
-            expect(result).toBe(1);
+            expect(result.text).toEqual('a');
         });
 
         it('should stop the execution when match is not correct', () => {
             const result = ruleFunction
-                .filter((state, value) => !state.matchCriterion)
-                .then(valueAdder)
-                .exec(initialState, 0);
+                .filter(state => Boolean(state.text.length))
+                .then(letterAdder)
+                .exec(initialState);
 
             expect(result).toBe(undefined);
         });

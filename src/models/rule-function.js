@@ -1,7 +1,7 @@
 const { Record } = require('immutable');
 
 const DEFAULTS = {
-    transform: (state, value) => value
+    transform: state => state
 };
 
 class RuleFunction extends Record(DEFAULTS) {
@@ -25,13 +25,13 @@ class RuleFunction extends Record(DEFAULTS) {
      */
     then(next) {
         return this.compose((transform) => {
-            return (state, value) => {
-                value = transform(state, value);
-                if (typeof value == 'undefined') {
+            return (state) => {
+                state = transform(state);
+                if (typeof state == 'undefined') {
                     return;
                 }
 
-                return next(state, value);
+                return next(state);
             };
         });
     }
@@ -44,15 +44,15 @@ class RuleFunction extends Record(DEFAULTS) {
     use(fn) {
         fn = fn instanceof RuleFunction ? fn.exec.bind(fn) : fn;
         return this.compose((next) => {
-            return (state, value) => {
-                const newValue = fn(state, value);
+            return (state) => {
+                const newValue = fn(state);
 
                 // We exit if
                 if (typeof newValue != 'undefined') {
                     return newValue;
                 }
 
-                return next(state, value);
+                return next(state);
             };
         });
     }
@@ -64,12 +64,12 @@ class RuleFunction extends Record(DEFAULTS) {
      */
     filter(match) {
         return this.compose((transform) => {
-            return (state, value) => {
-                if (!match(state, value)) {
+            return (state) => {
+                if (!match(state)) {
                     return;
                 }
 
-                return transform(state, value);
+                return transform(state);
             };
         });
     }
@@ -81,7 +81,7 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {Object}
      */
     exec(state, value) {
-        return this.transform(state, value);
+        return this.transform(state);
     }
 
 }
