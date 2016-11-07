@@ -1,10 +1,18 @@
 const { Record, List, Stack } = require('immutable');
-const { Text } = require('slate');
-const { Document } = require('slate');
+const { Document, Text, Block } = require('slate');
+const BLOCKS = require('../constants/blocks');
 
 /*
     State stores the global state when serializing a document or deseriaizing a text.
  */
+
+function createTextBlock(text) {
+    text = Text.createFromString(text);
+    return Block.create({
+        type: BLOCKS.TEXT,
+        nodes: [text]
+    });
+}
 
 const DEFAULTS = {
     text:  '',
@@ -24,6 +32,16 @@ class State extends Record(DEFAULTS) {
         return new State({
             rules: List(rules)
         });
+    }
+
+    get kind() {
+        const { nodes } = this;
+        if (nodes.size == 0) {
+            return 'block';
+        }
+
+        const hasBlock = nodes.some(node => node.kind == 'block');
+        return hasBlock ? 'block' : 'inline';
     }
 
     /**
@@ -117,7 +135,7 @@ class State extends Record(DEFAULTS) {
 
         if (!text) {
             if (rest) {
-                const node = Text.createFromString(rest);
+                const node = this.kind == 'block' ? createTextBlock(rest) : Text.createFromString(rest);
                 return this.push(node);
             }
 
@@ -132,7 +150,7 @@ class State extends Record(DEFAULTS) {
         });
 
         if (newState && rest) {
-            const node = Text.createFromString(rest);
+            const node = newState.kind == 'block' ? createTextBlock(rest) : Text.createFromString(rest);
             newState = newState.merge({
                 nodes: newState.nodes.insert(state.nodes.size, node)
             });
@@ -165,8 +183,7 @@ class State extends Record(DEFAULTS) {
      */
     deserializeToDocument(text) {
         const nodes = this.deserialize(text);
-        console.log(nodes.toJS());
-        return new Document({ nodes });
+        return Document.create({ nodes });
     }
 
     /**
