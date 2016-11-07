@@ -10,10 +10,10 @@ class Deserializer extends RuleFunction {
      * @return {Deserializer}
      */
     matchRegExp(re, callback) {
-        return this.filter(state => {
+        return this.filter((state) => {
             return re.test(state.text);
         })
-        .then(state => {
+        .then((state) => {
             const match = re.exec(state.text);
             state = state.skip(match[0].length);
 
