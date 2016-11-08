@@ -1,5 +1,5 @@
 const splitLines = require('split-lines');
-const { Serializer, Deserializer, Block, BLOCKS } = require('../../');
+const { Serializer, Deserializer, Block, Text, BLOCKS } = require('../../');
 const reBlock = require('../re/block');
 
 /**
@@ -63,7 +63,9 @@ const deserialize = Deserializer()
 
         const node = Block.create({
             type: BLOCKS.CODE,
-            nodes: state.use('inlines').deserialize(text),
+            nodes: [
+                Text.createFromString(text)
+            ],
             data
         });
 
