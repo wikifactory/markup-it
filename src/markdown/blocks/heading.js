@@ -22,8 +22,11 @@ const serialize = Serializer()
         const id = data.get('id');
         const depth = TYPES.indexOf(type);
         const prefix = Array(depth + 2).join('#');
-        let inner = state.serialize(node.nodes);
-        if (id) inner = `${inner} {#${id}}`;
+
+        let inner = state.use('inline').serialize(node.nodes);
+        if (id) {
+            inner = `${inner} {#${id}}`;
+        }
 
         return state
             .shift()
@@ -80,7 +83,7 @@ function parseHeadingText(state, level, text) {
 
     const node = Block.create({
         type: TYPES[level - 1],
-        nodes: state.use('inlines').deserialize(text),
+        nodes: state.use('inline').deserialize(text),
         data
     });
 

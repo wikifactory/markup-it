@@ -1,5 +1,5 @@
-const marks = require('./marks');
-const blocks = require('./blocks');
-const inlines = require('./inlines');
+const mark = require('./marks');
+const block = require('./blocks');
+const inline = require('./inlines');
 
-module.exports = { inlines, blocks, marks };
+module.exports = { inline, block, mark };

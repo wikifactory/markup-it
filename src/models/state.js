@@ -16,11 +16,11 @@ function createTextBlock(text) {
 }
 
 const DEFAULTS = {
-    text:        '',
-    nodes:       List(),
-    activeRules: String('blocks'),
-    rulesSet:    Map(),
-    depth:       0
+    text:     '',
+    nodes:    List(),
+    kind:     String('block'),
+    rulesSet: Map(),
+    depth:    0
 };
 
 class State extends Record(DEFAULTS) {
@@ -41,32 +41,18 @@ class State extends Record(DEFAULTS) {
      * @return {List} rules
      */
     get rules() {
-        const { activeRules, rulesSet } = this;
-        return rulesSet.get(activeRules, List());
-    }
-
-    /**
-     * Return kind of nodes currently being parsed
-     * @return {String} kind
-     */
-    get kind() {
-        const { nodes } = this;
-        if (nodes.size == 0) {
-            return 'block';
-        }
-
-        const hasBlock = nodes.some(node => node.kind == 'block');
-        return hasBlock ? 'block' : 'inline';
+        const { kind, rulesSet } = this;
+        return rulesSet.get(kind, List());
     }
 
     /**
      * Change set of rules to use.
      *
-     * @param  {String} activeRules
+     * @param  {String} kind
      * @return {State} state
      */
-    use(activeRules) {
-        return this.merge({ activeRules });
+    use(kind) {
+        return this.merge({ kind });
     }
 
     /**

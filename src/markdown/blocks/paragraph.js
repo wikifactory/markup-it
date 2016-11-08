@@ -9,7 +9,7 @@ const serialize = Serializer()
     .matchType(BLOCKS.PARAGRAPH)
     .then((state) => {
         const node = state.peek();
-        const inner = state.serialize(node.nodes);
+        const inner = state.use('inline').serialize(node.nodes);
 
         return state
             .shift()
@@ -32,7 +32,7 @@ const deserialize = Deserializer()
         const text = match[1].trim();
         const node = Block.create({
             type: BLOCKS.PARAGRAPH,
-            nodes: state.use('inlines').deserialize(text)
+            nodes: state.use('inline').deserialize(text)
         });
 
         return state.push(node);
