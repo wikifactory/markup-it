@@ -245,6 +245,16 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
+     * Serialize a document into text
+     * @param  {Document} document
+     * @return {String} text
+     */
+    serializeDocument(document) {
+        const { nodes } = document;
+        return this.serialize(nodes);
+    }
+
+    /**
      * Update the state to serialize it.
      * @return {State} state
      */
@@ -256,6 +266,11 @@ class State extends Record(DEFAULTS) {
         }
 
         state = state.applyRules('serialize');
+
+        // No rule can match this node
+        if (!state) {
+            throw new Error(`No rule match node ${this.peek().kind}#${this.peek().type || ''}`);
+        }
 
         // Same state cause an infinite loop
         if (state == this) {

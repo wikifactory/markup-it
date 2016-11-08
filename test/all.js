@@ -38,7 +38,7 @@ function convertFor(input, outputExt) {
     case '.md':
         input = Slate.Raw.deserialize(input, { terse: true });
         const state = MarkupIt.State.create(markdown);
-        return state.serialize(input);
+        return state.serializeDocument(input.document);
     case '.yaml':
         return input;
     }
