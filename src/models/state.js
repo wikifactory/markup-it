@@ -64,7 +64,7 @@ class State extends Record(DEFAULTS) {
      * @param  {String} activeRules
      * @return {State} state
      */
-    use(id) {
+    use(activeRules) {
         return this.merge({ activeRules });
     }
 
