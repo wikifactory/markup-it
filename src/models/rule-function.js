@@ -34,9 +34,9 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     then(next) {
-        return this.compose((transform) => {
+        return this.compose((prev) => {
             return (state) => {
-                state = transform(state);
+                state = prev(state);
                 if (typeof state == 'undefined') {
                     return;
                 }
@@ -52,7 +52,7 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     use(fn) {
-        return this.compose((next) => {
+        return this.compose((prev) => {
             return (state) => {
                 const newValue = RuleFunction.exec(fn, state);
 
@@ -61,7 +61,7 @@ class RuleFunction extends Record(DEFAULTS) {
                     return newValue;
                 }
 
-                return next(state);
+                return prev(state);
             };
         });
     }
@@ -72,13 +72,15 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     filter(match) {
-        return this.compose((transform) => {
+        return this.compose((prev) => {
             return (state) => {
-                if (!match(state)) {
+                state = prev(state);
+
+                if (!state || !match(state)) {
                     return;
                 }
 
-                return transform(state);
+                return state;
             };
         });
     }
