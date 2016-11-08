@@ -49,7 +49,7 @@ describe('State', () => {
     describe('.rules', () => {
         it('should return block rules by default', () => {
             const state = State.create({
-                blocks: [ (st => st) ]
+                blocks: [ { deserialize: (st => st) } ]
             });
 
             expect(state.rules.size).toBe(1);
@@ -65,11 +65,34 @@ describe('State', () => {
     describe('.use', () => {
         it('should change the current set of rules', () => {
             const state = State.create({
-                blocks: [ (st => st) ]
+                blocks: [ { deserialize: (st => st) } ]
             })
             .use('inlines');
 
             expect(state.rules.size).toBe(0);
+        });
+    });
+
+    describe('.deserialize', () => {
+        const deserialize = state => {
+            const { text } = state;
+            let nextLine = text.indexOf('\n');
+            nextLine = nextLine < 0 ? text.length : nextLine + 1;
+            const type = text.slice(0, nextLine);
+
+            return state
+                .skip(nextLine)
+                .push(Block.create({ type }));
+        };
+
+
+        it('should change the current set of rules', () => {
+            const state = State.create({
+                blocks: [ { deserialize } ]
+            });
+            const nodes = state.deserialize('heading\nparagraph\ncode');
+
+            expect(nodes.size).toBe(3);
         });
     });
 });

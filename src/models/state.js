@@ -1,6 +1,7 @@
-const { Record, List, Stack, Map } = require('immutable');
+const { Record, List, Map } = require('immutable');
 const { Document, Text, Block } = require('slate');
 const BLOCKS = require('../constants/blocks');
+const RuleFunction = require('./rule-function');
 
 /*
     State stores the global state when serializing a document or deseriaizing a text.
@@ -167,7 +168,7 @@ class State extends Record(DEFAULTS) {
         }
 
         rules.forEach(rule => {
-            newState = rule.deserialize.exec(state);
+            newState = RuleFunction.exec(rule.deserialize, state);
             if (newState) {
                 return false;
             }

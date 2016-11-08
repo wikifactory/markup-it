@@ -7,6 +7,16 @@ const DEFAULTS = {
 class RuleFunction extends Record(DEFAULTS) {
 
     /**
+     * Execute a rule function or a function.
+     * @param {Funciton or RuleFunction} fn
+     * @param {Mixed} ...args
+     * @return {Mixed} result
+     */
+    static exec(fn, ...args) {
+        return (fn instanceof RuleFunction) ? fn.exec(...args) : fn(...args);
+    }
+
+    /**
      * Add a composition to the transform function
      * @param  {Function} composer
      * @return {RuleFunction}
@@ -42,10 +52,9 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     use(fn) {
-        fn = fn instanceof RuleFunction ? fn.exec.bind(fn) : fn;
         return this.compose((next) => {
             return (state) => {
-                const newValue = fn(state);
+                const newValue = RuleFunction.exec(fn, state);
 
                 // We exit if
                 if (typeof newValue != 'undefined') {
