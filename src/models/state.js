@@ -168,7 +168,7 @@ class State extends Record(DEFAULTS) {
             return startState;
         }
 
-        // We apply the rules to find the first amtching one
+        // We apply the rules to find the first matching one
         const newState = startState.applyRules('deserialize');
 
         // Same state cause an infinite loop
