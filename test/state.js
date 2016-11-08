@@ -61,4 +61,15 @@ describe('State', () => {
             expect(state.rules.size).toBe(0);
         });
     });
+
+    describe('.use', () => {
+        it('should change the current set of rules', () => {
+            const state = State.create({
+                blocks: [ (st => st) ]
+            })
+            .use('inlines');
+
+            expect(state.rules.size).toBe(0);
+        });
+    });
 });
