@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register --reporter spec ./test/*.js"
+    "test": "./node_modules/.bin/mocha --compilers js:babel-core/register --reporter spec ./test/index.js"
   },
   "repository": {
     "type": "git",

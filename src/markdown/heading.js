@@ -16,7 +16,8 @@ const TYPES = [
  */
 const serialize = Serializer()
     .matchType(TYPES)
-    .then((state, node) => {
+    .then((state) => {
+        const node = state.peek();
         const { type, data } = node;
         const id = data.get('id');
         const depth = TYPES.indexOf(type);
@@ -24,7 +25,9 @@ const serialize = Serializer()
         let inner = state.serialize(node.nodes);
         if (id) inner = `${inner} {#${id}}`;
 
-        return state.write(`${prefix} ${inner}\n\n`);
+        return state
+            .unshift()
+            .write(`${prefix} ${inner}\n\n`);
     });
 
 /**

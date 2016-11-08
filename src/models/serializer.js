@@ -11,7 +11,8 @@ class Serializer extends RuleFunction {
     matchType(matcher) {
         matcher = normalizeMatcher(matcher);
 
-        return this.filter((state, node) => {
+        return this.filter(state => {
+            const node = state.peek();
             const { type } = node;
             return matcher(type);
         });
@@ -25,7 +26,8 @@ class Serializer extends RuleFunction {
     matchKind(matcher) {
         matcher = normalizeMatcher(matcher);
 
-        return this.filter((state, node) => {
+        return this.filter(state => {
+            const node = state.peek();
             const { kind } = node;
             return matcher(kind);
         });
@@ -41,7 +43,8 @@ class Serializer extends RuleFunction {
 
         return this
         .matchKind('range')
-        .filter((state, range) => {
+        .filter(state => {
+            const range = state.doSomething();
             const { marks } = range;
             return marks.some(mark => matcher(mark.type));
         });

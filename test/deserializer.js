@@ -1,7 +1,10 @@
 const expect       = require('expect');
 const Deserializer = require('../src/models/deserializer');
+const State        = require('../src/models/state');
 
 describe('Deserializer', () => {
+    const state = new State();
+
     describe('.matchRegExp()', () => {
         it('should return undefined when the regexp does not match', () => {
             const result = Deserializer()
@@ -9,7 +12,7 @@ describe('Deserializer', () => {
                     /abc/,
                     () => true
                 )
-                .exec({}, 'xyz');
+                .exec(state.write('xyz'));
 
             expect(result).toBe(undefined);
         });
@@ -18,9 +21,9 @@ describe('Deserializer', () => {
             const result = Deserializer()
                 .matchRegExp(
                     /.*(abc).*/,
-                    (state, match) => match[1]
+                    (newState, match) => match[1]
                 )
-                .exec({}, 'abcdefgh');
+                .exec(state.write('abcdefgh'));
 
             expect(result).toBe('abc');
         });
