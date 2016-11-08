@@ -59,14 +59,23 @@ describe('RuleFunction', () => {
     });
 
     describe('.use()', () => {
+        const ruleFunction = new RuleFunction();
+
         it('should call the alternatives', () => {
-            const ruleFunction = new RuleFunction();
             const fn = ruleFunction
                 .use(state => state.text.length > 0 ? state.set('text', 'rule-1') : undefined)
                 .use(state => state.text.length == 0 ? state.set('text', 'rule-2') : undefined);
 
             expect(fn.exec(new State({ text: 'Hello World' })).text).toEqual('rule-1');
             expect(fn.exec(new State({ text: '' })).text).toEqual('rule-2');
+        });
+
+        it('should return undefined when no alternative matches', () => {
+            const fn = ruleFunction
+                .use(state => state.text.length > 0 ? state.set('text', 'rule-1') : undefined)
+                .use(state => state.text.length > 0 ? state.set('text', 'rule-2') : undefined);
+
+            expect(fn.exec(new State({ text: '' }))).toEqual(undefined);
         });
     });
 
