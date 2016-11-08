@@ -39,7 +39,7 @@
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
     "html-entities": "^1.2.0",
-    "htmlparser2": "^3.9.0",
+    "htmlparser2": "3.9.2",
     "immutable": "^3.7.6",
     "is": "^3.1.0",
     "ltrim": "0.0.3",

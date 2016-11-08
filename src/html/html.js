@@ -1,4 +1,4 @@
-const { Block } = require('../');
+const parse = require('./parse');
 
 /**
  * Serialize to HTML
@@ -15,15 +15,12 @@ function serialize(state) {
  * @type {Deserializer}
  */
 function deserialize(state) {
-    return state
-        .push(
-            Block.create({
-                nodes: [
-                    state.text
-                ],
-                type: 'line'
-            }))
-        .skip(state.text.length);
+    const nodes = parse(state.text);
+
+    return nodes.reduce((state, node) => {
+        return state.push(node);
+    })
+    .skip(state.text.length);
 }
 
 module.exports = { serialize, deserialize };
