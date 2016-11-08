@@ -1,4 +1,4 @@
-const { Record, List, Stack } = require('immutable');
+const { Record, List, Stack, Map } = require('immutable');
 const { Document, Text, Block } = require('slate');
 const BLOCKS = require('../constants/blocks');
 
@@ -15,10 +15,11 @@ function createTextBlock(text) {
 }
 
 const DEFAULTS = {
-    text:  '',
-    nodes: Stack(),
-    rules: List(),
-    depth: 0
+    text:        '',
+    nodes:       Stack(),
+    activeRules: String('blocks'),
+    rulesSet:    Map(),
+    depth:       0
 };
 
 class State extends Record(DEFAULTS) {
@@ -28,12 +29,25 @@ class State extends Record(DEFAULTS) {
      * @param  {Array} rules
      * @return {State} state
      */
-    static create(rules = []) {
+    static create(rulesSet = {}) {
         return new State({
-            rules: List(rules)
+            rulesSet: Map(rulesSet).map(List)
         });
     }
 
+    /**
+     * Return list of rules currently being used
+     * @return {List} rules
+     */
+    get rules() {
+        const { activeRules, rulesSet } = this;
+        return activeRules.get(rulesSet);
+    }
+
+    /**
+     * Return kind of nodes currently being parsed
+     * @return {String} kind
+     */
     get kind() {
         const { nodes } = this;
         if (nodes.size == 0) {
@@ -42,6 +56,16 @@ class State extends Record(DEFAULTS) {
 
         const hasBlock = nodes.some(node => node.kind == 'block');
         return hasBlock ? 'block' : 'inline';
+    }
+
+    /**
+     * Change set of rules to use.
+     *
+     * @param  {String} activeRules
+     * @return {State} state
+     */
+    use(id) {
+        return this.merge({ activeRules });
     }
 
     /**
