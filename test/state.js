@@ -86,13 +86,35 @@ describe('State', () => {
         };
 
 
-        it('should change the current set of rules', () => {
+        it('should deserialize using the rule', () => {
             const state = State.create({
                 blocks: [ { deserialize } ]
             });
             const nodes = state.deserialize('heading\nparagraph\ncode');
 
             expect(nodes.size).toBe(3);
+        });
+    });
+
+    describe('.serialize', () => {
+        const serialize = state => {
+            const node = state.peek();
+
+            return state
+                .unshift()
+                .write(node.type + '\n');
+        };
+
+        it('should process all nodes', () => {
+            const state = State.create({
+                blocks: [ { serialize } ]
+            });
+            const text = state.serialize([
+                Block.create({ type: 'heading' }),
+                Block.create({ type: 'paragraph' })
+            ]);
+
+            expect(text).toBe('heading\nparagraph');
         });
     });
 });

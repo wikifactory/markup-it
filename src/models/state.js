@@ -239,7 +239,7 @@ class State extends Record(DEFAULTS) {
     serialize(nodes) {
         let state = this
             .down()
-            .merge({ text: '', nodes });
+            .merge({ text: '', nodes: List(nodes) });
 
         state = state.applyRules('serialize');
 
