@@ -81,6 +81,24 @@ describe('RuleFunction', () => {
 
             expect(fn.exec(new State({ text: '' }))).toEqual(undefined);
         });
+
+        it('should accept RuleFunction instances as arguments', () => {
+            const ruleOne = new RuleFunction()
+                .filter(state => state.text.length > 0)
+                .then(state => state.set('text', 'rule-1'));
+
+            const ruleTwo = new RuleFunction()
+                .filter(state => state.text.length == 0)
+                .then(state => state.set('text', 'rule-2'));
+
+            const fn = ruleFunction
+                .use([
+                    ruleOne,
+                    ruleTwo
+                ]);
+
+            expect(fn.exec(new State()).text).toEqual('rule-2');
+        });
     });
 
     describe('.filter()', () => {

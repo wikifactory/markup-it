@@ -69,11 +69,11 @@ class RuleFunction extends Record(DEFAULTS) {
      * @return {RuleFunction}
      */
     use(alternatives) {
-        return this.then(state => {
+        return this.then((state) => {
             let newState;
 
-            alternatives.some(fn => {
-                newState = fn(state);
+            alternatives.some((fn) => {
+                newState = RuleFunction.exec(fn, state);
                 return Boolean(newState);
             });
 
