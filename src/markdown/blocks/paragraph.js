@@ -7,9 +7,13 @@ const reBlock = require('../re/block');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.PARAGRAPH)
-    .then((state, node) => {
+    .then((state) => {
+        const node = state.peek();
         const inner = state.serialize(node.nodes);
-        return state.write(`${inner}\n\n`);
+
+        return state
+            .shift()
+            .write(`${inner}\n\n`);
     });
 
 /**
