@@ -75,8 +75,8 @@ function parseHeadingText(state, level, text) {
     }
 
     const node = Block.create({
-        type: TYPES[level],
         nodes: state.deserialize(text),
+        type: TYPES[level - 1],
         data: { id }
     });
 
