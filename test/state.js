@@ -49,7 +49,7 @@ describe('State', () => {
     describe('.rules', () => {
         it('should return block rules by default', () => {
             const state = State.create({
-                blocks: [ { deserialize: (st => st) } ]
+                block: [ { deserialize: (st => st) } ]
             });
 
             expect(state.rules.size).toBe(1);
@@ -65,9 +65,9 @@ describe('State', () => {
     describe('.use', () => {
         it('should change the current set of rules', () => {
             const state = State.create({
-                blocks: [ { deserialize: (st => st) } ]
+                block: [ { deserialize: (st => st) } ]
             })
-            .use('inlines');
+            .use('inline');
 
             expect(state.rules.size).toBe(0);
         });
@@ -88,7 +88,7 @@ describe('State', () => {
 
         it('should deserialize using the rule', () => {
             const state = State.create({
-                blocks: [ { deserialize } ]
+                block: [ { deserialize } ]
             });
             const nodes = state.deserialize('heading\nparagraph\ncode');
 
@@ -107,7 +107,7 @@ describe('State', () => {
 
         it('should process all nodes', () => {
             const state = State.create({
-                blocks: [ { serialize } ]
+                block: [ { serialize } ]
             });
             const text = state.serialize([
                 Block.create({ type: 'heading' }),
