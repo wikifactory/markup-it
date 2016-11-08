@@ -41,7 +41,7 @@ class State extends Record(DEFAULTS) {
      */
     get rules() {
         const { activeRules, rulesSet } = this;
-        return activeRules.get(rulesSet);
+        return rulesSet.get(activeRules);
     }
 
     /**
