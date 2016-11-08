@@ -8,8 +8,14 @@ const utils = require('../utils');
  */
 const serialize = Serializer()
     .matchKind('text')
-    .then((state, range) => {
-        return utils.escape(range.text, false);
+    .then((state) => {
+        const node = state.peek();
+        // TODO: ranges / marks, etc
+        const text = utils.escape(node.text, false);
+
+        return state
+            .shift()
+            .write(text);
     });
 
 /**
