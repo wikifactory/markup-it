@@ -26,4 +26,23 @@ describe('State', () => {
         });
     });
 
+    describe('.write()', () => {
+        it('should add text to the buffer', () => {
+            const state = (new State())
+                .write('Hello')
+                .write(' World');
+
+            expect(state.text).toBe('Hello World');
+        });
+    });
+
+    describe('.skip()', () => {
+        it('should skip N characters from text', () => {
+            const state = (new State())
+                .write('Hello World')
+                .skip(5);
+
+            expect(state.text).toBe(' World');
+        });
+    });
 });
