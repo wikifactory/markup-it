@@ -16,7 +16,7 @@ function createTextBlock(text) {
 
 const DEFAULTS = {
     text:        '',
-    nodes:       Stack(),
+    nodes:       List(),
     activeRules: String('blocks'),
     rulesSet:    Map(),
     depth:       0
@@ -86,7 +86,7 @@ class State extends Record(DEFAULTS) {
      * @return {Node} node
      */
     peek() {
-        return this.nodes.peek();
+        return this.nodes.first();
     }
 
     /**
