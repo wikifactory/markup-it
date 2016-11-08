@@ -45,4 +45,20 @@ describe('State', () => {
             expect(state.text).toBe(' World');
         });
     });
+
+    describe('.rules', () => {
+        it('should return block rules by default', () => {
+            const state = State.create({
+                blocks: [ (st => st) ]
+            });
+
+            expect(state.rules.size).toBe(1);
+        });
+
+        it('should return an empty list when no set', () => {
+            const state = State.create();
+
+            expect(state.rules.size).toBe(0);
+        });
+    });
 });
