@@ -67,11 +67,13 @@ const deserialize = Deserializer()
 function parseHeadingText(state, level, text) {
     reHeading.id.lastIndex = 0;
     const match = reHeading.id.exec(text);
-    const id = match ? match[2] : null;
+    let data;
 
+    const id = match ? match[2] : null;
     if (id) {
         // Remove ID from text
         text = text.replace(match[0], '').trim();
+        data = { id };
     } else {
         text = text.trim();
     }
@@ -79,7 +81,7 @@ function parseHeadingText(state, level, text) {
     const node = Block.create({
         type: TYPES[level - 1],
         nodes: state.use('inlines').deserialize(text),
-        data: { id }
+        data
     });
 
     return state.push(node);
