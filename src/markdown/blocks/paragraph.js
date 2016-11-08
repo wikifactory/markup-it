@@ -1,5 +1,5 @@
-const { Serializer, Deserializer, Block, BLOCKS } = require('../');
-const reBlock = require('./re/block');
+const { Serializer, Deserializer, Block, BLOCKS } = require('../../');
+const reBlock = require('../re/block');
 
 /**
  * Serialize a paragraph to markdown

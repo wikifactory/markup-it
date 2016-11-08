@@ -1,24 +1,24 @@
-const { Serializer, Deserializer, Mark, MARKS } = require('../');
-const reInline = require('./re/inline');
+const { Serializer, Deserializer, Mark, MARKS } = require('../../');
+const reInline = require('../re/inline');
 
 /**
- * Serialize a bold text to markdown
+ * Serialize a italic text to markdown
  * @type {Serializer}
  */
 const serialize = Serializer()
-    .matchMark(MARKS.BOLD)
+    .matchMark(MARKS.ITALIC)
     .then((state, range) => {
-        return `**${range.text}**`;
+        return `_${range.text}_`;
     });
 
 /**
- * Deserialize a bold.
+ * Deserialize an italic.
  * @type {Deserializer}
  */
 const deserialize = Deserializer()
     .matchRegExp(reInline.strong, (state, match) => {
         const text = match[2] || match[1];
-        const mark = Mark.create({ type: MARKS.BOLD });
+        const mark = Mark.create({ type: MARKS.ITALIC });
 
         return state.deserialize(text, {
             marks: state.marks.push(mark)

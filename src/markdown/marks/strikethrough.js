@@ -1,5 +1,5 @@
-const { Serializer, Deserializer, Mark, MARKS } = require('../');
-const reInline = require('./re/inline');
+const { Serializer, Deserializer, Mark, MARKS } = require('../../');
+const reInline = require('../re/inline');
 
 /**
  * Serialize a strikethrough text to markdown

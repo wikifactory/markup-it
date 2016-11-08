@@ -1,6 +1,6 @@
-const { Serializer, Deserializer, Text } = require('../');
-const reInline = require('./re/inline');
-const utils = require('./utils');
+const { Serializer, Deserializer, Text } = require('../../');
+const reInline = require('../re/inline');
+const utils = require('../utils');
 
 /**
  * Serialize a text node to markdown

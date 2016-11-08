@@ -1,6 +1,6 @@
 const splitLines = require('split-lines');
-const { Serializer, Deserializer, Block, BLOCKS } = require('../');
-const reBlock = require('./re/block');
+const { Serializer, Deserializer, Block, BLOCKS } = require('../../');
+const reBlock = require('../re/block');
 
 /**
  * Serialize a code block to markdown

@@ -1,5 +1,5 @@
-const { Serializer, Deserializer, Block, BLOCKS } = require('../');
-const reHeading = require('./re/heading');
+const { Serializer, Deserializer, Block, BLOCKS } = require('../../');
+const reHeading = require('../re/heading');
 
 const TYPES = [
     BLOCKS.HEADING_1,
