@@ -47,6 +47,23 @@ class RuleFunction extends Record(DEFAULTS) {
     }
 
     /**
+     * Push an interceptor withut changing the end value.
+     * @param  {Function} interceptor
+     * @return {RuleFunction}
+     */
+    tap(interceptor) {
+        return this.compose((prev) => {
+            return (state) => {
+                state = prev(state);
+
+                interceptor(state);
+
+                return state;
+            };
+        });
+    }
+
+    /**
      * Push an alternative to the stack
      * @param  {Function} next
      * @return {RuleFunction}
