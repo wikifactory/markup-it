@@ -8,7 +8,7 @@ class RuleFunction extends Record(DEFAULTS) {
 
     /**
      * Execute a rule function or a function.
-     * @param {Funciton or RuleFunction} fn
+     * @param {Function or RuleFunction} fn
      * @param {Mixed} ...args
      * @return {Mixed} result
      */
