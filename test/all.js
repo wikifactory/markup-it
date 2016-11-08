@@ -6,6 +6,7 @@ const Slate = require('slate');
 
 const MarkupIt = require('../src/');
 const markdown = require('../src/markdown');
+const html = require('../src/html');
 
 /**
  * Read a file input to a state.
@@ -16,12 +17,18 @@ function readFileInput(filePath) {
     const ext = path.extname(filePath);
     const content = fs.readFileSync(filePath, { encoding: 'utf8' });
 
-    switch (ext) {
-    case '.md':
-        const parser = MarkupIt.State.create(markdown);
+    function deserializeWith(syntax) {
+        const parser = MarkupIt.State.create(syntax);
         const document = parser.deserializeToDocument(content);
         const state = Slate.State.create({ document });
         return Slate.Raw.serialize(state, { terse: true });
+    }
+
+    switch (ext) {
+    case '.md':
+        return deserializeWith(markdown);
+    case '.html':
+        return deserializeWith(html);
     case '.yaml':
         return readMetadata.sync(filePath);
     }
@@ -34,13 +41,20 @@ function readFileInput(filePath) {
  * @return {Mixed}
  */
 function convertFor(input, outputExt) {
+
+    function serializeWith(syntax) {
+        const parser = MarkupIt.State.create(syntax);
+        const inputDocument = Slate.Raw.deserialize(input, { terse: true }).document;
+        return parser.serialize(inputDocument)
+            // Trim to avoid newlines being compared at the end
+            .trim();
+    }
+
     switch (outputExt) {
     case '.md':
-        input = Slate.Raw.deserialize(input, { terse: true });
-        const state = MarkupIt.State.create(markdown);
-        return state.serializeDocument(input.document)
-            // We trim to avoid newlines being compared at the end
-            .trim();
+        return serializeWith(markdown);
+    case '.html':
+        return serializeWith(html);
     case '.yaml':
         return input;
     }
@@ -57,6 +71,7 @@ function readFileOutput(fileName) {
 
     switch (ext) {
     case '.md':
+    case '.html':
         return content
             // We trim to avoid newlines being compared at the end
             .trim();
