@@ -26,7 +26,7 @@ const serialize = Serializer()
         if (id) inner = `${inner} {#${id}}`;
 
         return state
-            .unshift()
+            .shift()
             .write(`${prefix} ${inner}\n\n`);
     });
 

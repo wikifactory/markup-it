@@ -101,7 +101,7 @@ describe('State', () => {
             const node = state.peek();
 
             return state
-                .unshift()
+                .shift()
                 .write(node.type + '\n');
         };
 
@@ -114,7 +114,7 @@ describe('State', () => {
                 Block.create({ type: 'paragraph' })
             ]);
 
-            expect(text).toBe('heading\nparagraph');
+            expect(text).toBe('heading\nparagraph\n');
         });
     });
 });

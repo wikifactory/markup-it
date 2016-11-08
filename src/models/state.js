@@ -91,13 +91,13 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
-     * Unshift the first node from the stack
+     * Shift the first node from the stack
      *
      * @return {State} state
      */
-    unshift() {
+    shift() {
         let { nodes } = this;
-        nodes = nodes.unshift();
+        nodes = nodes.shift();
         return this.merge({ nodes });
     }
 
@@ -237,13 +237,32 @@ class State extends Record(DEFAULTS) {
      * @return {String} text
      */
     serialize(nodes) {
-        let state = this
+        const state = this
             .down()
-            .merge({ text: '', nodes: List(nodes) });
+            .merge({ text: '', nodes: List(nodes) })
+            ._serialize();
+        return state.text;
+    }
+
+    /**
+     * Update the state to serialize it.
+     * @return {State} state
+     */
+    _serialize() {
+        let state = this;
+
+        if (state.nodes.size == 0) {
+            return state;
+        }
 
         state = state.applyRules('serialize');
 
-        return state.text;
+        // Same state cause an infinite loop
+        if (state == this) {
+            throw new Error('A rule returns an identical state, returns undefined instead when passing.');
+        }
+
+        return state._serialize();
     }
 }
 

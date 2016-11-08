@@ -32,7 +32,7 @@ const serialize = Serializer()
             .join('\n') + '\n\n';
 
         return state
-            .unshift()
+            .shift()
             .write(output);
     });
 
