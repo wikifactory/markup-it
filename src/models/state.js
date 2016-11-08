@@ -155,8 +155,7 @@ class State extends Record(DEFAULTS) {
      */
     lex(rest = '') {
         const state = this;
-        let newState;
-        const { text, rules } = state;
+        const { text } = state;
 
         let startState = state;
         if (rest) {
@@ -170,12 +169,7 @@ class State extends Record(DEFAULTS) {
         }
 
         // We apply the rules to find the first amtching one
-        rules.forEach(rule => {
-            newState = RuleFunction.exec(rule.deserialize, startState);
-            if (newState) {
-                return false;
-            }
-        });
+        const newState = startState.applyRules('deserialize');
 
         // Same state cause an infinite loop
         if (newState == startState) {
@@ -194,6 +188,26 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
+     * Apply first matching rule
+     * @param  {String} text
+     * @return {State} state
+     */
+    applyRules(kind) {
+        const state = this;
+        const { rules } = state;
+        let newState;
+
+        rules.forEach(rule => {
+            newState = RuleFunction.exec(rule[kind], state);
+            if (newState) {
+                return false;
+            }
+        });
+
+        return newState;
+    }
+
+    /**
      * Deserialize a text into a Node.
      * @param  {String} text
      * @return {List<Node>} nodes
@@ -208,7 +222,7 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
-     * Deserialize a text into a Document
+     * Deserialize a string content into a Document.
      * @param  {String} text
      * @return {Document} document
      */
@@ -226,6 +240,10 @@ class State extends Record(DEFAULTS) {
         let state = this
             .down()
             .merge({ text: '', nodes });
+
+        state = state.applyRules('serialize');
+
+        return state.text;
     }
 }
 
