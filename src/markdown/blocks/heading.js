@@ -52,8 +52,10 @@ const deserializeLine = Deserializer()
     });
 
 const deserialize = Deserializer()
-    .use(deserializeNormal)
-    .use(deserializeLine);
+    .use([
+        deserializeNormal,
+        deserializeLine
+    ]);
 
 /**
  * Parse inner text of header to extract ID entity

@@ -64,22 +64,20 @@ class RuleFunction extends Record(DEFAULTS) {
     }
 
     /**
-     * Push an alternative to the stack
-     * @param  {Function} next
+     * Try multiple alternatives
+     * @param  {Function} alternatives
      * @return {RuleFunction}
      */
-    use(fn) {
-        return this.compose((prev) => {
-            return (state) => {
-                const newValue = RuleFunction.exec(fn, state);
+    use(alternatives) {
+        return this.then(state => {
+            let newState;
 
-                // We exit if
-                if (typeof newValue != 'undefined') {
-                    return newValue;
-                }
+            alternatives.some(fn => {
+                newState = fn(state);
+                return Boolean(newState);
+            });
 
-                return prev(state);
-            };
+            return newState;
         });
     }
 
