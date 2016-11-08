@@ -158,32 +158,38 @@ class State extends Record(DEFAULTS) {
         let newState;
         const { text, rules } = state;
 
-        if (!text) {
-            if (rest) {
-                const node = this.kind == 'block' ? createTextBlock(rest) : Text.createFromString(rest);
-                return this.push(node);
-            }
-
-            return this;
+        let startState = state;
+        if (rest) {
+            const node = this.kind == 'block' ? createTextBlock(rest) : Text.createFromString(rest);
+            startState = startState.push(node);
         }
 
+        // No text to parse, we return
+        if (!text) {
+            return startState;
+        }
+
+        // We apply the rules to find the first amtching one
         rules.forEach(rule => {
-            newState = RuleFunction.exec(rule.deserialize, state);
+            newState = RuleFunction.exec(rule.deserialize, startState);
             if (newState) {
                 return false;
             }
         });
 
-        if (newState && rest) {
-            const node = newState.kind == 'block' ? createTextBlock(rest) : Text.createFromString(rest);
-            newState = newState.merge({
-                nodes: newState.nodes.insert(state.nodes.size, node)
-            });
-        } else if (!newState) {
-            rest += text[0];
-            newState = state.skip(1);
+        // Same state cause an infinite loop
+        if (newState == startState) {
+            throw new Error('A rule returns an identical state, returns undefined instead when passing.');
         }
 
+        // No rules match, we move and try the next char
+        if (!newState) {
+            return state
+                .skip(1)
+                .lex(rest + text[0]);
+        }
+
+        // Otherwise we keep parsing
         return newState.lex(rest);
     }
 
