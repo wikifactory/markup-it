@@ -28,7 +28,7 @@ const deserialize = Deserializer()
         const text = match[1].trim();
         const node = Block.create({
             type: BLOCKS.PARAGRAPH,
-            nodes: state.deserialize(text)
+            nodes: state.use('inlines').deserialize(text)
         });
 
         return state.push(node);

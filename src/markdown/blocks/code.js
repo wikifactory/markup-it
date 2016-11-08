@@ -63,7 +63,7 @@ const deserialize = Deserializer()
 
         const node = Block.create({
             type: BLOCKS.CODE,
-            nodes: state.deserialize(text),
+            nodes: state.use('inlines').deserialize(text),
             data
         });
 
