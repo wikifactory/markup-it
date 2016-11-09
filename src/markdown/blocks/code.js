@@ -13,18 +13,21 @@ const serialize = Serializer()
         const { text, data } = node;
         const syntax = data.get('syntax');
         const hasFences = text.indexOf('`') >= 0;
+        let output;
 
         // Use fences if syntax is set
         if (!hasFences || syntax) {
-            return (
-                '```' + syntax + '\n'
-                + text + '\n'
-                + '```\n\n'
-            );
+            output = `${'```'}${Boolean(syntax) ? syntax : ''}\n` +
+                     `${text}\n` +
+                     `${'```'}\n\n`;
+
+            return state
+                .shift()
+                .write(output);
         }
 
         const lines = splitLines(text);
-        const output = lines
+        output = lines
             .map((line) => {
                 if (!line.trim()) return '';
                 return '    ' + line;
