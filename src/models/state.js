@@ -1,4 +1,4 @@
-const { Record, List, Map } = require('immutable');
+const { Record, List, Map, Set } = require('immutable');
 const { Document, Text, Block } = require('slate');
 const BLOCKS = require('../constants/blocks');
 const RuleFunction = require('./rule-function');
@@ -10,6 +10,7 @@ const RuleFunction = require('./rule-function');
 const DEFAULTS = {
     text:     '',
     nodes:    List(),
+    marks:    Set(),
     kind:     String('block'),
     rulesSet: Map(),
     depth:    0
@@ -95,13 +96,31 @@ class State extends Record(DEFAULTS) {
      * Push a new node to the stack. This method can be used when deserializing
      * a text into a set of nodes.
      *
-     * @param  {Node} node
+     * @param  {Node | List<Node>} node
      * @return {State} state
      */
     push(node) {
         let { nodes } = this;
-        nodes = nodes.push(node);
+
+        if (List.isList(node)) {
+            nodes = nodes.concat(node);
+        } else {
+            nodes = nodes.push(node);
+        }
+
         return this.merge({ nodes });
+    }
+
+    /**
+     * Push a new mark to the active list
+     *
+     * @param  {Mark} mark
+     * @return {State} state
+     */
+    pushMark(mark) {
+        let { marks } = this;
+        marks = marks.add(mark);
+        return this.merge({ marks });
     }
 
     /**
