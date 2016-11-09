@@ -6,9 +6,8 @@ const reInline = require('../re/inline');
  * @type {Serializer}
  */
 const serialize = Serializer()
-    .matchMark(MARKS.ITALIC)
-    .then((state, range) => {
-        return `_${range.text}_`;
+    .transformMarkedRange(MARKS.ITALIC, (state, text) => {
+        return `_${text}_`;
     });
 
 /**

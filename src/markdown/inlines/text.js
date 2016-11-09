@@ -1,4 +1,4 @@
-const { Serializer, Deserializer, Text } = require('../../');
+const { Serializer, Deserializer } = require('../../');
 const reInline = require('../re/inline');
 const utils = require('../utils');
 
@@ -8,10 +8,8 @@ const utils = require('../utils');
  */
 const serialize = Serializer()
     .matchKind('text')
-    .then((state) => {
-        const node = state.peek();
-        // TODO: ranges / marks, etc
-        const text = utils.escape(node.text, false);
+    .then(state => {
+        const text = state.use('marks').serializeNode(text);
 
         return state
             .shift()
@@ -24,8 +22,7 @@ const serialize = Serializer()
  */
 const deserializeEscaped = Deserializer()
     .matchRegExp(reInline.escape, (state, match) => {
-        const node = Text.createFromString(match[1], state.marks);
-        return state.push(node);
+        return state.pushText(match[1]);
     });
 
 /**
@@ -35,8 +32,7 @@ const deserializeEscaped = Deserializer()
 const deserializeText = Deserializer()
     .matchRegExp(reInline.text, (state, match) => {
         const text = utils.unescape(match[0]);
-        const node = Text.createFromString(text, state.marks);
-        return state.push(node);
+        return state.pushText(text);
     });
 
 const deserialize = Deserializer()

@@ -1,4 +1,5 @@
 const expect     = require('expect');
+const { Text }   = require('slate');
 const Serializer = require('../src/models/serializer');
 const State      = require('../src/models/state');
 
@@ -82,6 +83,47 @@ describe('Serializer', () => {
                 .exec(state);
 
             expect(result).toBe(undefined);
+        });
+    });
+
+    describe('.transformRanges()', () => {
+        const textState = State.create().push(Text.createFromRanges([
+            { text: 'hello' },
+            { text: 'world', marks: [ { type: 'bold'} ] }
+        ]));
+
+        it('should update all ranges in a text', () => {
+            const node = Serializer()
+                .transformRanges((st, range) => {
+                    return range.merge({ text: `[${range.text}]` });
+                })
+                .then(st => st.peek())
+                .exec(textState);
+
+            expect(node.text).toBe('[hello][world]');
+            expect(node.getRanges().size).toBe(2);
+        });
+    });
+
+    describe('.transformMarkedRange()', () => {
+        const textState = State.create().push(Text.createFromRanges([
+            { text: 'hello' },
+            { text: 'world', marks: [ { type: 'bold'} ] }
+        ]));
+
+        it('should update all matching ranges in a text', () => {
+            const node = Serializer()
+                .transformMarkedRange('bold', (st, text) => {
+                    return `[${text}]`;
+                })
+                .then(st => st.peek())
+                .exec(textState);
+
+            expect(node.text).toBe('hello[world]');
+
+            const ranges = node.getRanges();
+            expect(ranges.size).toBe(1);
+            expect(ranges.get(0).marks.size).toBe(0);
         });
     });
 });

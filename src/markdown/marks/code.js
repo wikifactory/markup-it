@@ -6,10 +6,8 @@ const reInline = require('../re/inline');
  * @type {Serializer}
  */
 const serialize = Serializer()
-    .matchMark(MARKS.CODE)
-    .then((state, range) => {
+    .transformMarkedRange(MARKS.CODE, (state, text, mark) => {
         let separator = '`';
-        const { text } = range;
 
         // We need to find the right separator not present in the content
         while (text.indexOf(separator) >= 0) {

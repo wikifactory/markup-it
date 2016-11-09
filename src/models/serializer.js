@@ -1,4 +1,5 @@
 const typeOf = require('type-of');
+const { Text } = require('slate');
 const RuleFunction = require('./rule-function');
 
 class Serializer extends RuleFunction {
@@ -36,17 +37,66 @@ class Serializer extends RuleFunction {
     /**
      * Limit execution of the serializer to range containing a certain mark
      * @param {Function || Array || String} matcher
+     * @param {Function} transform(State, String, Mark)
      * @return {Serializer}
      */
     matchMark(matcher) {
         matcher = normalizeMatcher(matcher);
 
         return this
-        .matchKind('range')
+        .matchKind('text')
         .filter(state => {
-            const range = state.doSomething();
-            const { marks } = range;
-            return marks.some(mark => matcher(mark.type));
+            const text = state.peek();
+
+            return text.characters.some(char => {
+                const hasMark = char.marks(mark => matcher(mark.type));
+                return hasMark;
+            });
+        });
+    }
+
+    /**
+     * Transform all ranges in a text.
+     * @param {Function} transform(state: State, range: Range)
+     * @return {Serializer}
+     */
+    transformRanges(transform) {
+        return this
+        .matchKind('text')
+        .then(state => {
+            const text = state.peek();
+            let ranges = text.getRanges();
+
+            // Transform ranges
+            ranges = ranges.map(range => transform(state, range));
+
+            // Create new text and push it back
+            const newText = Text.createFromRanges(ranges);
+            return state.shift().unshift(newText);
+        });
+    }
+
+    /**
+     * Transform ranges matching a mark
+     * @param {Function || Array || String} matcher
+     * @param {Function} transform(state: State, text: String, mark: Mark)
+     * @return {Serializer}
+     */
+    transformMarkedRange(matcher, transform) {
+        matcher = normalizeMatcher(matcher);
+
+        return this.transformRanges((state, range) => {
+            let { text, marks } = range;
+            const mark = range.marks.find(({type}) => matcher(type));
+            if (!mark) {
+                return range;
+            }
+
+            text = transform(state, text, mark);
+            marks = marks.delete(mark);
+            range = range.merge({ text, marks });
+
+            return range;
         });
     }
 }

@@ -7,14 +7,6 @@ const RuleFunction = require('./rule-function');
     State stores the global state when serializing a document or deseriaizing a text.
  */
 
-function createTextBlock(text) {
-    text = Text.createFromString(text);
-    return Block.create({
-        type: BLOCKS.TEXT,
-        nodes: [text]
-    });
-}
-
 const DEFAULTS = {
     text:     '',
     nodes:    List(),
@@ -88,6 +80,52 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
+     * Unshift a node in the list
+     *
+     * @param  {Node} node
+     * @return {State} state
+     */
+    unshift(node) {
+        let { nodes } = this;
+        nodes = nodes.unshift(node);
+        return this.merge({ nodes });
+    }
+
+    /**
+     * Push a new node to the stack. This method can be used when deserializing
+     * a text into a set of nodes.
+     *
+     * @param  {Node} node
+     * @return {State} state
+     */
+    push(node) {
+        let { nodes } = this;
+        nodes = nodes.push(node);
+        return this.merge({ nodes });
+    }
+
+    /**
+     * Push a new text node.
+     *
+     * @param  {String} text
+     * @return {State} state
+     */
+    pushText(text) {
+        const { marks } = this;
+
+        let node = Text.createFromString(text, marks);
+
+        if (this.kind == 'block') {
+            node = Block.create({
+                type: BLOCKS.TEXT,
+                nodes: [node]
+            });
+        }
+
+        return this.push(node);
+    }
+
+    /**
      * Move this state to a upper level
      *
      * @param  {Number} string
@@ -112,19 +150,6 @@ class State extends Record(DEFAULTS) {
     }
 
     /**
-     * Push a new node to the stack. This method can be used when deserializing
-     * a text into a set of nodes.
-     *
-     * @param  {Node} node
-     * @return {State} state
-     */
-    push(node) {
-        let { nodes } = this;
-        nodes = nodes.push(node);
-        return this.merge({ nodes });
-    }
-
-    /**
      * Skip "n" characters in the text.
      * @param  {Number} n
      * @return {State} state
@@ -145,8 +170,7 @@ class State extends Record(DEFAULTS) {
 
         let startState = state;
         if (rest) {
-            const node = this.kind == 'block' ? createTextBlock(rest) : Text.createFromString(rest);
-            startState = startState.push(node);
+            startState = startState.pushText(rest);
         }
 
         // No text to parse, we return
@@ -238,6 +262,15 @@ class State extends Record(DEFAULTS) {
     serializeDocument(document) {
         const { nodes } = document;
         return this.serialize(nodes);
+    }
+
+    /**
+     * Serialize a node into text
+     * @param  {Node} node
+     * @return {String} text
+     */
+    serializeNode(node) {
+        return this.serialize([ node ]);
     }
 
     /**

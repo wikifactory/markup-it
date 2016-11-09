@@ -6,9 +6,8 @@ const reInline = require('../re/inline');
  * @type {Serializer}
  */
 const serialize = Serializer()
-    .matchMark(MARKS.BOLD)
-    .then((state, range) => {
-        return `**${range.text}**`;
+    .transformMarkedRange(MARKS.BOLD, (state, text, mark) => {
+        return `**${text}**`;
     });
 
 /**
@@ -20,9 +19,9 @@ const deserialize = Deserializer()
         const text = match[2] || match[1];
         const mark = Mark.create({ type: MARKS.BOLD });
 
-        return state.deserialize(text, {
-            marks: state.marks.push(mark)
-        });
+        return state
+            .pushMark(mark)
+            .deserialize(text);
     });
 
 module.exports = { serialize, deserialize };

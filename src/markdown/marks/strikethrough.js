@@ -6,9 +6,7 @@ const reInline = require('../re/inline');
  * @type {Serializer}
  */
 const serialize = Serializer()
-    .matchMark(MARKS.STRIKETHROUGH)
-    .then((state, range) => {
-        const { text } = range;
+    .transformMarkedRange(MARKS.STRIKETHROUGH, (state, text) => {
         return `~~${text}~~`;
     });
 
