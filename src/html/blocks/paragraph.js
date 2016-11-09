@@ -1,7 +1,7 @@
 const {
     Serializer,
     BLOCKS
-} = require('../');
+} = require('../../');
 
 /**
  * Serialize a paragraph to HTML
