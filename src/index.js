@@ -1,4 +1,4 @@
-const { Block, Inline, Text, Mark } = require('slate');
+const { Block, Inline, Text, Mark, Range } = require('slate');
 
 const State = require('./models/state');
 const Deserializer = require('./models/deserializer');
@@ -17,5 +17,5 @@ module.exports = {
     BLOCKS,
     INLINES,
     // Slate exports
-    Block, Inline, Text, Mark
+    Block, Inline, Text, Mark, Range
 };

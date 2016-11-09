@@ -5,9 +5,11 @@ const italic = require('./italic');
 const strikethrough = require('./strikethrough');
 
 module.exports = [
+    // Code mark should be applied before everything else
+    code,
+    // Other marks
     italic,
     bold,
-    code,
     strikethrough,
     text
 ];

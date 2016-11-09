@@ -1,4 +1,4 @@
-const { Serializer, Deserializer, Mark, MARKS } = require('../../');
+const { Serializer, Deserializer, Mark, Range, MARKS } = require('../../');
 const reInline = require('../re/inline');
 
 /**
