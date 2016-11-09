@@ -38,7 +38,9 @@ function convertFor(input, outputExt) {
     case '.md':
         input = Slate.Raw.deserialize(input, { terse: true });
         const state = MarkupIt.State.create(markdown);
-        return state.serializeDocument(input.document);
+        return state.serializeDocument(input.document)
+            // We trim to avoid newlines being compared at the end
+            .trim();
     case '.yaml':
         return input;
     }
@@ -55,7 +57,9 @@ function readFileOutput(fileName) {
 
     switch (ext) {
     case '.md':
-        return content;
+        return content
+            // We trim to avoid newlines being compared at the end
+            .trim();
     case '.yaml':
         return readMetadata.sync(fileName);
     }
