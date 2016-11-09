@@ -1,13 +1,12 @@
 const parse = require('./parse');
 
 /**
- * Serialize to HTML
+ * Default rule to serialize to HTML. Should be removed in the end.
  * @type {Serializer}
  */
 function serialize(state) {
-    return state.nodes.reduce((state, node) => {
-        return state.unshift().state.write(node.text);
-    });
+    // Match any node
+    return state.unshift().state.write(state.nodes.first().text + '\n');
 }
 
 /**
