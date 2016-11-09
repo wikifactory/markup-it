@@ -9,11 +9,11 @@ const utils = require('../utils');
 const serialize = Serializer()
     .matchKind('text')
     .then(state => {
-        const text = state.use('marks').serializeNode(text);
+        const node = state.peek();
 
         return state
             .shift()
-            .write(text);
+            .write(node.text);
     });
 
 /**

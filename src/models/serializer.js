@@ -49,7 +49,7 @@ class Serializer extends RuleFunction {
             const text = state.peek();
 
             return text.characters.some(char => {
-                const hasMark = char.marks(mark => matcher(mark.type));
+                const hasMark = char.marks.some(mark => matcher(mark.type));
                 return hasMark;
             });
         });
@@ -85,7 +85,9 @@ class Serializer extends RuleFunction {
     transformMarkedRange(matcher, transform) {
         matcher = normalizeMatcher(matcher);
 
-        return this.transformRanges((state, range) => {
+        return this
+        .matchMark(matcher)
+        .transformRanges((state, range) => {
             let { text, marks } = range;
             const mark = range.marks.find(({type}) => matcher(type));
             if (!mark) {
