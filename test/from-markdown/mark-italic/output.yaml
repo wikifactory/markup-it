@@ -6,6 +6,6 @@ nodes:
         ranges:
           - text: "Hello "
             marks: []
-          - text: World
+          - text: world
             marks:
               - type: ITALIC
