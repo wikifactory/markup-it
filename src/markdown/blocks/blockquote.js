@@ -1,0 +1,44 @@
+const splitLines = require('split-lines');
+const { Serializer, Deserializer, Block, BLOCKS } = require('../../');
+const reBlock = require('../re/block');
+
+/**
+ * Serialize a blockquote node to markdown
+ * @type {Serializer}
+ */
+const serialize = Serializer()
+    .matchType(BLOCKS.BLOCKQUOTE)
+    .then((state) => {
+        const node = state.peek();
+        const inner = state.use('block').serialize(node.nodes);
+        const lines = splitLines(inner.trim());
+
+        const output = lines
+            .map(function(line) {
+                return '> ' + line;
+            })
+            .join('\n');
+
+        return state
+            .shift()
+            .write(`${output}\n\n`);
+    });
+
+/**
+ * Deserialize a blockquote to a node.
+ * @type {Deserializer}
+ */
+const deserialize = Deserializer()
+    .matchRegExp(reBlock.blockquote, (state, match) => {
+        const inner = match[0].replace(/^ *> ?/gm, '').trim();
+        // TODO: set a prop isBlockquote
+        const nodes = state.use('block').deserialize(inner);
+        const node = Block.create({
+            type: BLOCKS.BLOCKQUOTE,
+            nodes
+        });
+
+        return state.push(node);
+    });
+
+module.exports = { serialize, deserialize };
