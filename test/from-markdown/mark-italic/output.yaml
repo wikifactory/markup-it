@@ -5,7 +5,6 @@ nodes:
       - kind: text
         ranges:
           - text: "Hello "
-            marks: []
           - text: world
             marks:
               - type: ITALIC

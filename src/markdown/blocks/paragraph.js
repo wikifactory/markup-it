@@ -30,9 +30,10 @@ const deserialize = Deserializer()
         //     return;
         // }
         const text = match[1].trim();
+        const nodes = state.use('inline').deserialize(text);
         const node = Block.create({
             type: BLOCKS.PARAGRAPH,
-            nodes: state.use('inline').deserialize(text)
+            nodes
         });
 
         return state.push(node);

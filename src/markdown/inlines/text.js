@@ -36,7 +36,9 @@ const deserializeText = Deserializer()
     });
 
 const deserialize = Deserializer()
-    .use(deserializeEscaped)
-    .use(deserializeText);
+    .use([
+        deserializeEscaped,
+        deserializeText
+    ]);
 
 module.exports = { serialize, deserialize };

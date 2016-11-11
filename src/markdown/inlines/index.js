@@ -7,9 +7,9 @@ const strikethrough = require('./strikethrough');
 module.exports = [
     // Code mark should be applied before everything else
     code,
-    // Other marks
-    italic,
+    // Bold should be before italic
     bold,
+    italic,
     strikethrough,
     text
 ];
