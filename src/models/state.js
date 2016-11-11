@@ -13,7 +13,8 @@ const DEFAULTS = {
     marks:    Set(),
     kind:     String('block'),
     rulesSet: Map(),
-    depth:    0
+    depth:    0,
+    props:    Map()
 };
 
 class State extends Record(DEFAULTS) {
@@ -46,6 +47,31 @@ class State extends Record(DEFAULTS) {
      */
     use(kind) {
         return this.merge({ kind });
+    }
+
+    /**
+     * Set a prop for the state.
+     *
+     * @param  {String} key
+     * @param  {Mixed} value
+     * @return {State} state
+     */
+    setProp(key, value) {
+        let { props } = this;
+        props = props.set(key, value);
+
+        return this.merge({ props });
+    }
+
+    /**
+     * Get a prop from the state
+     *
+     * @param  {String} key
+     * @return {Mixed}
+     */
+    getProp(key) {
+        let { props } = this;
+        return props.get(key);
     }
 
     /**

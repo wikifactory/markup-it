@@ -31,8 +31,10 @@ const serialize = Serializer()
 const deserialize = Deserializer()
     .matchRegExp(reBlock.blockquote, (state, match) => {
         const inner = match[0].replace(/^ *> ?/gm, '').trim();
-        // TODO: set a prop isBlockquote
-        const nodes = state.use('block').deserialize(inner);
+        const nodes = state.use('block')
+            // Signal to children that we are in a blockquote
+            .setProp('blockquote', state.depth)
+            .deserialize(inner);
         const node = Block.create({
             type: BLOCKS.BLOCKQUOTE,
             nodes

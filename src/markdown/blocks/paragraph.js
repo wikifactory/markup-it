@@ -22,13 +22,15 @@ const serialize = Serializer()
  */
 const deserialize = Deserializer()
     .matchRegExp(reBlock.paragraph, (state, match) => {
-        // const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
-        // const isInLooseList = (state.get('looseList') === state.getParentDepth());
-        // const isTop = (state.getDepth() === 1);
-        //
-        // if (!isTop && !isInBlockquote && !isInLooseList) {
-        //     return;
-        // }
+        const parentDepth = state.depth - 1;
+        const isInBlockquote = (state.getProp('blockquote') === parentDepth);
+        const isInLooseList = (state.getProp('looseList') === parentDepth);
+        const isTop = (state.depth === 1);
+
+        if (!isTop && !isInBlockquote && !isInLooseList) {
+            return;
+        }
+
         const text = match[1].trim();
         const nodes = state.use('inline').deserialize(text);
         const node = Block.create({
