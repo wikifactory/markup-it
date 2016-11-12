@@ -214,8 +214,9 @@ class State extends Record(DEFAULTS) {
         const { text } = state;
 
         let startState = state;
-        if (rest) {
-            startState = startState.pushText(rest);
+        const trimedRest = rest.trim();
+        if (trimedRest) {
+            startState = startState.pushText(trimedRest);
         }
 
         // No text to parse, we return
