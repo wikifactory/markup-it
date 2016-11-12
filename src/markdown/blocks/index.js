@@ -5,8 +5,10 @@ const codeBlock = require('./code');
 const blockquote = require('./blockquote');
 const unstyled = require('./unstyled');
 const footnote = require('./footnote');
+const table = require('./table');
 
 module.exports = [
+    table,
     footnote,
     blockquote,
     codeBlock,
