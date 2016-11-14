@@ -1,8 +1,5 @@
 const { Serializer, Deserializer, Block, BLOCKS, TABLE_ALIGN } = require('../../');
-const reBlock = require('../re/block');
 const reTable = require('../re/table');
-
-const inlineRules = require('../inlines');
 
 /**
  * Deserialize a table with no leading pipe (gfm) to a node.
@@ -43,7 +40,18 @@ const deserializeNormal = Deserializer()
 const serialize = Serializer()
     .matchType(BLOCKS.TABLE)
     .then((state) => {
-        const output = 'table!';
+        const node = state.peek();
+        const { data, nodes } = node;
+        const align = data.get('align');
+        const headerRow = nodes.get(0);
+        const bodyRows = nodes.slice(1);
+
+        const output = (
+            rowToText(state, headerRow) + '\n'
+            + alignToText(align) + '\n'
+            + bodyRows.map(row => rowToText(state, row)).join('\n')
+        );
+
         return state.shift().write(output);
     });
 
@@ -141,7 +149,6 @@ function rowToCells(rowStr) {
     return cells;
 }
 
-
 /**
  * Detect alignement per column
  *
@@ -160,6 +167,50 @@ function mapAlign(align) {
             return null;
         }
     });
+}
+
+/**
+ * Render a row to text.
+ *
+ * @param {State} state
+ * @param {Node} row
+ * @return {String} text
+ */
+function rowToText(state, row) {
+    const { nodes } = row;
+    return '| ' + nodes.map(cell => cellToText(state, cell)).join(' | ') + ' |';
+}
+
+/**
+ * Render a cell to text.
+ *
+ * @param {State} state
+ * @param {Node} row
+ * @return {String} text
+ */
+function cellToText(state, cell) {
+    const { nodes } = cell;
+    return state.use('inline').serialize(nodes);
+}
+
+/**
+ * Render align of a table to text
+ *
+ * @param {Array<String>} row
+ * @return {String}
+ */
+function alignToText(row) {
+    return '|' + row.map(function(align) {
+        if (align == 'right') {
+            return ' ---: |';
+        } else if (align == 'center') {
+            return ' :---: |';
+        } else if (align == 'left') {
+            return ' :--- |';
+        } else {
+            return ' --- |';
+        }
+    }).join('');
 }
 
 module.exports = { serialize, deserialize };
