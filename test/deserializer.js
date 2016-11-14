@@ -27,5 +27,16 @@ describe('Deserializer', () => {
 
             expect(result).toBe('abc');
         });
+
+        it('should return undefined when the callback reject', () => {
+            const result = Deserializer()
+                .matchRegExp(
+                    /.*(abc).*/,
+                    (newState, match) => undefined
+                )
+                .exec(state.write('abcdefgh'));
+
+            expect(result).toBe(undefined);
+        });
     });
 });
