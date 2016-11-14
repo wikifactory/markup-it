@@ -3,7 +3,7 @@ const { List, Stack, Set } = require('immutable');
 const {
     BLOCKS, INLINES, MARKS,
     Block, Inline, Text, Mark
-} = require('../');
+} = require('../../');
 
 const INLINE_TAGS = {
     a:              INLINES.LINK,

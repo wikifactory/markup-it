@@ -9,9 +9,12 @@ const {
  */
 const serialize = Serializer()
     .matchType(BLOCKS.PARAGRAPH)
-    .then((state, node) => {
+    .then((state) => {
+        const node = state.peek();
         const inner = state.serialize(node.nodes);
-        return state.write(`<p>${inner}</p>\n`);
+        return state
+            .shift()
+            .write(`<p>${inner}</p>\n`);
     });
 
 

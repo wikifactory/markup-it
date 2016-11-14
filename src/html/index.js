@@ -1,7 +1,3 @@
-const html = require('./html');
-const paragraph = require('./blocks/paragraph');
+const block = require('./blocks');
 
-module.exports = [
-    paragraph,
-    html
-];
+module.exports = { block };

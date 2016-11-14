@@ -253,7 +253,9 @@ class State extends Record(DEFAULTS) {
         const { rules } = state;
         let newState;
 
-        rules.forEach(rule => {
+        rules
+        .filter(rule => rule[kind])
+        .forEach(rule => {
             newState = RuleFunction.exec(rule[kind], state);
             if (newState) {
                 return false;
