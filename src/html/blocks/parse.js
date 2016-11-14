@@ -65,7 +65,9 @@ const TAGS_TO_DATA = {
 };
 
 function resolveHeadingAttrs(attribs) {
-    return { id: attribs.id };
+    return attribs.id
+        ? { id: attribs.id }
+        : {};
 }
 
 /**
