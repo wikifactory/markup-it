@@ -6,7 +6,7 @@ const reBlock = require('../re/block');
  * @type {Serializer}
  */
 const serialize = Serializer()
-    .matchType(BLOCKS.BLOCKQUOTE)
+    .matchType(BLOCKS.TEXT)
     .then((state) => {
         const node = state.peek();
         const inner = state.use('inline').serialize(node.nodes);

@@ -6,9 +6,11 @@ const blockquote = require('./blockquote');
 const unstyled = require('./unstyled');
 const footnote = require('./footnote');
 const table = require('./table');
+const list = require('./list');
 
 module.exports = [
     table,
+    list,
     footnote,
     blockquote,
     codeBlock,
