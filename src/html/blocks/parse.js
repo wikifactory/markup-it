@@ -138,10 +138,20 @@ function parse(str) {
         },
 
         ontext(text) {
-            const isEmptyText = !text.trim();
-            if (isEmptyText) return;
+            let textNode;
 
-            const textNode = Text.createFromString(text, marks);
+            const parent = stack.peek();
+            if (parent.type !== BLOCKS.CODE) {
+                // We trim whitespaces characters
+                const trimmed = text.trim();
+                // Skip if empty
+                if (!trimmed) return;
+
+                textNode = Text.createFromString(trimmed, marks);
+            } else {
+                textNode = Text.createFromString(text, marks);
+            }
+
             appendNode(textNode);
         },
 
