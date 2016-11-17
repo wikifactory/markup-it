@@ -129,7 +129,7 @@ function parse(str) {
             else if (MARK_TAGS[tagName]) {
                 const mark = Mark.create({
                     data: getData(tagName, attribs),
-                    type: INLINE_TAGS[tagName]
+                    type: MARK_TAGS[tagName]
                 });
 
                 marks = marks.add(mark);
@@ -161,7 +161,7 @@ function parse(str) {
             }
 
             else if (MARK_TAGS[tagName]) {
-                const type = INLINE_TAGS[tagName];
+                const type = MARK_TAGS[tagName];
                 marks = marks.filter(mark => mark.type !== type);
             }
             // else ignore
