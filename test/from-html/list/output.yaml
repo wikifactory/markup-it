@@ -11,7 +11,7 @@ nodes:
         type: list_item
         nodes:
           - kind: text
-            text: 'second item'
+            text: 'second item '
           - kind: block
             type: ordered_list
             nodes:
@@ -24,7 +24,7 @@ nodes:
                 type: list_item
                 nodes:
                   - kind: text
-                    text: 'second item second subitem'
+                    text: 'second item second subitem '
                   - kind: block
                     type: unordered_list
                     nodes:

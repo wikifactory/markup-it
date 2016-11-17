@@ -7,6 +7,6 @@ nodes:
         nodes:
           - kind: text
             text: |-
-    Some code
-        indented 4 spaces
-    end code
+              Some code
+                  indented 4 spaces
+              end code
