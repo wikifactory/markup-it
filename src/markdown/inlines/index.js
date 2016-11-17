@@ -5,6 +5,7 @@ const italic = require('./italic');
 const footnote = require('./footnote');
 const image = require('./image');
 const link = require('./link');
+const html = require('./html');
 const strikethrough = require('./strikethrough');
 
 module.exports = [
@@ -17,5 +18,6 @@ module.exports = [
     bold,
     italic,
     strikethrough,
+    html,
     text
 ];
