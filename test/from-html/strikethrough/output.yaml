@@ -5,6 +5,7 @@ nodes:
       - kind: text
         ranges:
           - text: 'This is '
-          - text: 'inline code'
+          - text: 'striked'
             marks:
-              - type: CODE
+              - type: STRIKETHROUGH
+          - text: ' text'
