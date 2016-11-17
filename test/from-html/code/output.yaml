@@ -6,4 +6,7 @@ nodes:
         type: code_block
         nodes:
           - kind: text
-            text: Some code
+            text: |-
+    Some code
+        indented 4 spaces
+    end code
