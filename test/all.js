@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const expect = require('expect');
-const readMetadata = require('read-metadata');
+const yaml = require('js-yaml');
 const Slate = require('slate');
 
 const MarkupIt = require('../src/');
@@ -30,7 +30,7 @@ function readFileInput(filePath) {
     case '.html':
         return deserializeWith(html);
     case '.yaml':
-        return readMetadata.sync(filePath);
+        return readYaml(filePath);
     }
 }
 
@@ -76,7 +76,7 @@ function readFileOutput(fileName) {
             // We trim to avoid newlines being compared at the end
             .trim();
     case '.yaml':
-        return readMetadata.sync(fileName);
+        return readYaml(fileName);
     }
 }
 
@@ -126,3 +126,8 @@ describe('MarkupIt', () => {
         });
     });
 });
+
+function readYaml(path) {
+    const content = fs.readFileSync(path);
+    return yaml.safeLoad(content);
+}
