@@ -49,7 +49,7 @@
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "rtrim": "0.0.3",
-    "slate": "GitbookIO/slate#26c6105c86994b2a19cf08dd6327a00d83bc497c",
+    "slate": "0.15.2",
     "split-lines": "^1.1.0",
     "type-of": "^2.0.1",
     "yargs": "^4.7.1"
