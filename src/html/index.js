@@ -1,8 +1,8 @@
-const block = require('./blocks');
-const inline = require('./inlines');
+const blocks = require('./blocks');
+const inlines = require('./inlines');
 
-const ALL = block.concat(inline);
+const ALL = blocks.concat(inlines);
 
-// We always use all rule at once, since we deserialize using only one
-// general rule, and the serialization has no ambiguity.
+// We always try to match with all rules, since we deserialize using
+// only one general rule, and the serialization has no ambiguity.
 module.exports = { block: ALL };

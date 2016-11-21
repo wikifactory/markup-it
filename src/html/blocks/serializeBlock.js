@@ -3,7 +3,7 @@ const { Map } = require('immutable');
 
 /**
  * @param {String} tag The HTML tag
- * @return {Function} A function to seralize a node into
+ * @return {Function} A function to seralize a node into an HTML tag
  */
 function serializeBlock(tag, opts = {}) {
     const {
@@ -16,7 +16,6 @@ function serializeBlock(tag, opts = {}) {
         const attrs = getAttrs(node);
 
         let attrsText = attrsToString(attrs);
-        if (attrsText !== '') attrsText = ' ' + attrsText;
 
         let text;
         if (isSingleTag) {
