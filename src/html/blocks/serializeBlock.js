@@ -15,7 +15,7 @@ function serializeBlock(tag, opts = {}) {
         const node = state.peek();
         const attrs = opts.getAttrs(node);
 
-        let attrsText = ' ' + attrsToString(attrs);
+        let attrsText = attrsToString(attrs);
         if (attrsText !== '') attrsText = ' ' + attrsText;
 
         let text;

@@ -11,7 +11,7 @@ const serialize = Serializer()
     const node = state.peek();
     return state
         .shift()
-        .write(node.text + '\n');
+        .write(node.text);
 });
 
 /**
