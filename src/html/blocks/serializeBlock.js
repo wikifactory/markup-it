@@ -6,20 +6,20 @@ const { Map } = require('immutable');
  * @return {Function} A function to seralize a node into
  */
 function serializeBlock(tag, opts = {}) {
-    Object.assign(opts, {
-        isSingleTag: false,
-        getAttrs: (node) => {}
-    });
+    const {
+        isSingleTag = false,
+        getAttrs = (node) => {}
+    } = opts;
 
     return function(state) {
         const node = state.peek();
-        const attrs = opts.getAttrs(node);
+        const attrs = getAttrs(node);
 
         let attrsText = attrsToString(attrs);
         if (attrsText !== '') attrsText = ' ' + attrsText;
 
         let text;
-        if (opts.isSingleTag) {
+        if (isSingleTag) {
             text = `<${tag}${attrsText}/>`;
         } else {
             const inner = state.serialize(node.nodes);
