@@ -9,5 +9,8 @@ module.exports = [
     require('./olist'),
     require('./listitem'),
     require('./unstyled'),
+    require('./table'),
+    require('./row'),
+    require('./cell'),
     require('./html')
 ];
