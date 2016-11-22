@@ -1,5 +1,5 @@
 const { Serializer, BLOCKS } = require('../../');
-const serializeBlock = require('./serializeBlock');
+const serializeTag = require('../serializeTag');
 
 /**
  * Serialize a code block to HTML
@@ -7,7 +7,7 @@ const serializeBlock = require('./serializeBlock');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.CODE)
-    .then(serializeBlock('pre', {
+    .then(serializeTag('pre', {
         getAttrs: (node) => {
             return { syntax: node.data.get('syntax') };
         }

@@ -1,5 +1,5 @@
 const { Serializer, BLOCKS } = require('../../');
-const serializeBlock = require('./serializeBlock');
+const serializeTag = require('../serializeTag');
 
 /**
  * Serialize a paragraph to HTML
@@ -7,6 +7,6 @@ const serializeBlock = require('./serializeBlock');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.PARAGRAPH)
-    .then(serializeBlock('p'));
+    .then(serializeTag('p'));
 
 module.exports = { serialize };

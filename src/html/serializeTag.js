@@ -5,7 +5,7 @@ const { Map } = require('immutable');
  * @param {String} tag The HTML tag
  * @return {Function} A function to seralize a node into an HTML tag
  */
-function serializeBlock(tag, opts = {}) {
+function serializeTag(tag, opts = {}) {
     const {
         isSingleTag = false,
         getAttrs = (node) => {}
@@ -15,7 +15,7 @@ function serializeBlock(tag, opts = {}) {
         const node = state.peek();
         const attrs = getAttrs(node);
 
-        let attrsText = attrsToString(attrs);
+        const attrsText = attrsToString(attrs);
 
         let text;
         if (isSingleTag) {
@@ -50,4 +50,4 @@ function attrsToString(attrs) {
     }, '');
 }
 
-module.exports = serializeBlock;
+module.exports = serializeTag;

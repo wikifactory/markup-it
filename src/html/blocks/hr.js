@@ -1,5 +1,5 @@
 const { Serializer, BLOCKS } = require('../../');
-const serializeBlock = require('./serializeBlock');
+const serializeTag = require('../serializeTag');
 
 /**
  * Serialize an horizontal rule to HTML
@@ -7,7 +7,7 @@ const serializeBlock = require('./serializeBlock');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.HR)
-    .then(serializeBlock('hr', {
+    .then(serializeTag('hr', {
         isSingleTag: true
     }));
 

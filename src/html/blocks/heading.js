@@ -1,13 +1,13 @@
 const { Serializer, BLOCKS } = require('../../');
-const serializeBlock = require('./serializeBlock');
+const serializeTag = require('../serializeTag');
 
 const RULES = {
-    [BLOCKS.HEADING_1]: serializeBlock('h1', { getAttrs }),
-    [BLOCKS.HEADING_2]: serializeBlock('h2', { getAttrs }),
-    [BLOCKS.HEADING_3]: serializeBlock('h3', { getAttrs }),
-    [BLOCKS.HEADING_4]: serializeBlock('h4', { getAttrs }),
-    [BLOCKS.HEADING_5]: serializeBlock('h5', { getAttrs }),
-    [BLOCKS.HEADING_6]: serializeBlock('h6', { getAttrs })
+    [BLOCKS.HEADING_1]: serializeTag('h1', { getAttrs }),
+    [BLOCKS.HEADING_2]: serializeTag('h2', { getAttrs }),
+    [BLOCKS.HEADING_3]: serializeTag('h3', { getAttrs }),
+    [BLOCKS.HEADING_4]: serializeTag('h4', { getAttrs }),
+    [BLOCKS.HEADING_5]: serializeTag('h5', { getAttrs }),
+    [BLOCKS.HEADING_6]: serializeTag('h6', { getAttrs })
 };
 
 /**
