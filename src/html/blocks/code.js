@@ -7,6 +7,10 @@ const serializeBlock = require('./serializeBlock');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.CODE)
-    .then(serializeBlock('pre'));
+    .then(serializeBlock('pre', {
+        getAttrs: (node) => {
+            return { syntax: node.data.get('syntax') };
+        }
+    }));
 
 module.exports = { serialize };
