@@ -6,7 +6,7 @@ const { Serializer, MARKS } = require('../../');
  */
 const serialize = Serializer()
     .transformMarkedRange(MARKS.STRIKETHROUGH, (state, text, mark) => {
-        return `<strike>${text}</strike>`;
+        return `<del>${text}</del>`;
     });
 
 module.exports = { serialize };

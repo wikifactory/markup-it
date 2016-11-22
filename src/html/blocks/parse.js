@@ -33,7 +33,7 @@ const BLOCK_TAGS = {
 
 const MARK_TAGS = {
     b:              MARKS.BOLD,
-    strike:         MARKS.STRIKETHROUGH,
+    del:            MARKS.STRIKETHROUGH,
     em:             MARKS.ITALIC,
     code:           MARKS.CODE
 };
