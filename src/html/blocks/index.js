@@ -5,5 +5,9 @@ module.exports = [
     require('./blockquote'),
     require('./code'),
     require('./heading'),
+    require('./ulist'),
+    require('./olist'),
+    require('./listitem'),
+    require('./unstyled'),
     require('./html')
 ];
