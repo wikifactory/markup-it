@@ -5,5 +5,6 @@ module.exports = [
     require('./strikethrough'),
     require('./text'),
     require('./image'),
+    require('./link'),
     require('./html')
 ];
