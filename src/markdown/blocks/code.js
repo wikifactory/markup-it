@@ -45,14 +45,6 @@ const serialize = Serializer()
  */
 const deserialize = Deserializer()
     .matchRegExp(reBlock.fences, (state, match) => {
-        // const isInBlockquote = (state.get('blockquote') === state.getParentDepth());
-        // const isInLooseList = (state.get('looseList') === state.getParentDepth());
-        // const isTop = (state.getDepth() === 1);
-        //
-        // if (!isTop && !isInBlockquote && !isInLooseList) {
-        //     return;
-        // }
-
         // Extract code block text
         const text = match[3].trim();
 

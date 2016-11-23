@@ -1,5 +1,5 @@
 const { Map } = require('immutable');
-const { Serializer, Deserializer, Inline, INLINES } = require('../../');
+const { Serializer, Deserializer, Inline, Text, INLINES } = require('../../');
 const reInline = require('../re/inline');
 
 /**
@@ -53,9 +53,35 @@ const deserializeNormal = Deserializer()
         return state.push(node);
     });
 
+/**
+ * Deserialize an url:
+ *  https://www.google.fr
+ * @type {Deserializer}
+ */
+const deserializeUrl = Deserializer()
+    .matchRegExp(reInline.url, (state, match) => {
+        // Already inside a link?
+        if (state.getProp('link')) {
+            return;
+        }
+
+        const href = match[1];
+
+        const node = Inline.create({
+            type: INLINES.LINK,
+            nodes: [
+                Text.createFromString(href)
+            ],
+            data: { href }
+        });
+
+        return state.push(node);
+    });
+
 const deserialize = Deserializer()
     .use([
-        deserializeNormal
+        deserializeNormal,
+        deserializeUrl
     ]);
 
 module.exports = { serialize, deserialize };
