@@ -43,7 +43,7 @@ const serialize = Serializer()
  * Deserialize a code block to a node.
  * @type {Deserializer}
  */
-const deserialize = Deserializer()
+const deserializeFences = Deserializer()
     .matchRegExp(reBlock.fences, (state, match) => {
         // Extract code block text
         const text = match[3].trim();
@@ -66,5 +66,35 @@ const deserialize = Deserializer()
 
         return state.push(node);
     });
+
+/**
+ * Deserialize a code block to a node.
+ * @type {Deserializer}
+ */
+const deserializeTabs = Deserializer()
+    .matchRegExp(reBlock.code, (state, match) => {
+        let inner = match[0];
+
+        // Remove indentation
+        inner = inner.replace(/^( {4}|\t)/gm, '');
+
+        // No pedantic mode
+        inner = inner.replace(/\n+$/, '');
+
+        const node = Block.create({
+            type: BLOCKS.CODE,
+            nodes: [
+                Text.createFromString(inner)
+            ]
+        });
+
+        return state.push(node);
+    });
+
+const deserialize = Deserializer()
+    .use([
+        deserializeFences,
+        deserializeTabs
+    ]);
 
 module.exports = { serialize, deserialize };
