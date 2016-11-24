@@ -1,3 +1,4 @@
+const table = require('./table');
 
 module.exports = [
     require('./paragraph'),
@@ -9,9 +10,9 @@ module.exports = [
     require('./olist'),
     require('./listitem'),
     require('./unstyled'),
-    require('./table'),
-    require('./row'),
-    require('./cell'),
+    table.table,
+    table.row,
+    table.cell,
     require('./footnote'),
     require('./html')
 ];
