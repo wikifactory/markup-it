@@ -1,4 +1,5 @@
 const { Serializer, MARKS } = require('../../');
+const escape = require('../escape');
 
 /**
  * Serialize an inline code to HTML
@@ -6,7 +7,7 @@ const { Serializer, MARKS } = require('../../');
  */
 const serialize = Serializer()
     .transformMarkedRange(MARKS.CODE, (state, text, mark) => {
-        return `<pre>${text}</pre>`;
+        return `<code>${escape(text)}</code>`;
     });
 
 module.exports = { serialize };
