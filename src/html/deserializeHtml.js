@@ -1,9 +1,22 @@
 const htmlparser = require('htmlparser2');
 const { List, Stack, Set } = require('immutable');
+const { Deserializer } = require('../');
 const {
     BLOCKS, INLINES, MARKS,
     Block, Inline, Text, Mark
-} = require('../../');
+} = require('../');
+
+/**
+ * Deserialize an HTML string
+ * @type {Deserializer}
+ */
+const deserialize = Deserializer()
+.then((state) => {
+    const nodes = parse(state.text);
+    return state
+        .push(nodes)
+        .skip(state.text.length);
+});
 
 const INLINE_TAGS = {
     a:              INLINES.LINK,
@@ -191,4 +204,5 @@ function isVoid(tagName) {
     return Boolean(VOID_TAGS[tagName]);
 }
 
-module.exports = parse;
+module.exports = { deserialize };
+
