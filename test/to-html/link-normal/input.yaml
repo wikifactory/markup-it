@@ -7,7 +7,7 @@ nodes:
       - kind: inline
         type: link
         data:
-          href: google.fr
+          href: google.fr/test?q=query&a=b
         nodes:
           - kind: text
             text: link

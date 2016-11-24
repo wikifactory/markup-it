@@ -1,5 +1,7 @@
 const { Serializer, INLINES } = require('../../');
 const serializeTag = require('../serializeTag');
+const escape = require('../escape');
+
 
 /**
  * Serialize a link to HTML
@@ -8,9 +10,10 @@ const serializeTag = require('../serializeTag');
 const serialize = Serializer()
     .matchType(INLINES.LINK)
     .then(serializeTag('a', {
-        getAttrs: (node) => {
+        getAttrs: ({ data }) => {
             return {
-                href: node.data.get('href')
+                href: escape(data.get('href') || ''),
+                title: data.get('title') ? escape(data.get('title')) : undefined
             };
         }
     }));
