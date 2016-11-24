@@ -1,5 +1,4 @@
 const { Serializer, BLOCKS } = require('../../');
-const serializeTag = require('../serializeTag');
 
 /**
  * Serialize a unordered list to HTML
@@ -7,6 +6,13 @@ const serializeTag = require('../serializeTag');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.UL_LIST)
-    .then(serializeTag('ul'));
+    .then(state => {
+        const node = state.peek();
+        const inner = state.serialize(node.nodes);
+
+        return state
+            .shift()
+            .write(`<ul>\n${inner}</ul>\n`);
+    });
 
 module.exports = { serialize };
