@@ -8,7 +8,9 @@ const serialize = Serializer()
     .matchType(INLINES.HTML)
     .then(state => {
         const node = state.peek();
-        return node.shift().write(node.text);
+        const html = node.data.get('html');
+
+        return state.shift().write(html);
     });
 
 module.exports = { serialize };
