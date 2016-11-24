@@ -3,6 +3,9 @@ const { Map } = require('immutable');
 
 /**
  * @param {String} tag The HTML tag
+ * @param {Boolean} [opts.isSingleTag=false] Render as self-closing tag
+ * @param {Function} [opts.getAttrs] Function to get the HTML
+ * attributes of the tag, as an Object
  * @return {Function} A function to seralize a node into an HTML tag
  */
 function serializeTag(tag, opts = {}) {
