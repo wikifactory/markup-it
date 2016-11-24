@@ -1,5 +1,5 @@
 const { Serializer, BLOCKS } = require('../../');
-const serializeTag = require('../serializeTag');
+const escape = require('../escape');
 
 /**
  * Serialize a code block to HTML
@@ -7,10 +7,20 @@ const serializeTag = require('../serializeTag');
  */
 const serialize = Serializer()
     .matchType(BLOCKS.CODE)
-    .then(serializeTag('pre', {
-        getAttrs: (node) => {
-            return { syntax: node.data.get('syntax') };
-        }
-    }));
+    .then(state => {
+        const node = state.peek();
+        const syntax = node.data.get('syntax');
+        const text = node.text;
+
+        const className = syntax
+            ? ` class="lang-${syntax}"`
+            : '';
+
+        return state
+            .shift()
+            .write(
+                `<pre><code${className}>${escape(text)}</code></pre>\n`
+            );
+    });
 
 module.exports = { serialize };

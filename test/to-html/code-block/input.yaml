@@ -3,4 +3,7 @@ nodes:
     type: code_block
     nodes:
       - kind: text
-        text: Hello World
+        text: |-
+          function compare(a, b) {
+              return a < b;
+          }
