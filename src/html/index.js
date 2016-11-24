@@ -1,11 +1,14 @@
 const blocks = require('./blocks');
 const inlines = require('./inlines');
 const deserializeHtml = require('./deserializeHtml');
+const serializeDefault = require('./serializeDefault');
 
-const ALL = []
-    .concat([deserializeHtml]) // There's only one general rule for deserialization
-    .concat(blocks)
-    .concat(inlines);
+const ALL = [
+    deserializeHtml, // There's only one general rule for deserialization
+    ...blocks,
+    ...inlines,
+    serializeDefault // Default catch-all rule
+];
 
 // We don't use groups of rules such as 'block' and 'inline' for
 // deserialization, because we have a single deserialization rule.

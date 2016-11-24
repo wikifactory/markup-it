@@ -1,4 +1,4 @@
-const { Serializer } = require('../../');
+const { Serializer } = require('../');
 
 /**
  * Default rule to serialize to HTML. Should be removed in the end.
