@@ -2019,11 +2019,10 @@ slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
 
-slate@0.15.2:
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/slate/-/slate-0.15.2.tgz#c061a094e3c3827a9dbff43f7677336f534f952d"
+slate@^0.15.9:
+  version "0.15.9"
+  resolved "https://registry.yarnpkg.com/slate/-/slate-0.15.9.tgz#672829e76b95f3956e6a7d10fc49eacf5889d041"
   dependencies:
-    uid "0.0.2"
     cheerio "^0.22.0"
     debug "^2.3.2"
     detect-browser "^1.3.3"
@@ -2169,10 +2168,6 @@ typedarray@~0.0.5:
 ua-parser-js@^0.7.10, ua-parser-js@^0.7.9:
   version "0.7.11"
   resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.11.tgz#3741e2dd2fb09251a960f9ef076cd0cc72eaf6a0"
-
-uid@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/uid/-/uid-0.0.2.tgz#5e4a5d4b78138b4f70f89fd3c76fc59aa9d2f103"
 
 user-home@^2.0.0:
   version "2.0.0"
