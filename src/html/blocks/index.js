@@ -12,5 +12,6 @@ module.exports = [
     require('./table'),
     require('./row'),
     require('./cell'),
+    require('./footnote'),
     require('./html')
 ];

@@ -6,5 +6,6 @@ module.exports = [
     require('./text'),
     require('./image'),
     require('./link'),
+    require('./footnote-ref'),
     require('./html')
 ];
