@@ -7,6 +7,7 @@ const unstyled = require('./unstyled');
 const footnote = require('./footnote');
 const table = require('./table');
 const list = require('./list');
+const definition = require('./definition');
 
 module.exports = [
     table,
@@ -16,6 +17,7 @@ module.exports = [
     codeBlock,
     heading,
     hr,
+    definition,
     paragraph,
     unstyled
 ];
