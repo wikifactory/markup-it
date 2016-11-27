@@ -70,7 +70,7 @@ class State extends Record(DEFAULTS) {
      * @return {Mixed}
      */
     getProp(key) {
-        let { props } = this;
+        const { props } = this;
         return props.get(key);
     }
 
@@ -83,6 +83,16 @@ class State extends Record(DEFAULTS) {
     write(string) {
         let { text } = this;
         text += string;
+        return this.merge({ text });
+    }
+
+    /**
+     * Replace all the text in the state.
+     *
+     * @param  {String} text
+     * @return {State} state
+     */
+    replaceText(text) {
         return this.merge({ text });
     }
 
@@ -209,12 +219,12 @@ class State extends Record(DEFAULTS) {
      * Parse current text buffer
      * @return {State} state
      */
-    lex(rest = '') {
+    lex(rest = '', opts = {}) {
         const state = this;
         const { text } = state;
 
         let startState = state;
-        const trimedRest = rest.trim();
+        const trimedRest = opts.trim !== false ? rest.trim() : rest;
         if (trimedRest) {
             startState = startState.pushText(trimedRest);
         }
@@ -236,11 +246,11 @@ class State extends Record(DEFAULTS) {
         if (!newState) {
             return state
                 .skip(1)
-                .lex(rest + text[0]);
+                .lex(rest + text[0], opts);
         }
 
         // Otherwise we keep parsing
-        return newState.lex(rest);
+        return newState.lex(rest, opts);
     }
 
     /**

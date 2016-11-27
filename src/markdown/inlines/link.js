@@ -3,6 +3,22 @@ const { Serializer, Deserializer, Inline, Text, INLINES } = require('../../');
 const reInline = require('../re/inline');
 
 /**
+ * Resolve a reference in a state.
+ * @param  {State} state
+ * @param  {String} refID
+ * @return {Object} props?
+ */
+function resolveRef(state, refID) {
+    const refs = state.getProp('refs');
+
+    refID = refID
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+
+    return refs.get(refID);
+}
+
+/**
  * Serialize a link to markdown
  * @type {Serializer}
  */
@@ -78,10 +94,46 @@ const deserializeUrl = Deserializer()
         return state.push(node);
     });
 
+/**
+ * Deserialize a reference link:
+ *  https://www.google.fr
+ * @type {Deserializer}
+ */
+const deserializeRef = Deserializer()
+    .matchRegExp(reInline.reflink, (state, match) => {
+        // Already inside a link?
+        if (state.getProp('link')) {
+            return;
+        }
+
+        const refID = (match[2] || match[1]);
+        const inner = match[1];
+        const data = resolveRef(state, refID);
+
+        if (!data) {
+            return state.push(
+                Text.createFromString(match[0])
+            );
+        }
+
+        const nodes = state.use('inline')
+            .setProp('link', state.depth)
+            .deserialize(inner);
+
+        const node = Inline.create({
+            type: INLINES.LINK,
+            nodes,
+            data
+        });
+
+        return state.push(node);
+    });
+
 const deserialize = Deserializer()
     .use([
         deserializeNormal,
-        deserializeUrl
+        deserializeUrl,
+        deserializeRef
     ]);
 
 module.exports = { serialize, deserialize };

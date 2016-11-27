@@ -10,6 +10,7 @@ const list = require('./list');
 const definition = require('./definition');
 
 module.exports = [
+    definition,
     table,
     list,
     footnote,
@@ -17,7 +18,6 @@ module.exports = [
     codeBlock,
     heading,
     hr,
-    definition,
     paragraph,
     unstyled
 ];
