@@ -1,6 +1,7 @@
 const { Map } = require('immutable');
 const { Serializer, Deserializer, Inline, Text, INLINES } = require('../../');
 const reInline = require('../re/inline');
+const utils = require('../utils');
 
 /**
  * Resolve a reference in a state.
@@ -94,6 +95,40 @@ const deserializeUrl = Deserializer()
         return state.push(node);
     });
 
+
+/**
+ * Deserialize an url with < and >:
+ *  <samy@gitbook.com>
+ * @type {Deserializer}
+ */
+const deserializeAutolink = Deserializer()
+    .matchRegExp(reInline.autolink, (state, match) => {
+        // Already inside a link?
+        if (state.getProp('link')) {
+            return;
+        }
+
+        let text, href;
+
+        if (match[2] === '@') {
+            text = match[1];
+            href = `mailto:${text}`;
+        } else {
+            text = match[1];
+            href = text;
+        }
+
+        const node = Inline.create({
+            type: INLINES.LINK,
+            nodes: [
+                Text.createFromString(text)
+            ],
+            data: { href }
+        });
+
+        return state.push(node);
+    });
+
 /**
  * Deserialize a reference link:
  *  https://www.google.fr
@@ -133,6 +168,7 @@ const deserialize = Deserializer()
     .use([
         deserializeNormal,
         deserializeUrl,
+        deserializeAutolink,
         deserializeRef
     ]);
 
