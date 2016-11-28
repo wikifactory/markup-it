@@ -1,0 +1,30 @@
+nodes:
+  - kind: block
+    type: table
+    nodes:
+      - kind: block
+        type: table_row
+        nodes:
+          - kind: block
+            type: table_cell
+            nodes:
+              - kind: text
+                text: John
+          - kind: block
+            type: table_cell
+            nodes:
+              - kind: text
+                text: Doe
+      - kind: block
+        type: table_row
+        nodes:
+          - kind: block
+            type: table_cell
+            nodes:
+              - kind: text
+                text: Jane
+          - kind: block
+            type: table_cell
+            nodes:
+              - kind: text
+                text: Doe

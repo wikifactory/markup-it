@@ -1,14 +1,12 @@
 #! /usr/bin/env node
 /* eslint-disable no-console */
 
-var DraftMarkup = require('../');
-var utils = require('./utils');
+const { Raw, State } = require('slate');
+const { transform } = require('./helper');
 
-utils.command(function(content) {
-    console.log(
-        JSON.stringify(
-            DraftMarkup.JSONUtils.encode(content),
-            null, 4
-        )
-    );
+transform(document => {
+    const state = State.create({ document });
+    const raw = Raw.serialize(state, { terse: true });
+
+    console.log(JSON.stringify(raw, null, 2));
 });
