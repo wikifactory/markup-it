@@ -1,7 +1,6 @@
 const { Map } = require('immutable');
 const { Serializer, Deserializer, Inline, Text, INLINES } = require('../../');
 const reInline = require('../re/inline');
-const utils = require('../utils');
 
 /**
  * Resolve a reference in a state.
@@ -131,11 +130,14 @@ const deserializeAutolink = Deserializer()
 
 /**
  * Deserialize a reference link:
- *  https://www.google.fr
+ *  nolink: [1]
  * @type {Deserializer}
  */
 const deserializeRef = Deserializer()
-    .matchRegExp(reInline.reflink, (state, match) => {
+    .matchRegExp([
+        reInline.reflink,
+        reInline.nolink
+    ], (state, match) => {
         // Already inside a link?
         if (state.getProp('link')) {
             return;
@@ -146,9 +148,15 @@ const deserializeRef = Deserializer()
         const data = resolveRef(state, refID);
 
         if (!data) {
-            return state.push(
-                Text.createFromString(match[0])
-            );
+            const firstChar = match[0].charAt(0);
+            const nodes = state
+                .use('inline')
+                .deserialize(match[0].substring(1));
+            return state
+                .push(
+                    Text.createFromString(firstChar)
+                )
+                .push(nodes);
         }
 
         const nodes = state.use('inline')
