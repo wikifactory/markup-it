@@ -23,25 +23,6 @@ function fail(msg) {
 }
 
 /**
- * Deserialize a file
- * @param  {String} filePath
- * @return {Document}
- */
-function deserialize(filePath) {
-    const ext = path.extname(filePath);
-    const parser = PARSERS[ext];
-
-    if (!parser) {
-        throw new Error('Can\'t parse this file');
-    }
-
-    const content = fs.readFileSync(filePath, { encoding: 'utf8' });
-    const state = State.create(parser);
-
-    return state.deserializeToDocument(content);
-}
-
-/**
  * Execute a transformation over file
  * @param  {Function} fn [description]
  * @return {[type]}      [description]
@@ -52,12 +33,22 @@ function transform(fn) {
     }
 
     const filePath = path.join(process.cwd(), process.argv[2]);
-    const document = deserialize(filePath);
 
-    fn(document);
+    const ext = path.extname(filePath);
+    const parser = PARSERS[ext];
+
+    if (!parser) {
+        throw new Error('Can\'t parse this file');
+    }
+
+    const content = fs.readFileSync(filePath, { encoding: 'utf8' });
+    const state = State.create(parser);
+
+    const document = state.deserializeToDocument(content);
+
+    fn(document, state);
 }
 
 module.exports = {
-    deserialize,
     transform
 };

@@ -3,6 +3,7 @@
 
 const { transform } = require('./helper');
 
-transform(document => {
-
+transform((document, state) => {
+    const output = state.serializeDocument(document);
+    console.log(output);
 });
