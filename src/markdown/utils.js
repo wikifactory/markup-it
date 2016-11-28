@@ -1,3 +1,4 @@
+const { Map } = require('immutable');
 const entities = require('html-entities');
 const escapeStringRegexp = require('escape-string-regexp');
 
@@ -76,8 +77,30 @@ function replace(regex, opt) {
     };
 }
 
+/**
+ * Resolve a reference (links and images) in a state.
+ * @param  {State} state
+ * @param  {String} refID
+ * @return {Object} props?
+ */
+function resolveRef(state, refID) {
+    const refs = state.getProp('refs');
+
+    refID = refID
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
+
+    const data = refs.get(refID);
+    if (!data) {
+        return;
+    }
+
+    return Map(data).filter(Boolean);
+}
+
 module.exports = {
     escape: escapeMarkdown,
     unescape: unescapeMarkdown,
-    replace
+    replace,
+    resolveRef
 };

@@ -1,6 +1,27 @@
 const { Map } = require('immutable');
 const { Serializer, Deserializer, Inline, INLINES } = require('../../');
 const reInline = require('../re/inline');
+const utils = require('../utils');
+
+
+/**
+ * Resolve an image reference
+ * @param  {State} state
+ * @param  {String} refID
+ * @return {Map} data?
+ */
+function resolveImageRef(state, refID) {
+    const data = utils.resolveRef(state, refID);
+
+    if (!data) {
+        return;
+    }
+
+    return data
+        .set('src', data.get('href'))
+        .remove('href');
+}
+
 
 /**
  * Test if a link input is an image
@@ -63,9 +84,41 @@ const deserializeNormal = Deserializer()
         return state.push(node);
     });
 
+
+/**
+ * Deserialize a reference image:
+ *  nolink: ![1]
+ * @type {Deserializer}
+ */
+const deserializeRef = Deserializer()
+    .matchRegExp([
+        reInline.reflink,
+        reInline.nolink
+    ], (state, match) => {
+        if (!isImage(match[0])) {
+            return;
+        }
+
+        const refID = (match[2] || match[1]);
+        const data = resolveImageRef(state, refID);
+
+        if (!data) {
+            return;
+        }
+
+        const node = Inline.create({
+            type: INLINES.IMAGE,
+            isVoid: true,
+            data
+        });
+
+        return state.push(node);
+    });
+
 const deserialize = Deserializer()
     .use([
-        deserializeNormal
+        deserializeNormal,
+        deserializeRef
     ]);
 
 module.exports = { serialize, deserialize };

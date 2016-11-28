@@ -1,27 +1,7 @@
 const { Map } = require('immutable');
 const { Serializer, Deserializer, Inline, Text, INLINES } = require('../../');
 const reInline = require('../re/inline');
-
-/**
- * Resolve a reference in a state.
- * @param  {State} state
- * @param  {String} refID
- * @return {Object} props?
- */
-function resolveRef(state, refID) {
-    const refs = state.getProp('refs');
-
-    refID = refID
-        .replace(/\s+/g, ' ')
-        .toLowerCase();
-
-    const data = refs.get(refID);
-    if (!data) {
-        return;
-    }
-
-    return Map(data).filter(Boolean);
-}
+const utils = require('../utils');
 
 /**
  * Serialize a link to markdown
@@ -149,7 +129,7 @@ const deserializeRef = Deserializer()
 
         const refID = (match[2] || match[1]);
         const inner = match[1];
-        const data = resolveRef(state, refID);
+        const data = utils.resolveRef(state, refID);
 
         if (!data) {
             return;
@@ -180,7 +160,7 @@ const deserializeReffn = Deserializer()
         }
 
         const refID = match[1];
-        const data = resolveRef(state, refID);
+        const data = utils.resolveRef(state, refID);
 
         if (!data) {
             return;
