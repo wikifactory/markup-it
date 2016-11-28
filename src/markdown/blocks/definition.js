@@ -1,7 +1,7 @@
 const { Map } = require('immutable');
-const { Document, Raw } = require('slate');
-const { Deserializer, State } = require('../../');
-const reBlock = require('../re/block');
+const { Deserializer } = require('../../');
+
+const reDef = /^ {0,3}\[(.+)]:[ \t]*\n?[ \t]*<?(\S+?)>?(?: =([*\d]+[A-Za-z%]{0,4})x([*\d]+[A-Za-z%]{0,4}))?[ \t]*\n?[ \t]*(?:(\n*)["|'(](.+?)["|')][ \t]*)?(?:\n+|(?=~0))/gm;
 
 /**
  * Cleanup a text before parsing: normalize newlines and tabs
@@ -19,26 +19,6 @@ function cleanupText(src) {
 }
 
 /**
- * Deserialize a definition.
- * @type {Deserializer}
- */
-const deserializeOnlyDef = Deserializer()
-    .matchRegExp(reBlock.def, (state, match) => {
-        const id    = match[1].toLowerCase();
-        const href  = match[2];
-        const title = match[3];
-
-        let refs = state.getProp('refs') || Map();
-
-        refs = refs.set(id, {
-            href, title
-        });
-
-        // No node is pushed when parsing definition
-        return state.setProp('refs', refs);
-    });
-
-/**
  * Deserialize all definitions in a markdown document and store them as
  * "refs" prop.
  * @type {Deserializer}
@@ -52,30 +32,26 @@ const deserialize = Deserializer()
             return;
         }
 
-        const parser = State.create({
-            block: [ { deserialize: deserializeOnlyDef } ]
-        });
-
         // Normalize the text
         text = cleanupText(text);
 
+        const refs = {};
+
         // Parse all definitions
-        const parsed = parser
-            .down()
-            .write(text)
-            .lex('', { trim: false });
+        text = text.replace(reDef, (wholeMatch, linkId, href, width, height, blankLines, title) => {
+            linkId = linkId.toLowerCase();
+            refs[linkId] = {
+                href,
+                title
+            };
 
-        // Get content without definitions
-        const doc = Document.create({ nodes: parsed.nodes });
-        console.log(JSON.stringify(Raw.serializeDocument(doc), null, 4));
-        text = doc.text;
-
-        console.log(text);
+            return '';
+        });
 
         return state
             .replaceText(text)
             .setProp('refs',
-                parsed.getProp('refs') || Map()
+                Map(refs)
             );
     });
 

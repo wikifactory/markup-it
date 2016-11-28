@@ -123,7 +123,7 @@ const deserializeRef = Deserializer()
         const node = Inline.create({
             type: INLINES.LINK,
             nodes,
-            data
+            data: Map(data).filter(Boolean)
         });
 
         return state.push(node);
