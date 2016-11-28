@@ -8,6 +8,7 @@ const footnote = require('./footnote');
 const table = require('./table');
 const list = require('./list');
 const definition = require('./definition');
+const math = require('./math');
 
 module.exports = [
     definition,
@@ -18,6 +19,7 @@ module.exports = [
     codeBlock,
     heading,
     hr,
+    math,
     paragraph,
     unstyled
 ];
