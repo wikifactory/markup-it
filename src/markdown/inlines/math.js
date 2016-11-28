@@ -28,7 +28,7 @@ function normalizeTeX(content, isInline) {
 }
 
 /**
- * Serialize a image to markdown
+ * Serialize a math node to markdown
  * @type {Serializer}
  */
 const serialize = Serializer()

@@ -7,6 +7,7 @@ const image = require('./image');
 const link = require('./link');
 const html = require('./html');
 const math = require('./math');
+const template = require('./template');
 const strikethrough = require('./strikethrough');
 
 module.exports = [
@@ -21,5 +22,6 @@ module.exports = [
     italic,
     strikethrough,
     html,
+    template,
     text
 ];
