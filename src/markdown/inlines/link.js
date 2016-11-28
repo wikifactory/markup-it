@@ -15,7 +15,12 @@ function resolveRef(state, refID) {
         .replace(/\s+/g, ' ')
         .toLowerCase();
 
-    return refs.get(refID);
+    const data = refs.get(refID);
+    if (!data) {
+        return;
+    }
+
+    return Map(data).filter(Boolean);
 }
 
 /**
@@ -94,7 +99,6 @@ const deserializeUrl = Deserializer()
         return state.push(node);
     });
 
-
 /**
  * Deserialize an url with < and >:
  *  <samy@gitbook.com>
@@ -148,15 +152,7 @@ const deserializeRef = Deserializer()
         const data = resolveRef(state, refID);
 
         if (!data) {
-            const firstChar = match[0].charAt(0);
-            const nodes = state
-                .use('inline')
-                .deserialize(match[0].substring(1));
-            return state
-                .push(
-                    Text.createFromString(firstChar)
-                )
-                .push(nodes);
+            return;
         }
 
         const nodes = state.use('inline')
@@ -166,7 +162,36 @@ const deserializeRef = Deserializer()
         const node = Inline.create({
             type: INLINES.LINK,
             nodes,
-            data: Map(data).filter(Boolean)
+            data
+        });
+
+        return state.push(node);
+    });
+
+/**
+ * Deserialize a reference.
+ * @type {Deserializer}
+ */
+const deserializeReffn = Deserializer()
+    .matchRegExp(reInline.reffn, (state, match) => {
+        // Already inside a link?
+        if (state.getProp('link')) {
+            return;
+        }
+
+        const refID = match[1];
+        const data = resolveRef(state, refID);
+
+        if (!data) {
+            return;
+        }
+
+        const node = Inline.create({
+            type: INLINES.LINK,
+            nodes: [
+                Text.createFromString(refID)
+            ],
+            data
         });
 
         return state.push(node);
@@ -177,6 +202,7 @@ const deserialize = Deserializer()
         deserializeNormal,
         deserializeUrl,
         deserializeAutolink,
+        deserializeReffn,
         deserializeRef
     ]);
 
