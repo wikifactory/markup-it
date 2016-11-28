@@ -1,1 +1,1 @@
-![Hello](test.png)
+![](test.png)

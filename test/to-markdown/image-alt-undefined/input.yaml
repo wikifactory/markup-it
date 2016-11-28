@@ -7,7 +7,7 @@ nodes:
       - kind: inline
         type: image
         data:
-          alt: !!null
+          alt: Hello
           src: test.png
         isVoid: true
       - kind: text

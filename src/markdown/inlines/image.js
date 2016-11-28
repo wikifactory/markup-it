@@ -41,9 +41,9 @@ const serialize = Serializer()
     .then((state) => {
         const node = state.peek();
         const { data } = node;
-        const alt   = data.get('alt', '');
-        const src   = data.get('src', '');
-        const title = data.get('title', '');
+        const alt   = data.get('alt') || '';
+        const src   = data.get('src') || '';
+        const title = data.get('title') || '';
 
         let output;
 
