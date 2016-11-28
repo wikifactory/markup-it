@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 3.0.0 (**pre-release**)
+
+- Rewrite of the internal enine
+- Use `slate` for data modeling of the document
+
 ### 2.4.0
 
 - Add `SlateUtils` to decode/encode for [Slate](https://github.com/ianstormtaylor/slate)
