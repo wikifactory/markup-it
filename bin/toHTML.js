@@ -1,14 +1,13 @@
 #! /usr/bin/env node
 /* eslint-disable no-console */
 
-var DraftMarkup = require('../');
-var htmlSyntax = require('../syntaxes/html');
+const { transform } = require('./helper');
+const { State } = require('../src/');
+const html = require('../src/html');
 
-var utils = require('./utils');
-
-utils.command(function(content, markup) {
-    var htmlMarkup = new DraftMarkup(htmlSyntax);
-    var output = htmlMarkup.toText(content);
+transform(document => {
+    const state = State.create(html);
+    const output = state.serializeDocument(document);
 
     console.log(output);
 });

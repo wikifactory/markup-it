@@ -119,7 +119,7 @@ function renderItemToText(state, list, item, index) {
     const rest = body.map(line => line ? `${spaces} ${line}` : '').join('\n');
     const eol = rest ? '' : '\n';
 
-    const isLoose = list.nodes.some(child => child.type === BLOCKS.PARAGRAPH);
+    // const isLoose = list.nodes.some(child => child.type === BLOCKS.PARAGRAPH);
 
     return `${bullet} ${head}${rest ? '\n' + rest : ''}${eol}`;
 }
