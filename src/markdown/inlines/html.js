@@ -56,7 +56,7 @@ const serialize = Serializer()
 const deserialize = Deserializer()
     .matchRegExp(reInline.html, (state, match) => {
         const [ tag, tagName, innerText ] = match;
-        let startTag, endTag, innerNodes;
+        let startTag, endTag, innerNodes = [];
 
         if (innerText) {
             startTag = tag.substring(0, tag.indexOf(innerText));
@@ -72,7 +72,7 @@ const deserialize = Deserializer()
             innerNodes = state
                 .setProp(isLink ? 'link' : 'html', state.depth)
                 .deserialize(innerText);
-        } else {
+        } else if (innerText) {
             innerNodes = [
                 createHTML(innerText)
             ];
