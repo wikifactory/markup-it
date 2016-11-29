@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/GitbookIO/markup-it#readme",
   "peerDependencies": {
-    "slate": "^0.15.9"
+    "slate": "0.x.x"
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
