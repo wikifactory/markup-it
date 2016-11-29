@@ -26,11 +26,9 @@ const deserialize = Deserializer()
         const text = match[2];
         const mark = Mark.create({ type: MARKS.CODE });
 
-        const nodes = state
+        return state
             .pushMark(mark)
-            .deserialize(text);
-
-        return state.push(nodes);
+            .pushText(text);
     });
 
 module.exports = { serialize, deserialize };
