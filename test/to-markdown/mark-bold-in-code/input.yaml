@@ -9,4 +9,4 @@ nodes:
           - text: World
             marks:
               - type: BOLD
-              - type: ITALIC
+              - type: CODE
