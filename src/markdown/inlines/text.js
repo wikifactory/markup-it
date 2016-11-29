@@ -8,6 +8,15 @@ const utils = require('../utils');
  */
 const serialize = Serializer()
     .matchKind('text')
+
+    // Escape all text
+    .transformRanges(range => {
+        let { text } = range;
+        text = utils.escape(text, false);
+        return range.merge({ text });
+    })
+
+    // Then process marks
     .then(state => {
         const node = state.peek();
 
