@@ -1,5 +1,11 @@
+
+/**
+ * Map of all block types. Blocks can contain inlines or blocks.
+ * @type {Map}
+ */
+
 module.exports = {
-    DOCUMENT:   'doc',
+    DOCUMENT:   'document',
     TEXT:       'unstyled',
     // Classic blocks
     CODE:       'code_block',

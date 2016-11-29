@@ -1,3 +1,9 @@
+
+/**
+ * Map of all inline node types. Inline nodes can only contain inline or text nodes.
+ * @type {Map}
+ */
+
 module.exports = {
     HTML:         'html',
     LINK:         'link',
