@@ -295,7 +295,18 @@ class State extends Record(DEFAULTS) {
      * @return {Document} document
      */
     deserializeToDocument(text) {
-        const nodes = this.deserialize(text);
+        let nodes = this.deserialize(text);
+
+        // We should never return an empty document
+        if (nodes.size === 0) {
+            nodes = nodes.push(Block.create({
+                type: BLOCKS.PARAGRAPH,
+                nodes: [
+                    Text.create()
+                ]
+            }));
+        }
+
         return Document.create({ nodes });
     }
 
