@@ -6,10 +6,12 @@ const htmlEntities = new entities.AllHtmlEntities();
 const xmlEntities = new entities.XmlEntities();
 
 // Replacements for Markdown escaping
+// See http://spec.commonmark.org/0.15/#backslash-escapes
 const replacements = [
     [ '*', '\\*' ],
     [ '#', '\\#' ],
-    [ '/', '\\/' ],
+    // GitHub doesn't escape slashes, and render the backslash in that cause
+    // [ '/', '\\/' ],
     [ '(', '\\(' ],
     [ ')', '\\)' ],
     [ '[', '\\[' ],
