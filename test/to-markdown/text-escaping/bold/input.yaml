@@ -3,4 +3,4 @@ nodes:
     type: paragraph
     nodes:
       - kind: text
-        text: "*Hello* / World"
+        text: "*Hello* World"
