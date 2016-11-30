@@ -80,6 +80,10 @@ function readFileOutput(fileName) {
     }
 }
 
+/**
+ * Run test in a directory
+ * @param  {String} folder
+ */
 function runTest(folder) {
     const files = fs.readdirSync(folder);
     const inputName = files.find(file => file.split('.')[0] === 'input');
@@ -100,34 +104,58 @@ function runTest(folder) {
     expect(output).toEqual(expectedOutput);
 }
 
-describe('MarkupIt', () => {
-    const series = fs.readdirSync(__dirname);
+/**
+ * Return true if a folder is a leaf test folder
+ * @param  {String} folder
+ * @return {Boolean}
+ */
+function isTestFolder(folder) {
+    const files = fs.readdirSync(folder);
+    const inputName = files.find(file => file.split('.')[0] === 'input');
+    const outputName = files.find(file => file.split('.')[0] === 'output');
 
-    series.forEach(serie => {
+    return Boolean(inputName && outputName);
+}
 
-        describe(serie, () => {
-            const seriePath = path.resolve(__dirname, serie);
-            if (!fs.lstatSync(seriePath).isDirectory()) {
-                return;
-            }
+/**
+ * Test a folder
+ * @param {String} folder
+ */
+function runTests(seriePath) {
+    if (!fs.lstatSync(seriePath).isDirectory()) {
+        return;
+    }
 
-            const tests = fs.readdirSync(seriePath);
-            tests.forEach(test => {
-                const testPath = path.resolve(seriePath, test);
+    const tests = fs.readdirSync(seriePath);
+    tests.forEach(test => {
+        const testPath = path.resolve(seriePath, test);
 
-                if (!fs.lstatSync(testPath).isDirectory()) {
-                    return;
-                }
+        if (!fs.lstatSync(testPath).isDirectory()) {
+            return;
+        }
 
-                it(test, () => {
-                    runTest(testPath);
-                });
+        if (isTestFolder(testPath)) {
+            it(test, () => {
+                runTest(testPath);
             });
-        });
+        } else {
+            describe(test, () => {
+                runTests(testPath);
+            });
+        }
     });
-});
+}
 
-function readYaml(path) {
-    const content = fs.readFileSync(path);
+/**
+ * Read a YAML file.
+ * @param  {String} filePath
+ * @return {Object}
+ */
+function readYaml(filePath) {
+    const content = fs.readFileSync(filePath);
     return yaml.safeLoad(content);
 }
+
+describe('MarkupIt', () => {
+    runTests(__dirname);
+});
