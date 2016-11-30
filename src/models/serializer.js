@@ -72,7 +72,9 @@ class Serializer extends RuleFunction {
 
             // Create new text and push it back
             const newText = Text.createFromRanges(ranges);
-            return state.shift().unshift(newText);
+            return state
+                .shift()
+                .unshift(newText);
         });
     }
 

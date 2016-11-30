@@ -6,6 +6,7 @@ const html = require('./html');
 const math = require('./math');
 const template = require('./template');
 
+const escape = require('./escape');
 const code = require('./code');
 const bold = require('./bold');
 const italic = require('./italic');
@@ -18,11 +19,14 @@ module.exports = [
     math,
     html,
     template,
-    text,
+
+    // Text ranegs should be escaped before processing marks
+    escape,
     // Code mark should be applied before everything else
     code,
     // Bold should be before italic
     bold,
     italic,
-    strikethrough
+    strikethrough,
+    text
 ];

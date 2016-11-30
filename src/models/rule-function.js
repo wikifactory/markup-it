@@ -101,6 +101,17 @@ class RuleFunction extends Record(DEFAULTS) {
     }
 
     /**
+     * Prevent applying the transform function if <match> returns true
+     * @param  {Function} match
+     * @return {RuleFunction}
+     */
+    filterNot(match) {
+        return this.filter(state => {
+            return !RuleFunction.exec(match, state);
+        });
+    }
+
+    /**
      * Execute the transform function on an input
      * @param  {State} state
      * @param  {Object} value
