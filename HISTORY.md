@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Rewrite of the internal enine
 - Use `slate` for data modeling of the document
 - Deserialized document can't be empty anymore
+- Markdown
+    - Follow GFM (GitHub) for slashes escaping
 
 ### 2.4.0
 
