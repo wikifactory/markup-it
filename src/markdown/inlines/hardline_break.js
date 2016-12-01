@@ -9,9 +9,11 @@ const reInline = require('../re/inline');
 const serialize = Serializer()
     .transformText((state, range) => {
         const { text } = range;
+        const allowHardlineBreak = state.getProp('hardlineBreak');
+        const replaceWith = allowHardlineBreak ? '  \n' : ' ';
 
         return range.merge({
-            text: text.replace(/\n/g, '  \n')
+            text: text.replace(/\n/g, replaceWith)
         });
     });
 
