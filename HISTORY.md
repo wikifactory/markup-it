@@ -2,9 +2,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### 3.0.0 (**pre-release**)
+### 3.0.0
 
-- Rewrite of the internal enine
+- Rewrite of the internal engine
 - Use `slate` for data modeling of the document
 - Deserialized document can't be empty anymore
 - Markdown
