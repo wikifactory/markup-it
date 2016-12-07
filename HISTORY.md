@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 3.0.1
+
+- Fix whitespace normalization in HTML parsing
+- Fix invalid structure when parsing HTML
+
 ### 3.0.0
 
 - Rewrite of the internal engine
