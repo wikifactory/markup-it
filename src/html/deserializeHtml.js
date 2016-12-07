@@ -1,8 +1,10 @@
 const htmlparser = require('htmlparser2');
+const htmlclean = require('htmlclean');
 const { List, Stack, Set } = require('immutable');
+const { Document } = require('slate');
 const { Deserializer } = require('../');
 const {
-    BLOCKS, INLINES, MARKS,
+    BLOCKS, INLINES, MARKS, CONTAINERS,
     Block, Inline, Text, Mark
 } = require('../');
 
@@ -89,8 +91,13 @@ function resolveHeadingAttrs(attribs) {
  * @return {List<Node>}
  */
 function parse(str) {
+    // Cleanup whitespaces
+    str = htmlclean(str);
+
     // For convenience, starts with a root node
-    const root = new Block();
+    const root = Document.create({
+        type: BLOCKS.DOCUMENT
+    });
     // The top of the stack always hold the current parent
     // node. Should never be empty.
     let stack = Stack().push(root);
@@ -100,8 +107,23 @@ function parse(str) {
     // Append a node child to the current parent node
     function appendNode(node) {
         const parent = stack.peek();
+        const containerChildTypes = CONTAINERS[parent.type || parent.kind];
+
+        // Wrap node if type is not allowed
+        if (
+            containerChildTypes
+            && (node.kind !== 'block' || !containerChildTypes.includes(node.type))
+        ) {
+            node = Block.create({
+                type: containerChildTypes[0],
+                nodes: [node]
+            });
+        }
+
         const nodes = parent.nodes.push(node);
-        stack = stack.pop().push(parent.merge({ nodes }));
+        stack = stack
+            .pop()
+            .push(parent.merge({ nodes }));
     }
 
     // Push a new node, as current parent. We started parsing it
