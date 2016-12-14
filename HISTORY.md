@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 3.1.0
+
+- Changed the structure for code blocks: code blocks are now made of code lines
+
 ### 3.0.2
 
 - Fix parsing of math when at beginning and end of a paragraph
