@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 3.2.0
+
+- Serialize and deserialize GitHub GFM task lists
+
+### 3.1.2
+
+- Fix error for node < v6
+
+### 3.1.1
+
+- Fix parsing of nested lists in markdown
+- Fix markdown serialization for lists followed by a block
+
 ### 3.1.0
 
 - Changed the structure for code blocks: code blocks are now made of code lines
