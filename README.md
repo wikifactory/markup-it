@@ -18,8 +18,8 @@ Initialize a syntax:
 
 ```js
 var MarkupIt = require('markup-it');
-var markdownSyntax = require('markup-it/syntaxes/markdown');
-var htmlSyntax = require('markup-it/syntaxes/html');
+var markdownSyntax = require('markup-it/lib/markdown');
+var htmlSyntax = require('markup-it/lib/html');
 
 var markdown = new MarkupIt(markdownSyntax);
 var html = new MarkupIt(htmlSyntax);
