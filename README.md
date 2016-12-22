@@ -14,17 +14,6 @@ $ npm i markup-it --save
 
 ### Usage
 
-Initialize a syntax:
-
-```js
-const MarkupIt = require('markup-it');
-const markdownSyntax = require('markup-it/lib/markdown');
-const htmlSyntax = require('markup-it/lib/html');
-
-const markdown = new MarkupIt(markdownSyntax);
-const html = new MarkupIt(htmlSyntax);
-```
-
 #### Parse markdown
 
 ```js
