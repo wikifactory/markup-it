@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 3.3.2
+
+- Fix crash during serialization of HTML nodes to markdown
+- Prevent conflict between first HR and frontmatter
+
+### 3.3.1
+
+- Fix parsing of code blocks starting with an indent, now being preserved
+
 ### 3.3.0
 
 - **New syntax:** Asciidoc (basic support)
