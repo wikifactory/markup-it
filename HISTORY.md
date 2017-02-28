@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.0.0
+
+- **Breaking Change**: Templating is now parsed as `variable`, `comment` and `x-<tag>`.
+    `comment` and `x-<tag>` are blocks, while `variable` is inline.
+
 ### 3.3.3
 
 - Fix parsing of images and links with parenthesis
