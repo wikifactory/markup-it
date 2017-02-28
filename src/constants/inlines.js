@@ -10,5 +10,5 @@ module.exports = {
     IMAGE:        'image',
     FOOTNOTE_REF: 'footnote-ref',
     MATH:         'math',
-    TEMPLATE:     'template'
+    VARIABLE:     'variable'
 };

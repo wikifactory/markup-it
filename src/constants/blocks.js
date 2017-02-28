@@ -30,7 +30,8 @@ module.exports = {
     OL_LIST:    'ordered_list',
     UL_LIST:    'unordered_list',
     LIST_ITEM:  'list_item',
-
+    // Comment
+    COMMENT:    'comment',
     // Default block
     DEFAULT:    'paragraph'
 };

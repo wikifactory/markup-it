@@ -9,6 +9,8 @@ const table = require('./table');
 const list = require('./list');
 const definition = require('./definition');
 const math = require('./math');
+const comment = require('./comment');
+const custom = require('./custom');
 
 module.exports = [
     definition,
@@ -20,6 +22,8 @@ module.exports = [
     heading,
     hr,
     math,
+    comment,
+    custom,
     paragraph,
     unstyled
 ];
