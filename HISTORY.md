@@ -2,9 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-### 3.3.4
+### 3.3.5
 
-- Whitespace non-escaped are supported again
+- Whitespaces non-escaped are supported again during deserialization
+- Whitespaces in urls are not escaped during serialization
 
 ### 3.3.3
 
