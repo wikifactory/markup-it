@@ -34,8 +34,7 @@ const URL_REPLACEMENTS_UNESCAPE = REPLACEMENTS_UNESCAPE.merge({
 });
 const URL_REPLACEMENTS_ESCAPE = Map([
     [ '(', '\\(' ],
-    [ ')', '\\)' ],
-    [ ' ', '%20' ]
+    [ ')', '\\)' ]
 ]);
 
 /**
