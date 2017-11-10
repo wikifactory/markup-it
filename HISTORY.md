@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 4.0.2
+
+- Fix parsing of Markdown empty headings
+
+### 4.0.1
+
+- Parse Markdown horizontal rules before parsing lists, to avoid misdetection.
+
 ### 4.0.0
 
 - **Breaking Change**: Templating is now parsed as `variable`, `comment` and `x-<tag>`.
