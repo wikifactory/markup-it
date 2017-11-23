@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### 5.0.0
 
 - Inline HTML nodes have a new format. https://github.com/GitbookIO/markup-it/pull/87
+- Fix parsing of HTML when the inner HTML of a tag existed in an attribute
 
 ### 4.0.2
 
