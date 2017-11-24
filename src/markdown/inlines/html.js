@@ -82,13 +82,13 @@ const deserializeComment = Deserializer()
 });
 
 /**
- * Deserialize HTML comment from markdown
+ * Deserialize HTML tag pair from markdown
  * @type {Deserializer}
  */
 const deserializePair = Deserializer()
 .matchRegExp(
     reInline.htmlTagPair, (state, match) => {
-        const [ fullTag, tagName, attributes, innerHtml ] = match;
+        const [ fullTag, tagName, attributes = '', innerHtml = '' ] = match;
 
         const openingTag = `<${tagName}${attributes}>`;
         const closingTag = fullTag.slice(openingTag.length + innerHtml.length);
@@ -122,7 +122,7 @@ const deserializePair = Deserializer()
 );
 
 /**
- * Deserialize HTML comment from markdown
+ * Deserialize HTML self closing tag from markdown
  * @type {Deserializer}
  */
 const deserializeClosing = Deserializer()

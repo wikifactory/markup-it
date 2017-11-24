@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 5.0.1
+
+- Fix parsing of HTML when the inner HTML of a tag is empty
+
 ### 5.0.0
 
 - Inline HTML nodes have a new format. https://github.com/GitbookIO/markup-it/pull/87
