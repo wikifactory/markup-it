@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 5.1.1
+
+- Escape whitespaces when writing Markdown links
+
 ### 5.1.0
 
 - Add support for unending custom tags
