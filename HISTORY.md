@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 5.1.2
+
+- Support parenthesis in links title
+- Prevent paragraphs from swallowing tables
+
 ### 5.1.1
 
 - Escape whitespaces when writing Markdown links
