@@ -1,4 +1,3 @@
-const Slate = require('slate');
 const detectNewLine = require('detect-newline');
 const htmlparser = require('htmlparser2');
 const htmlclean = require('htmlclean');
@@ -70,41 +69,6 @@ const TAGS_TO_DATA = {
     h6: resolveHeadingAttrs
 };
 
-
-const SCHEMA_NO_EXTRA_TEXT = {
-    rules: [
-
-        /**
-         * Remove empty text nodes, except if they are only child. Copied from slate's
-         */
-        {
-            match: (object) => {
-                return object.kind == 'block' || object.kind == 'inline';
-            },
-            validate: (node) => {
-                const { nodes } = node;
-                if (nodes.size <= 1) return;
-
-                const invalids = nodes.filter((desc, i) => {
-                    if (desc.kind != 'text') return;
-                    if (desc.text.length > 0) return;
-                    return true;
-                });
-
-                return invalids.size ? invalids : null;
-
-            },
-            normalize: (change, node, invalids) => {
-                // Reverse the list to handle consecutive merges, since the earlier nodes
-                // will always exist after each merge.
-                invalids.forEach((n) => {
-                    change.removeNodeByKey(n.key, { normalize: false });
-                });
-            }
-        }
-    ]
-};
-
 function resolveHeadingAttrs(attribs) {
     return attribs.id
         ? { id: attribs.id }
@@ -117,7 +81,7 @@ function resolveHeadingAttrs(attribs) {
  * @return {List<Node>} nodes
  */
 function selectInlines(node) {
-    if (node.kind !== 'block') {
+    if (node.object !== 'block') {
         return List([ node ]);
     }
 
@@ -157,7 +121,7 @@ function getMarksForClassName(className) {
  * Returns the accepted block types for the given container
  */
 function acceptedBlocks(container) {
-    return CONTAINERS[container.type || container.kind];
+    return CONTAINERS[container.type || container.object];
 }
 
 /**
@@ -178,7 +142,7 @@ function defaultBlockType(container) {
  * True if `block` can contain `node`
  */
 function canContain(block, node) {
-    if (node.kind === 'inline' || node.kind === 'text') {
+    if (node.object === 'inline' || node.object === 'text') {
         return LEAFS[block.type];
     } else {
         const types = acceptedBlocks(block);
@@ -231,27 +195,6 @@ function splitLines(text, sep) {
 }
 
 /**
- * Deserialize an HTML string
- * @param {Document} document
- * @return {Document}
- */
-function removeExtraEmptyText(document) {
-    const slateState = Slate
-    .State.fromJSON({
-        document
-    }, {
-        normalize: false
-    });
-
-    // Remove first extra empty text nodes, since for now HTML introduces a lot of them
-    const noExtraEmptyText = slateState.change().normalize(Slate.Schema.create(SCHEMA_NO_EXTRA_TEXT)).state;
-    // Then normalize it using Slate's core schema.
-    const normalizedState = Slate.State.fromJSON(noExtraEmptyText.toJSON());
-
-    return normalizedState.document;
-}
-
-/**
  * Parse an HTML string into a document
  * @param {String} str
  * @return {Document}
@@ -279,7 +222,7 @@ function parse(str) {
         let { nodes } = parent;
 
         // If parent is not a block container
-        if (!isBlockContainer(parent) && node.kind == 'block') {
+        if (!isBlockContainer(parent) && node.object == 'block') {
             // Discard all blocks
             nodes = nodes.concat(selectInlines(node));
         }
@@ -287,7 +230,7 @@ function parse(str) {
         // Wrap node if type is not allowed
         else if (
             isBlockContainer(parent)
-            && (node.kind !== 'block' || !canContain(parent, node))
+            && (node.object !== 'block' || !canContain(parent, node))
         ) {
             const previous = parent.nodes.last();
             if (previous && canContain(previous, node)) {
@@ -421,7 +364,7 @@ function parse(str) {
         throw new Error('Invalid HTML. A tag might not have been closed correctly.');
     }
 
-    return removeExtraEmptyText(stack.peek());
+    return stack.peek();
 }
 
 module.exports = parse;
