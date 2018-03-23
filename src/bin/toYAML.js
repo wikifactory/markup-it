@@ -2,11 +2,11 @@
 /* eslint-disable no-console */
 
 const yaml = require('js-yaml');
-const { State } = require('slate');
+const { Value } = require('slate');
 const { transform } = require('./helper');
 
 transform(document => {
-    const state = State.create({ document });
+    const state = Value.create({ document });
     const raw = state.toJSON();
 
     console.log(yaml.safeDump(raw));
