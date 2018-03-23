@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+### 7.0.0
+
+- Upgrade Slate to 0.33
+
 ### 6.0.0
 
 - Parse HTML blocks as `html_block`
