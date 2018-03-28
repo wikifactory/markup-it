@@ -3,15 +3,21 @@ const { replace } = require('../utils');
 const heading = require('./heading');
 const table = require('./table');
 
+// Any string matching these inside a line will marks the end of the current paragraph
+const notParagraphPart = 'customBlock';
+// Any line starting with these marks the end of the previous paragraph.
+const notParagraphNewline = 'hr|heading|lheading|blockquote|tag|def|math|comment|customBlock|table|tablenp';
+
 const block = {
     newline:    /^\n+/,
     code:       /^((?: {4}|\t)[^\n]+\n*)+/,
     hr:         /^( *[-*_]){3,} *(?:\n|$)/,
     blockquote: /^( *>[^\n]+(\n(?!def)[^\n]+)*\n*)+/,
     html:       /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
+    // [someref]: google.com
     def:        /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n|$)/,
     footnote:   /^\[\^([^\]]+)\]: ([^\n]+)/,
-    paragraph:  /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def|math|comment|customBlock|table|tablenp))+)\n*/,
+    paragraph:  /^((?:(?:(?!notParagraphPart)[^\n])+\n?(?!notParagraphNewline))+)\n*/,
     text:       /^[^\n]+/,
     fences:     /^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\s*\1 *(?:\n+|$)/,
     yamlHeader: /^ *(?=```)/,
@@ -45,6 +51,11 @@ block.list.block_ol = replace(block.list.block)(/bullet/g, block.list.bullet_ol)
 block.list.block = replace(block.list.block)(/bullet/g, block.list.bullet)();
 
 block.html = replace(block.html)('comment', /<!--[\s\S]*?-->/)('closed', /<(tag)[\s\S]+?<\/\1>/)('closing', /<tag(?:"[^"]*"|'[^']*'|[^'">])*?>/)(/tag/g, _tag)();
+
+block.paragraph = replace(block.paragraph)
+    ('notParagraphPart', notParagraphPart)
+    ('notParagraphNewline', notParagraphNewline)
+    ();
 
 block.paragraph = replace(block.paragraph)
     ('hr', block.hr)
