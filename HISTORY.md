@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+### 6.0.2
+
+- Fix bold parsed as list inside a text
+
 ### 6.0.1
 
 - Paragraph now correctly stop at {% custom-blocks %} found in the text.
