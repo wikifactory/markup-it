@@ -1,18 +1,18 @@
 document:
   nodes:
-    - object: block
+    - kind: block
       type: paragraph
       nodes:
-        - object: text
-          leaves:
+        - kind: text
+          ranges:
             - text: The empty line before endyoutube should not create a separate paragraph
 
-    - object: block
+    - kind: block
       type: x-youtube
       nodes:
-        - object: block
+        - kind: block
           type: paragraph
           nodes:
-            - object: text
-              leaves:
+            - kind: text
+              ranges:
                 - text: The Content

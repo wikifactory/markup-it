@@ -1,17 +1,17 @@
 document:
   nodes:
-    - object: block
+    - kind: block
       type: paragraph
       nodes:
-        - object: text
-          leaves:
+        - kind: text
+          ranges:
             - text: Hello world
-    - object: block
+    - kind: block
       type: x-youtube
       nodes:
-        - object: block
+        - kind: block
           type: paragraph
           nodes:
-            - object: text
-              leaves:
+            - kind: text
+              ranges:
                 - text: The Content

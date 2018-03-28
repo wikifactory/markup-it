@@ -1,14 +1,14 @@
 document:
   nodes:
-    - object: block
+    - kind: block
       type: paragraph
       nodes:
-        - object: text
-          leaves:
+        - kind: text
+          ranges:
             - text: This paragraph is followed by a heading, without any blank line in-between.
-    - object: block
+    - kind: block
       type: header_one
       nodes:
-        - object: text
-          leaves:
+        - kind: text
+          ranges:
             - text: Hello
