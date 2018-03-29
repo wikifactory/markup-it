@@ -1,7 +1,12 @@
+
 # Release notes
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+
+### 6.0.4
+
+- Fix newlines and whitespace collapsing in paragraph. #99
 
 ### 6.0.3
 
