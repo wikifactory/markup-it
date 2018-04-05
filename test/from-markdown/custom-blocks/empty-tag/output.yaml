@@ -1,0 +1,14 @@
+document:
+  nodes:
+    - object: block
+      type: paragraph
+      nodes:
+        - object: text
+          leaves:
+            - text: Hello world
+    - object: block
+      type: paragraph
+      nodes:
+        - object: text
+          leaves:
+            - text: '{% This one is parsed as a paragraph %}'
