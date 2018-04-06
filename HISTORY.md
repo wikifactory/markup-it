@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 7.0.3
+
+Import fixes from 6.0.6:
+
+- Fix empty custom block serialization
+- Fix invalid custom block parsing
+
 ### 7.0.2
 
 Import fixes from 6.0.2, 6.0.3, 6.0.4 and 6.0.5:
@@ -22,9 +29,14 @@ Import fixes from 6.0.2, 6.0.3, 6.0.4 and 6.0.5:
 
 - Upgrade Slate to 0.33
 
+### 6.0.6
+
+- Fix empty custom block serialization
+- Fix invalid custom block parsing
+
 ### 6.0.5
 
-- Fix empty custom block parsing
+- Fix empty custom block tag parsing
 
 ### 6.0.4
 
