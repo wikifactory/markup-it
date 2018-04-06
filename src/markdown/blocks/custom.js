@@ -1,8 +1,10 @@
 const { List } = require('immutable');
+const warning = require('warning');
 const trimTrailingLines = require('trim-trailing-lines');
-const { Serializer, Deserializer, Block } = require('../../');
+const { Serializer, Deserializer, Block, BLOCKS } = require('../../');
 const reBlock = require('../re/block');
 const liquid = require('../liquid');
+
 
 /**
  * Return true if a block type is a custom one.
@@ -50,6 +52,18 @@ function isClosingTagFor(tag, forTag) {
 }
 
 /**
+ * Wrap the given nodes in the default block
+ * @param  {Array<Node>} nodes
+ * @return {Block}
+ */
+function wrapInDefaultBlock(nodes) {
+    return Block.create({
+        type: BLOCKS.DEFAULT,
+        nodes
+    });
+}
+
+/**
  * Serialize a templating block to markdown
  * @type {Serializer}
  */
@@ -64,6 +78,34 @@ const serialize = Serializer()
             data
         });
 
+        const split = node.kind == 'block' ? '\n' : '';
+        const end = node.kind == 'block' ? '\n\n' : '';
+
+        if (node.isVoid || node.nodes.isEmpty()) {
+            warning(
+                node.isVoid,
+                'Encountered a non-void custom block with no children'
+            );
+
+            return state
+                .shift()
+                .write(`${startTag}${end}`);
+        }
+
+        const containsInline = node.nodes.first().kind !== 'block';
+        warning(
+            !containsInline,
+            'Encountered a custom block containing inlines'
+        );
+
+        const innerNodes = containsInline
+            ? List([wrapInDefaultBlock(node.nodes)])
+            : node.nodes;
+
+        const inner = trimTrailingLines(
+            state.serialize(innerNodes)
+        );
+
         const unendingTags = state.getProp('unendingTags') || List();
         const endTag =
             unendingTags.includes(getTagFromCustomType(node.type))
@@ -71,17 +113,6 @@ const serialize = Serializer()
                 : liquid.stringifyTag({
                     tag: 'end' + getTagFromCustomType(node.type)
                 });
-
-        const split = node.kind == 'block' ? '\n' : '';
-        const end = node.kind == 'block' ? '\n\n' : '';
-
-        if (node.isVoid) {
-            return state
-                .shift()
-                .write(`${startTag}${end}`);
-        }
-
-        const inner = trimTrailingLines(state.serialize(node.nodes));
 
         return state
             .shift()

@@ -5,11 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+- Fix empty custom block serialization
 - Fix invalid custom block parsing
 
 ### 6.0.5
 
-- Fix empty custom block parsing
+- Fix empty custom block tag parsing
 
 ### 6.0.4
 
