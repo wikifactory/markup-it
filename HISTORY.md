@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 7.0.4
+
+- Fix parsing of HTML entities like emojis (ex: `&#128268;`)
+
 ### 7.0.3
 
 Import fixes from 6.0.6:
