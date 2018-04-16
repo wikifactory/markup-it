@@ -1,5 +1,4 @@
-const entities = require('html-entities');
-const htmlEntities = new entities.AllHtmlEntities();
+const entities = require('entities');
 
 /**
  * Unescape all entities (HTML + XML)
@@ -7,7 +6,9 @@ const htmlEntities = new entities.AllHtmlEntities();
  * @return {String}
  */
 function unescape(str) {
-    return htmlEntities.decode(str);
+    str = entities.decodeHTML(str);
+
+    return str;
 }
 
 module.exports = unescape;
