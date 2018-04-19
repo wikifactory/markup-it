@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 8.0.0
+
+- Remove Asciidoc support
+- Limit size of the package by publishing only the `dist` folder
+
 ### 7.0.4
 
 - Fix parsing of HTML entities like emojis (ex: `&#128268;`)
