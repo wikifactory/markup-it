@@ -15,7 +15,6 @@
   "keywords": [
     "slate",
     "markdown",
-    "asciidoc",
     "gitbook"
   ],
   "author": "Samy Pesse <samy@gitbook.com>",
@@ -45,7 +44,6 @@
     "slate-hyperprint": "^2.2.0"
   },
   "dependencies": {
-    "asciidoctor.js": "^1.5.5-4",
     "detect-newline": "^2.1.0",
     "entities": "^1.1.1",
     "escape-string-regexp": "^1.0.5",

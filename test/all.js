@@ -8,7 +8,6 @@ const trimTrailingLines = require('trim-trailing-lines');
 const MarkupIt = require('../src/');
 const markdown = require('../src/markdown');
 const html = require('../src/html');
-const asciidoc = require('../src/asciidoc');
 const unendingTags = require('./unendingTags');
 
 /**
@@ -34,8 +33,6 @@ function readFileInput(filePath) {
         });
     case '.html':
         return deserializeWith(html);
-    case '.adoc':
-        return deserializeWith(asciidoc);
     case '.yaml':
         return Slate.Value.fromJSON(readYaml(filePath)).toJSON();
     }
@@ -65,8 +62,6 @@ function convertFor(value, outputExt) {
         });
     case '.html':
         return serializeWith(html);
-    case '.adoc':
-        return serializeWith(asciidoc);
     case '.yaml':
         return value;
     }

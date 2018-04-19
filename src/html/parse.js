@@ -44,7 +44,6 @@ const MARK_TAGS = {
 };
 
 const MARK_CLASSNAME = {
-    // Use by asciidoc instead of del
     'line-through': MARKS.STRIKETHROUGH
 };
 

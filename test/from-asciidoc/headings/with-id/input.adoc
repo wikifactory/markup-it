@@ -1,2 +1,0 @@
-[[some-id]]
-= Hello World

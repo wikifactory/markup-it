@@ -6,15 +6,12 @@ const unendingTags = require('../../test/unendingTags');
 const { State } = require('../');
 const markdown = require('../markdown');
 const html = require('../html');
-const asciidoc = require('../asciidoc');
 
 const PARSERS = {
     '.md':       markdown,
     '.markdown': markdown,
     '.mdown':    markdown,
-    '.html':     html,
-    '.adoc':     asciidoc,
-    '.asciidoc': asciidoc
+    '.html':     html
 };
 
 /**
