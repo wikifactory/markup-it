@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 8.0.2
+
+- Fix serialization of bold or italic to not wrap spaces (`**bold** text` instead of `**bold **text`)
+
 ### 8.0.1
 
 - Fix parsing of `[def]` for code blocks in list 
