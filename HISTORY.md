@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 8.1.1
+
+- Rename `tex` data to `formula` on math blocks/inlines
+
 ### 8.1.0
 
 - Parse Math blocks as true block, instead of inline maths.
@@ -19,7 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### 8.0.1
 
-- Fix parsing of `[def]` for code blocks in list 
+- Fix parsing of `[def]` for code blocks in list
 
 ### 8.0.0
 
