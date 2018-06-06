@@ -1,6 +1,6 @@
 {
   "name": "markup-it",
-  "version": "8.0.3",
+  "version": "8.1.0",
   "description": "Pipeline for working with markup input (for example Markdown)",
   "main": "lib/index.js",
   "scripts": {
@@ -9,8 +9,8 @@
     "test": "./node_modules/.bin/mocha --compilers js:babel-core/register --reporter spec ./test/index.js"
   },
   "files": [
-      "lib",
-     "*.md"
+    "lib",
+    "*.md"
   ],
   "repository": {
     "type": "git",
