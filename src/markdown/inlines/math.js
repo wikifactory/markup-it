@@ -24,11 +24,11 @@ const serialize = Serializer()
     .then((state) => {
         const node = state.peek();
         const { data } = node;
-        let tex = data.get('tex');
+        let formula = data.get('formula');
 
-        tex = normalizeTeX(tex);
+        formula = normalizeTeX(formula);
 
-        const output = '$$' + tex + '$$';
+        const output = '$$' + formula + '$$';
 
         return state
             .shift()
@@ -41,9 +41,9 @@ const serialize = Serializer()
  */
 const deserialize = Deserializer()
     .matchRegExp(reInline.math, (state, match) => {
-        const tex = match[1];
+        const formula = match[1].trim();
 
-        if (state.getProp('math') === false || tex.trim().length === 0) {
+        if (state.getProp('math') === false || !formula) {
             return;
         }
 
@@ -51,7 +51,7 @@ const deserialize = Deserializer()
             type: INLINES.MATH,
             isVoid: true,
             data: {
-                tex
+                formula
             }
         });
 

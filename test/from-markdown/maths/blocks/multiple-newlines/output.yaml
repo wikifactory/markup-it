@@ -10,7 +10,7 @@ document:
       type: math
       isVoid: true
       data:
-        tex: a = b
+        formula: a = b
     - object: block
       type: paragraph
       nodes:

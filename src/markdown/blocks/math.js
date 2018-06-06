@@ -10,9 +10,9 @@ const serialize = Serializer()
     .then((state) => {
         const node = state.peek();
         const { data } = node;
-        const tex = data.get('tex');
+        const formula = data.get('formula');
 
-        const output = '\n$$\n' + tex.trim() + '\n$$\n';
+        const output = '\n$$\n' + formula.trim() + '\n$$\n';
 
         return state
             .shift()
@@ -26,9 +26,9 @@ const serialize = Serializer()
  */
 const deserialize = Deserializer()
     .matchRegExp(reBlock.math, (state, match) => {
-        const tex = match[2].trim();
+        const formula = match[2].trim();
 
-        if (state.getProp('math') === false || !tex) {
+        if (state.getProp('math') === false || !formula) {
             return;
         }
 
@@ -36,7 +36,7 @@ const deserialize = Deserializer()
             type: BLOCKS.MATH,
             isVoid: true,
             data: {
-                tex
+                formula
             }
         });
 

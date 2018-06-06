@@ -4,7 +4,7 @@ document:
       type: math
       isVoid: true
       data:
-        tex: |-
+        formula: |-
 
 
               a = b

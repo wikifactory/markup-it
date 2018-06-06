@@ -10,7 +10,7 @@ document:
           isVoid: true
           type: math
           data:
-            tex: a = b
+            formula: a = b
         - object: text
           leaves:
             - text: ''
