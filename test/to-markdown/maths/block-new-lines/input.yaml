@@ -4,4 +4,8 @@ document:
       type: math
       isVoid: true
       data:
-        tex: a = b = c = d
+        tex: |-
+
+
+              a = b
+              c = d
