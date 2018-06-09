@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 8.1.2
+
+- Rename math block to `math_block`
+- Fix spacing around math blocks in markdown
+
 ### 8.1.1
 
 - Rename `tex` data to `formula` on math blocks/inlines
