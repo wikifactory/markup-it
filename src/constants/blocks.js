@@ -32,7 +32,7 @@ module.exports = {
     // Comment
     COMMENT:    'comment',
     // Math
-    MATH:       'math',
+    MATH:       'math_block',
     // Default block
     DEFAULT:    'paragraph'
 };

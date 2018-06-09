@@ -1,7 +1,7 @@
 document:
   nodes:
     - object: block
-      type: math
+      type: math_block
       isVoid: true
       data:
         formula: |-

@@ -7,7 +7,7 @@ document:
           leaves:
             - text: Hello
     - object: block
-      type: math
+      type: math_block
       isVoid: true
       data:
         formula: a = b
