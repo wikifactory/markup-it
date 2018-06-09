@@ -12,7 +12,7 @@ const serialize = Serializer()
         const { data } = node;
         const formula = data.get('formula');
 
-        const output = '\n$$\n' + formula.trim() + '\n$$\n';
+        const output = '$$\n' + formula.trim() + '\n$$\n\n';
 
         return state
             .shift()
