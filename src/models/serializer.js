@@ -49,8 +49,8 @@ class Serializer extends RuleFunction {
         .filter(state => {
             const text = state.peek();
 
-            return text.characters.some(char => {
-                const hasMark = char.marks.some(mark => matcher(mark.type));
+            return text.leaves.some(leaf => {
+                const hasMark = leaf.marks.some(mark => matcher(mark.type));
                 return hasMark;
             });
         });
@@ -118,7 +118,7 @@ class Serializer extends RuleFunction {
         // We can't process empty text node
         .filter(state => {
             const text = state.peek();
-            return !text.isEmpty;
+            return !text.isEmpty();
         })
 
         // Avoid infinite loop
