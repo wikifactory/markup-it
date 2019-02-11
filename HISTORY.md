@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Unreleased
 
+### 9.0.0
+
+- Bump slate to 0.44.10
+- Broke tests
+
 ### 8.1.2
 
 - Rename math block to `math_block`
